@@ -26,6 +26,7 @@ jobs:
       - name: Pull images from docker hub
         run: docker pull vishwatech/dairymaster:latest
       - name: Delete old container
-        run: docker rm -f dairymaster-container
-      - name: Run docker container      
-        run: docker rm -d -p 3000:3000 --name dairymaster-container vishwatech/dairymaster:latest
+        run: docker rm -f dairymaster-container || true  # Removes the container if it exists
+
+      - name: Run Docker container
+        run: docker run -d -p 3000:3000 --name dairymaster-container vishwatech/dairymaster:latest
