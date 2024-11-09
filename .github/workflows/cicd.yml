@@ -15,14 +15,14 @@ jobs:
       - name: Login to docker hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Push image to docker hub
-        run: docker push vishwatech/DairyMaster:latest
+        run: docker push vishwatech/dairymaster:latest
   Deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Pull images from docker hub
-        run: docker pull vishwatech/DairyMaster:latest
+        run: docker pull vishwatech/dairymaster:latest
       - name: Delete old container
-        run: docker rm -f DairyMaster-container
+        run: docker rm -f dairymaster-container
       - name: Run docker container      
-        run: docker rm -d -p 3000:3000 --name DairyMaster-container vishwatech/DairyMaster:latest
+        run: docker rm -d -p 3000:3000 --name dairymaster-container vishwatech/dairymaster:latest
