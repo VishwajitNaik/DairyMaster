@@ -3,19 +3,122 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
   }
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Add these to your global CSS file or component's CSS */
+.faq-section {
+  max-width: 00px;
+  margin: auto;
+}
+
+.faq-item {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.faq-question {
+  border-bottom: 1px solid #ddd;
+}
+
+.faq-answer {
+  border-top: 1px solid #ddd;
+}
+
+.carousel-container {
+  width: 100%;
+  height: 100vh; /* Full height of the viewport */
+  background-color: #ffffff; /* White background */
+  overflow: hidden; /* Ensure content doesn't overflow */
+  position: relative; /* Create a new stacking context */
+}
+
+.carousel-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%; /* Ensure images take full height of the container */
+  object-fit: cover; /* Cover the container without distorting the image */
+}
+
+.carousel-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Ensure overlay is above the image */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); /* Gradient overlay */
+}
+
+.slick-dots li button:before {
+  font-size: 12px;
+  color: #000; /* Change dot color to black for better contrast on white background */
+}
+
+.slick-prev, .slick-next {
+  z-index: 2; /* Ensure arrows are above the overlay */
+  color: #000;
+}
+
+.slick-prev:before, .slick-next:before {
+  font-size: 24px;
+  color: #000;
+}
+
+.slick-slide {
+  transition: transform 0.5s ease;
+}
+
+/* Optional: Additional Styles for Small Screens */
+@media (max-width: 768px) {
+  .slick-prev, .slick-next {
+    display: none; /* Hide prev/next arrows on small screens */
+  }
+}
+
+.background-container {
+  background-image: url('/assets/image1.jpg'); /* Replace with the path to your image */
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+/* In your CSS file or within a <style jsx> block if using styled-jsx */
+/* styles.css or a relevant CSS file */
+.gradient-bg {
+  background: linear-gradient(to bottom right, #4a90e2, #9013fe); /* Example gradient */
+  min-height: 100vh; /* Ensures the background covers the full viewport height */
 }

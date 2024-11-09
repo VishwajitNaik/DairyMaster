@@ -1,11 +1,13 @@
 import localFont from "next/font/local";
 import "./globals.css";
+import { OrderProvider } from "../app/context/OrderContext"; // Import OrderProvider
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -23,7 +25,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <OrderProvider> {/* Wrap children with OrderProvider */}
+          {children}
+        </OrderProvider>
       </body>
     </html>
   );

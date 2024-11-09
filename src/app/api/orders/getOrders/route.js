@@ -1,0 +1,35 @@
+import { NextResponse } from 'next/server';
+import { connect } from '@/dbconfig/dbconfig';
+import Order from '@/models/userOrders'; // Ensure this path is correct
+
+connect();
+
+export async function GET(request, {params}) {
+  const { searchParams } = new URL(request.url);
+  const userId = searchParams.get('userId');
+  const startDate = new Date(searchParams.get('startDate'));
+  const endDate = new Date(searchParams.get('endDate'));
+
+  // Set endDate to the end of the selected day
+  endDate.setHours(23, 59, 59, 999);
+
+  try {
+    const milkRecords = await Order.find({
+      createdBy: userId,
+      date: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    }).populate('createdBy', 'registerNo name'); // Ensure this matches the field in the Order schema
+
+    console.log(milkRecords);
+
+    return NextResponse.json({
+      message: "Milk records fetched successfully",
+      data: milkRecords,
+    });
+  } catch (error) {
+    console.error("Error fetching milk records:", error);
+    return NextResponse.json({ error: "Failed to fetch milk records" }, { status: 500 });
+  }
+}
