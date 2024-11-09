@@ -11,7 +11,7 @@ jobs:
       - name: Create .env file
         run: echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> .env && echo "SITE_URL=${{ secrets.SITE_URL }}" >> .env
       - name: Build docker image
-        run: docker build -t vishwatech/DairyMaster .
+        run: docker build -t vishwatech/dairymaster .
       - name: Login to docker hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Push image to docker hub
