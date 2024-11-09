@@ -1,28 +1,52 @@
-name: Deploy Next.js application
+name: Deploy Next.js Application
+
 on:
   push:
     branches: [ main ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
+
       - name: Create .env file
-        run: echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> .env && echo "SITE_URL=${{ secrets.SITE_URL }}" >> .env
-      - name: Build docker image
+        run: |
+          echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> .env
+          echo "SITE_URL=${{ secrets.SITE_URL }}" >> .env
+
+      - name: Build Docker image
         run: docker build -t vishwatech/dairymaster .
-      - name: Login to docker hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - name: Push image to docker hub
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push Image to Docker Hub
         run: docker push vishwatech/dairymaster:latest
-  Deploy:
+
+  deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Pull images from docker hub
+      - name: Pull Image from Docker Hub
         run: docker pull vishwatech/dairymaster:latest
-      - name: Delete old container
-        run: docker rm -f dairymaster-container
-      - name: Run docker container      
-        run: docker rm -d -p 3000:3000 --name dairymaster-container vishwatech/dairymaster:latest
+
+      - name: Stop and Remove Old Container
+        run: |
+          if [ "$(docker ps -aq -f name=dairymaster-container)" ]; then
+            docker rm -f dairymaster-container
+          fi
+
+      - name: Run Docker Container
+        run: |
+          docker run -d -p 3000:3000 --name dairymaster-container vishwatech/dairymaster:latest
+
+      - name: Verify Docker Container is Running
+        run: |
+          if docker ps | grep -q dairymaster-container; then
+            echo "Container is running successfully."
+          else
+            echo "Container failed to start." >&2
+            exit 1
+          fi
