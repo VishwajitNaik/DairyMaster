@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { connect } from '@/dbconfig/dbconfig';
-import Milk from '@/models/milkModel';
+import Milk from '@/models/MilkModel';
 
 // Ensure the database is connected
 connect();
