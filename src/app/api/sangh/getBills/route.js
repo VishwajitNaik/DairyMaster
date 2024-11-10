@@ -1,5 +1,5 @@
 import User from "@/models/userModel";
-import Milk from "@/models/milkModel";
+import Milk from "@/models/MilkModel";
 import BillKapat from "@/models/BillKapat";
 import Sthirkapat from '@/models/sthirkapat';
 import Owner from '@/models/ownerModel'; 

@@ -35,7 +35,3 @@ export async function GET(request) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
-
-
-sangh token :  undefined
- GET /api/sangh/signedInSangh 401 in 299ms
