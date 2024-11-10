@@ -1,0 +1,29 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "package.json",
+        "use": "@vercel/next",
+        "config": {
+          "distDir": "build"
+        }
+      }
+    ],
+    "env": {
+      "NEXT_PUBLIC_API_URL": "your-api-url-here"
+    },
+    "buildCommand": "npm install --legacy-peer-deps && npm run build",
+    "rewrites": [
+      {
+        "source": "/(.*)",
+        "destination": "/"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/"
+      }
+    ]
+  }
+  
