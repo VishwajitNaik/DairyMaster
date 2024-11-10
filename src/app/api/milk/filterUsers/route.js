@@ -1,6 +1,6 @@
 import {Connect} from '@/dbconfig/dbconfig'; // Adjust the import based on your project structure
 import User from '@/models/userModel';
-import Milk from '@/models/milkModel';
+import Milk from '@/models/MilkModel';
 console.log(typeof(Connect));
 
 export async function GET(req, res) {
