@@ -5,6 +5,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Navigation, Pagination } from 'swiper/modules';
 import Modal from '../components/Navebars/NavbarModal'; // Adjust the path according to your file structure
+import Image from 'next/image';
 
 const Testimonials = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -14,7 +15,7 @@ const Testimonials = () => {
     {
       name: "John Doe",
       position: "CEO, Company A",
-      image: "https://picsum.photos/200/300",
+      image: "/assets/mony.jpg",
       videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" // Example video URL
     },
     {
@@ -26,13 +27,13 @@ const Testimonials = () => {
     {
       name: "Sarah Lee",
       position: "Product Manager, Company C",
-      image: "https://picsum.photos/200/300",
+      image: "/assets/mony.jpg",
       videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" // Example video URL
     },
     {
       name: "Sarah Lee",
       position: "Product Manager, Company C",
-      image: "https://picsum.photos/200/300",
+      image: "/assets/mony.jpg",
       videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" // Example video URL
     },
     // Add more testimonials as needed
@@ -59,7 +60,9 @@ const Testimonials = () => {
         {testimonials.map((testimonial, index) => (
           <SwiperSlide key={index}>
             <div className="bg-white hover:bg-blue-200 p-6 rounded-lg shadow-md flex flex-col items-center">
-              <img 
+              <Image
+                width={200}
+                height={300} 
                 src={testimonial.image} 
                 alt={`${testimonial.name}'s testimonial`} 
                 className="w-64 h-48 mb-4 rounded"

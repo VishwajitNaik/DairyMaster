@@ -56,68 +56,57 @@ const Drawer = ({ isOpen, onClose }) => {
               className="mb-2 flex items-center text-black hover:bg-gray-200 p-2 rounded cursor-pointer"
               onClick={handlePopUpOpen}
             >
-              <img src="https://via.placeholder.com/20" alt="Icon" className="mr-2" />
               उत्पादक भरणे
             </li>
             <li 
             className="mb-2 flex items-center text-black hover:bg-gray-200 p-2 rounded"
             onClick={handleVikriOpen}
             >
-              <img src="https://via.placeholder.com/20" alt="Icon" className="mr-2" />
               स्थानिक विक्री
             </li>
             <li 
             className="mb-2 flex items-center text-black hover:bg-gray-200 p-2 rounded">
-              <img src="https://via.placeholder.com/20" alt="Icon" className="mr-2" />
               <Link href={"/home/Sabhasad_List"}> 
               सभासद लिस्ट
               </Link> 
             </li>
             <li 
             className="mb-2 flex items-center text-black hover:bg-gray-200 p-2 rounded">
-              <img src="https://via.placeholder.com/20" alt="Icon" className="mr-2" />
               <Link href={"/home/SthirKapat"}> 
               कपाती भरणे 
               </Link> 
             </li>
             <li className="mb-2 flex items-center">
-              <img src="https://via.placeholder.com/20" alt="Settings Icon" className="mr-2" />
               <Link href="/home/BillData" className="hover:underline text-black">
                 बिल वितरण 
               </Link>
             </li>
             <li className="mb-2 flex items-center">
-              <img src="https://via.placeholder.com/20" alt="Settings Icon" className="mr-2" />
               <Link href="/home/GetKapat" className="hover:underline text-black">
                 कपातीचा डाटा पाहणे 
               </Link>
             </li>
             <li className="mb-2 flex items-center">
-              <img src="https://via.placeholder.com/20" alt="Settings Icon" className="mr-2" />
               <Link href="/home/SavedBills" className="hover:underline text-black">
                 मागील बील पाहणे 
               </Link>
             </li>
             <li className="mb-2 flex items-center">
-              <img src="https://via.placeholder.com/20" alt="Settings Icon" className="mr-2" />
               <Link href="/home/GetAllMilks" className="hover:underline text-black">
                 सर्व दूध पाहणे  
               </Link>
             </li>
             <li className="mb-2 flex items-center">
-              <img src="https://via.placeholder.com/20" alt="Settings Icon" className="mr-2" />
               <Link href="/home/orders/getOwnerOrders " className="hover:underline text-black">
                 संघ ऑर्डर पाहणे  
               </Link>
             </li>
             <li className="mb-2 flex items-center">
-              <img src="https://via.placeholder.com/20" alt="Settings Icon" className="mr-2" />
               <Link href="/home/milkRecords/SanghMilks" className="hover:underline text-black">
                 संघ दूध पाहणे   
               </Link>
             </li>
             <li className="mb-2 flex items-center">
-              <img src="https://via.placeholder.com/20" alt="Settings Icon" className="mr-2" />
               <Link href="/settings" className="hover:underline text-black">
                 Settings
               </Link>

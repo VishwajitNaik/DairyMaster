@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 
 export default function Navbar() {
@@ -9,27 +9,24 @@ export default function Navbar() {
     const { id } = useParams(); // Assuming userId is retrieved from URL params
     const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        if (id) {
-            fetchUserDetails();
-        }
-    }, [id]);
-
-    const fetchUserDetails = async () => {
+    const fetchUserDetails = useCallback(async () => {
         try {
             const res = await axios.get(`/api/user/getUsers/${id}`);
             setUser(res.data.data);
         } catch (error) {
             console.error("Error fetching user details:", error.message);
         }
-    };
+    }, [id]);
+
+    useEffect(() => {
+        if (id) {
+            fetchUserDetails();
+        }
+    }, [id, fetchUserDetails]);
 
     const handleOrdersClick = async () => {
         try {
-            // Fetch user details (if needed)
             await fetchUserDetails();
-            
-            // Check if userId is available and navigate
             if (user) {
                 router.push(`/home/orders/getOrdersUserside/${id}`);
             } else {
@@ -40,19 +37,18 @@ export default function Navbar() {
         }
     };
 
-    const handleAdvanceClick = async () =>{
+    const handleAdvanceClick = async () => {
         try {
             await fetchUserDetails();
-            // Check if userId is available and navigate
             if (user) {
                 router.push(`/home/getAdvanceUserSide/${id}`);
             } else {
                 console.error("User ID is not available.");
             }            
         } catch (error) {
-            console.error("Error handling orders click:", error.message);
+            console.error("Error handling advance click:", error.message);
         }
-    }
+    };
 
     return (
         <nav className="bg-gray-900 p-4 shadow-md shadow-blue-900">

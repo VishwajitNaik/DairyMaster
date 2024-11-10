@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 const AboutPage = () => {
   return (
@@ -24,8 +25,10 @@ const AboutPage = () => {
                 Our mission is to [describe your mission]. We strive to [explain how you achieve this mission].
               </p>
               <div className=" bg-blue-50 hover:bg-blue-200 transparent: 'transparent' p-6 rounded-lg shadow-xl text-center">
-                <img
-                  src="https://picsum.photos/200/300/?blur"
+                <Image
+                  width={200}
+                  height={300}
+                  src="/assets/indnots.jpg"
                   alt="Mission Image"
                   className="w-64 h-64 object-cover rounded-lg mx-auto mb-4"
                 />
@@ -42,8 +45,10 @@ const AboutPage = () => {
                 Our vision is to [describe your vision]. We envision a future where [describe the impact you hope to have].
               </p>
               <div className="bg-blue-50 hover:bg-blue-200 transparent: 'transparent' p-6 rounded-lg shadow-xl text-center">
-                <img
-                  src="https://picsum.photos/200/300"
+                <Image
+                  width={200} 
+                  height={300}
+                  src="/assets/mony.jpg"
                   alt="Vision Image"
                   className="w-64 h-64 object-cover rounded-lg mx-auto mb-4"
                 />
@@ -62,7 +67,7 @@ const AboutPage = () => {
             {/* Team Member 2 */}
             <div className="w-full md:w-1/3 px-4 mb-6">
               <div className="bg-blue-50 hover:bg-blue-200 transparent: 'transparent' p-6 rounded-lg shadow-xl text-center">
-                <img src="https://picsum.photos/seed/picsum/200/300" alt="Team Member" className="w-32 h-32 rounded-full mx-auto mb-4" />
+                <Image width={200} height={300} src="/assets/mony.jpg" alt="Team Member" className="w-32 h-32 rounded-full mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2 text-black">Jane Smith</h3>
                 <p className="text-gray-600">CTO</p>
                 <p className="mt-2 text-black">Jane drives our technology and innovation efforts, ensuring we stay ahead in the industry.</p>
@@ -71,7 +76,7 @@ const AboutPage = () => {
             {/* Team Member 3 */}
             <div className="w-full md:w-1/3 px-4 mb-6">
               <div className="bg-blue-50 hover:bg-blue-200 transparent: 'transparent' p-6 rounded-lg shadow-xl text-center">
-                <img src="https://picsum.photos/200/300" alt="Team Member" className="w-32 h-32 rounded-full mx-auto mb-4" />
+                <Image width={200} height={300} src="/assets/mony.jpg" alt="Team Member" className="w-32 h-32 rounded-full mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2 text-black">Emily Johnson</h3>
                 <p className="text-gray-600">COO</p>
                 <p className="mt-2 text-black">Emily ensures our operations run smoothly and efficiently, making sure our company meets its goals.</p>
@@ -80,7 +85,7 @@ const AboutPage = () => {
             {/* Team Member 3 */}
             <div className="w-full md:w-1/3 px-4 mb-6">
               <div className="bg-blue-50 hover:bg-blue-200 transparent: 'transparent' p-6 rounded-lg shadow-xl text-center">
-                <img src="https://picsum.photos/200/300" alt="Team Member" className="w-32 h-32 rounded-full mx-auto mb-4" />
+                <Image width={200} height={300} src="/assets/mony.jpg" alt="Team Member" className="w-32 h-32 rounded-full mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2 text-black">Emily Johnson</h3>
                 <p className="text-gray-600 ">COO</p>
                 <p className="mt-2 text-black">Emily ensures our operations run smoothly and efficiently, making sure our company meets its goals.</p>
