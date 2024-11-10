@@ -3,20 +3,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 
-export default function VerifyEmailPage() {  // Changed component name to uppercase
+export default function VerifyEmailPage() {
     const [token, setToken] = useState("");
     const [verified, setVerified] = useState(false);
     const [error, setError] = useState("");
-
-    const verifyUserEmail = async () => {
-        try {
-            const res = await axios.post('/api/owner/verifyEmail', { token });
-            setVerified(true);
-        } catch (error) {
-            setError(true);
-            console.error(error.message);
-        }
-    }
 
     useEffect(() => {
         const urlToken = window.location.search.split("=")[1];
@@ -24,7 +14,17 @@ export default function VerifyEmailPage() {  // Changed component name to upperc
     }, []);
 
     useEffect(() => {
-        if (token.length > 0) {
+        const verifyUserEmail = async () => {
+            try {
+                await axios.post('/api/owner/verifyEmail', { token });
+                setVerified(true);
+            } catch (error) {
+                setError(true);
+                console.error(error.message);
+            }
+        };
+
+        if (token) {
             verifyUserEmail();
         }
     }, [token]);
@@ -43,7 +43,6 @@ export default function VerifyEmailPage() {  // Changed component name to upperc
                     </Link>
                 </div>
             )}
-
             {error && (
                 <div>
                     <h2 className="text-2xl bg-red-500 text-black">Error</h2>
