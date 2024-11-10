@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
@@ -9,19 +9,18 @@ const UserDetails = () => {
 
   useEffect(() => {
     if (id && userId) {
+      const fetchUserDetails = async () => {
+        try {
+          const res = await axios.get(`/api/owner/getOwners/${id}/${userId}`);
+          setUser(res.data.data);
+        } catch (error) {
+          console.error('Error fetching user details:', error.message);
+        }
+      };
+      
       fetchUserDetails();
     }
   }, [id, userId]);
-
-  const fetchUserDetails = async () => {
-    try {
-      const res = await axios.get(`/api/owner/getOwners/${id}/${userId}`);
-      setUser(res.data.data);
-      
-    } catch (error) {
-      console.error('Error fetching user details:', error.message);
-    }
-  }
 
   if (!user) {
     return <div>Loading...</div>;

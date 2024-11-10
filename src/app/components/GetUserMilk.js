@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
 export default function MilkRecords() {
@@ -10,11 +10,10 @@ export default function MilkRecords() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  const fetchMilkRecords = async () => {
+  const fetchMilkRecords = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      // Adding startDate and endDate as query parameters to the request
       const response = await axios.get("/api/milk/getOwnerAllMilk", {
         params: {
           startDate: startDate || undefined,
@@ -29,12 +28,11 @@ export default function MilkRecords() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [startDate, endDate]); // Add startDate and endDate as dependencies
 
   useEffect(() => {
-    // Initial fetch of all milk records
     fetchMilkRecords();
-  }, []);
+  }, [fetchMilkRecords]); // Safe to include fetchMilkRecords as dependency
 
   return (
     <div className="container mx-auto mt-6 ">
@@ -91,17 +89,30 @@ export default function MilkRecords() {
                   </td>
                 </tr>
               ) : (
-                Array.isArray(milkRecords) && milkRecords.map((record, index) => (
+                Array.isArray(milkRecords) &&
+                milkRecords.map((record, index) => (
                   <tr key={index} className="hover:bg-gray-100">
                     <td className="text-black py-2 px-4 border-b">
                       {new Date(record.date).toLocaleDateString()}
                     </td>
-                    <td className="text-black py-2 px-4 border-b">{record.session}</td>
-                    <td className="text-black py-2 px-4 border-b">{record.liter}</td>
-                    <td className="text-black py-2 px-4 border-b">{record.fat}</td>
-                    <td className="text-black py-2 px-4 border-b">{record.snf}</td>
-                    <td className="text-black py-2 px-4 border-b">{record.dar}</td>
-                    <td className="text-black py-2 px-4 border-b">{record.rakkam}</td>
+                    <td className="text-black py-2 px-4 border-b">
+                      {record.session}
+                    </td>
+                    <td className="text-black py-2 px-4 border-b">
+                      {record.liter}
+                    </td>
+                    <td className="text-black py-2 px-4 border-b">
+                      {record.fat}
+                    </td>
+                    <td className="text-black py-2 px-4 border-b">
+                      {record.snf}
+                    </td>
+                    <td className="text-black py-2 px-4 border-b">
+                      {record.dar}
+                    </td>
+                    <td className="text-black py-2 px-4 border-b">
+                      {record.rakkam}
+                    </td>
                   </tr>
                 ))
               )}
