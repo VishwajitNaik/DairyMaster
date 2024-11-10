@@ -1,10 +1,10 @@
-import {Connect} from '@/dbconfig/dbconfig'; // Adjust the import based on your project structure
+import { Connect } from '@/dbconfig/dbconfig'; // Adjust the import based on your project structure
 import User from '@/models/userModel';
 import Milk from '@/models/MilkModel';
-console.log(typeof(Connect));
+
+Connect();
 
 export async function GET(req, res) {
-    await Connect();
   
     const { currentDate, currentTime } = req.query;
 
