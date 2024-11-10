@@ -1,8 +1,8 @@
-import { Connect } from '@/dbconfig/dbconfig'; // Adjust the import based on your project structure
+import { connect } from '@/dbconfig/dbconfig'; // Adjust the import based on your project structure
 import User from '@/models/userModel';
 import Milk from '@/models/MilkModel';
 
-Connect();
+connect();
 
 export async function GET(req, res) {
   
