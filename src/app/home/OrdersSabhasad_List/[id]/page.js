@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { useOrderContext } from '../../../context/OrderContext';
@@ -15,7 +13,8 @@ const OrdersPage = () => {
 
   const { id } = useParams(); // Correctly extract the userId from params
 
-  const fetchOrders = async () => {
+  // Use useCallback to memoize the fetchOrders function
+  const fetchOrders = useCallback(async () => {
     if (!startDate || !endDate) {
       setError('Please select both start and end dates.');
       return;
@@ -45,13 +44,13 @@ const OrdersPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, startDate, endDate, setNetPayment]);
 
   useEffect(() => {
     if (startDate && endDate) {
       fetchOrders();
     }
-  }, [startDate, endDate]);
+  }, [startDate, endDate, fetchOrders]);
 
   return (
     <div className="container mx-auto p-4">
