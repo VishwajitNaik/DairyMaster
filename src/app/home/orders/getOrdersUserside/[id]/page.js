@@ -1,6 +1,6 @@
 'use client';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -20,9 +20,9 @@ export default function UserMilkDetails() {
     const [totalAdvance, setTotalAdvance] = useState(0);
     const [totalBillKapat, setTotalBillKapat] = useState(0);
 
-    const fetchOrders = async () => {
+    const fetchOrders = useCallback(async () => {
         setLoading(true);
-        setError(null); // Reset error state
+        setError(null);
         try {
             const response = await axios.get(`/api/orders/afterKapatordersUserSide`, {
                 params: {
@@ -35,101 +35,89 @@ export default function UserMilkDetails() {
             const { data } = response.data;
             setOrderData(data);
 
-            // Calculate total of orders
             const total = data.reduce((acc, order) => acc + order.rakkam, 0);
             setTotalOrders(total);
-
         } catch (err) {
             setError('Failed to fetch order data');
             console.error('Error fetching order data:', err);
         } finally {
             setLoading(false);
         }
-    };
+    }, [id, startDate, endDate]);
 
     useEffect(() => {
         if (id) {
             fetchOrders();
         }
+    }, [id, startDate, endDate, fetchOrders]);
+
+    const fetchAdvance = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await axios.get(`/api/advance/GetAdvanceUserSide`, {
+                params: {
+                    userId: id,
+                    startDate: startDate.toISOString(),
+                    endDate: endDate.toISOString(),
+                },
+            });
+
+            const fetchedData = res.data.data || [];
+            setAdvanceData(fetchedData);
+
+            const total = fetchedData.reduce((acc, adv) => acc + adv.rakkam, 0);
+            setTotalAdvance(total);
+        } catch (err) {
+            setError('Failed to fetch advance data');
+            console.error('Error fetching advance data:', err);
+        } finally {
+            setLoading(false);
+        }
     }, [id, startDate, endDate]);
 
-
-    const fetchAdvance = async () => {
-        setLoading(true);
-        setError(null); // Reset error state
-        console.log("Fetching advance data with:", { id, startDate, endDate });
-    
-        try {
-          const res = await axios.get(`/api/advance/GetAdvanceUserSide`, {
-            params: {
-              userId: id,
-              startDate: startDate.toISOString(),
-              endDate: endDate.toISOString(),
-            },
-          });
-    
-          const fetchedData = res.data.data || [];
-          setAdvanceData(fetchedData);
-
-          // Calculate total of advance
-          const total = fetchedData.reduce((acc, adv) => acc + adv.rakkam, 0);
-          setTotalAdvance(total);
-
-        } catch (err) {
-          setError('Failed to fetch advance data');
-          console.error('Error fetching advance data:', err);
-        } finally {
-          setLoading(false);
-        }
-      };
-    
     useEffect(() => {
         if (id) {
             fetchAdvance();
         }
+    }, [id, startDate, endDate, fetchAdvance]);
+
+    const fetchBillkapat = useCallback(async () => {
+        if (startDate && endDate) {
+            setLoading(true);
+            setError(null);
+            try {
+                const response = await axios.get('/api/billkapat/getBillKapat', {
+                    params: {
+                        userId: id,
+                        startDate: startDate.toISOString(),
+                        endDate: endDate.toISOString(),
+                    },
+                });
+                const data = response.data.data || [];
+                setBillKapat(data);
+
+                const total = data.reduce((acc, item) => acc + item.rate, 0);
+                setTotalBillKapat(total);
+            } catch (err) {
+                setError('Failed to fetch bill kapat data');
+                console.error('Error fetching bill kapat data:', err);
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            setError('Please select both start and end dates.');
+            setLoading(false);
+        }
     }, [id, startDate, endDate]);
 
-    // Calculate difference between orders and advance totals
-    const totalDifference = totalOrders - totalAdvance - totalBillKapat;
-
-    const fetchBillkapat = async () => {
-        if (startDate && endDate) {
-          setLoading(true);
-          setError(null);
-          try {
-            const response = await axios.get('/api/billkapat/getBillKapat', {
-              params: {
-                userId: id,
-                startDate: startDate.toISOString(),
-                endDate: endDate.toISOString(),
-              },
-            });
-            const data = response.data.data || [];
-            setBillKapat(data);
-
-            // Calculate total of bill kapat
-            const total = data.reduce((acc, item) => acc + item.rate, 0);
-            setTotalBillKapat(total);
-
-          } catch (err) {
-            setError('Failed to fetch bill kapat data');
-            console.error('Error fetching bill kapat data:', err);
-          } finally {
-            setLoading(false);
-          }
-        } else {
-          setError('Please select both start and end dates.');
-          setLoading(false);
-        }
-      };
-    
     useEffect(() => {
         if (id) {
             fetchBillkapat();
         }
-    }, [id, startDate, endDate]);
+    }, [id, startDate, endDate, fetchBillkapat]);
 
-    
+    const totalDifference = totalOrders - totalAdvance - totalBillKapat;
 
     return (
         <div className='gradient-bg flex flex-col items-center justify-center min-h-screen'>

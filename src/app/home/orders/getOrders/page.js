@@ -1,6 +1,6 @@
 'use client';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -14,13 +14,7 @@ export default function UserOrdersDetails() {
   const [endDate, setEndDate] = useState(new Date());
   const [totalOrders, setTotalOrders] = useState(0);
 
-  useEffect(() => {
-    if (id) {
-      fetchOrders();
-    }
-  }, [id, startDate, endDate]);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       const res = await axios.get(`/api/orders/getOrders`, {
         params: {
@@ -40,8 +34,13 @@ export default function UserOrdersDetails() {
     } catch (error) {
       console.error('Error fetching orders:', error.message);
     }
-  };
-  
+  }, [id, startDate, endDate]);
+
+  useEffect(() => {
+    if (id) {
+      fetchOrders();
+    }
+  }, [id, fetchOrders]);
 
   const handleUpdate = (orderId) => {
     console.log('Update order: ', orderId);
@@ -110,7 +109,6 @@ export default function UserOrdersDetails() {
           <p>No orders found for the selected date range.</p>
         )}
       </div>
-
     </div>
   );
 }
