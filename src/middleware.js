@@ -15,6 +15,7 @@ export function middleware(request) {
   const isResetPassword = path.startsWith('/home/reset-password');
   const isVerifyPassword = path.startsWith('/home/reset');
   const isUserAccess = path.startsWith('/home/milkRecords/getMilksUserSide');
+  const regNo = path.startsWith(`/api/user/getUsers/[registerNo]`)
   const isSignUpUser = path.startsWith('/home/CreateUser/AddUser');
   const isSignInUser = path.startsWith('/home/CreateUser/LoginUser');
   const updateOwner = path.startsWith('/home/owner/updateOwner');
@@ -82,6 +83,7 @@ export const config = {
     '/home/milkRecords/getMilksUserSide/:path*',
     '/home/owner/:path*', // Example owner path
     '/home/AllDairies/:path*', // Ensure only logged-in Sangh users can access this path
-    '/home/updateDetails/OnwerUpdate/:path*'
+    '/home/updateDetails/OnwerUpdate/:path*',
+    '/api/user/getUsers/:path*',
   ],
 };

@@ -1,6 +1,6 @@
 "use client";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
 export default function UserOrderData() {
@@ -9,7 +9,8 @@ export default function UserOrderData() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const fetchOrders = async () => {
+    // Memoizing fetchOrders to avoid redefinition
+    const fetchOrders = useCallback(async () => {
         setLoading(true);
         setError(null); // Reset error state
 
@@ -21,12 +22,12 @@ export default function UserOrderData() {
         } finally {
             setLoading(false);
         }
-    }
+    }, [id]); // `id` is the only dependency for fetchOrders
 
-    // Fetch orders when the component mounts
+    // Fetch orders when the component mounts or when `id` changes
     useEffect(() => {
         fetchOrders();
-    }, [id]); // Dependency array includes `id` to refetch if `id` changes
+    }, [fetchOrders]); // Including fetchOrders in the dependency array
 
     return (
         <div className="container mx-auto p-4">
