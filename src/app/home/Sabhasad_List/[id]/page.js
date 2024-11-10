@@ -1,6 +1,6 @@
 'use client';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -46,28 +46,9 @@ export default function UserMilkDetails() {
     getKapatOptions();
   }, [totalLiters, totalRakkam]);
 
-
-  // Get user details
-
-  useEffect(() => {
-    if (id) {
-      fetchUserDetails();
-    }
-  }, [id]);
-
-  const fetchUserDetails = async () => {
-    try {
-      const res = await axios.get(`/api/user/getUsers/${id}`);
-      setUser(res.data.data);
-      fetchMilkRecords();
-    } catch (error) {
-      console.error('Error fetching user details:', error.message);
-    }
-  };
-
   // fetch milk records
 
-  const fetchMilkRecords = async () => {
+  const fetchMilkRecords = useCallback(async () => {
     try {
       const milkRes = await axios.get(`/api/milk/getMilkRecords`, {
         params: {
@@ -111,7 +92,21 @@ export default function UserMilkDetails() {
     } catch (error) {
       console.error('Error fetching milk records:', error.message);
     }
-  };
+  }, [id, startDate, endDate]);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const res = await axios.get(`/api/user/getUsers/${id}`);
+        setUser(res.data.data);
+        fetchMilkRecords();
+      } catch (error) {
+        console.error('Error fetching user details:', error.message);
+      }
+    };
+
+    if (id) fetchUserDetails();
+  }, [id, fetchMilkRecords]);
 
   const handleUpdate = (recordId) => {
     console.log('Update record: ', recordId);

@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 
 const OrdersPage = ({ params }) => {
@@ -10,7 +8,8 @@ const OrdersPage = ({ params }) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
-  const fetchOrders = async () => {
+  // Memoizing the fetchOrders function
+  const fetchOrders = useCallback(async () => {
     if (startDate && endDate) {
       setLoading(true);
       setError(null);
@@ -32,13 +31,13 @@ const OrdersPage = ({ params }) => {
       setError('Please select both start and end dates.');
       setLoading(false);
     }
-  };
+  }, [params.id, startDate, endDate]); // Adding the required dependencies
 
   useEffect(() => {
     if (startDate && endDate) {
       fetchOrders();
     }
-  }, [startDate, endDate]);
+  }, [fetchOrders, startDate, endDate]); // Now includes fetchOrders as dependency
 
   const totalRate = orders.reduce((total, order) => total + parseFloat(order.rate || 0), 0);
 
