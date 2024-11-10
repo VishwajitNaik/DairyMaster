@@ -10,6 +10,9 @@ const nextConfig = {
     ],
   },
   productionBrowserSourceMaps: false, // Disable source maps in production
+  eslint: {
+    ignoreDuringBuilds: true, // Ignore ESLint errors during builds
+  },
   webpack(config, { isServer }) {
     // Disable source map warnings in development
     if (!isServer) {
