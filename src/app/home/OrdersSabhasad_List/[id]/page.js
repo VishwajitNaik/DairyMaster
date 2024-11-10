@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
-import { useOrderContext } from '../../../context/OrderContext';
 
 const OrdersPage = () => {
   const [orderData, setOrderData] = useState({});
