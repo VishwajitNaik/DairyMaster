@@ -1,10 +1,9 @@
 "use client";
-
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
 
-export default function verifyEmailPage() {
+export default function VerifyEmailPage() {  // Changed component name to uppercase
     const [token, setToken] = useState("");
     const [verified, setVerified] = useState(false);
     const [error, setError] = useState("");
