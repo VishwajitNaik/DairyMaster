@@ -1,0 +1,18 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm install
+    build:
+      commands:
+        # Capture specific environment variables and save them to .env.production
+        - env | grep -e MONGO_URI -e SANGH_TOKEN_SECRETE -e OWNER_TOKEN_SECRETE -e USER_TOKEN_SECRETE -e DOMAIN -e SMTP_HOST -e SMTP_PORT -e SMTP_USER -e SMTP_PASS -e MONGO_PASSWORD -e SITE_URL -e DOCKER_USERNAME -e DOCKER_PASSWORD >> .env.production
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
