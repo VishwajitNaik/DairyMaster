@@ -33,7 +33,7 @@ export async function POST(request) {
 
         console.log(tokenData);
 
-        const token = Jwt.sign(tokenData, "sanghSecurityKey", {expiresIn:"1y"})
+        const token = Jwt.sign(tokenData, process.env.SANGH_TOKEN_SECRETE, {expiresIn:"1y"})
 
         const response = NextResponse.json({
             message: "Login success...",

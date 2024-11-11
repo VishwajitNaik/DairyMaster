@@ -12,7 +12,7 @@ export const getDataFromToken = (request) => {
         }
 
         // Verify the token
-        const decodedToken = jwt.verify(token, "userSecretKey");
+        const decodedToken = jwt.verify(token, process.env.USER_TOKEN_SECRETE);
         console.log("Decoded Token:", decodedToken);
 
         return decodedToken.id;

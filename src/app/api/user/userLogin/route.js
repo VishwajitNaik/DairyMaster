@@ -32,7 +32,7 @@ export async function POST(request) {
     }
 
     // Create a JWT token
-    const userToken = jwt.sign({ userId: user._id }, "userSecretKey", { expiresIn: '1h' });
+    const userToken = jwt.sign({ userId: user._id }, process.env.USER_TOKEN_SECRETE, { expiresIn: '1h' });
 
     // Set the token in a cookie
     const response = NextResponse.json({
