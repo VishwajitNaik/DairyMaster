@@ -122,7 +122,7 @@ const Navbar = ({ setIsSignupOpen, setIsSigninOpen, setIsSanghSignup, setIsSangh
       </div>
 
       <div className="flex gap-2">
-      <Link href="/home/Sabhasad_List">
+      <Link href="/home">
         <button className="bg-white text-black py-1 px-3 rounded text-sm hover:bg-gray-800 hover:text-white transition duration-300">
           Home 
         </button>
