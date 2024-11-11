@@ -24,7 +24,7 @@ const SigninForm = () => {
       setLoading(true);
       const response = await axios.post("/api/owner/login", owner);
       if (response.data.success) {
-        router.push("/app/home");
+        router.push("/home");
       } else {
         console.error("Login Error", response.data.error);
         Toast.error("Server is not responding. Please check your internet connection.");
