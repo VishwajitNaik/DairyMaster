@@ -37,7 +37,7 @@ export async function POST(request) {
     console.log(`Token data: ${JSON.stringify(tokenData)}`);
 
     // Create token
-    const ownerToken = Jwt.sign(tokenData, "ownerSecretKey", { expiresIn: "1d" });
+    const ownerToken = Jwt.sign(tokenData, process.env.OWNER_TOKEN_SECRETE, { expiresIn: "1d" });
 
     const response = NextResponse.json({
       message: "Login Successful...",
