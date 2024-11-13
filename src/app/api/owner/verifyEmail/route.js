@@ -7,7 +7,6 @@ connect()
 export async function POST(request) {
     try {
         const { token } = await request.json();
-        console.log(token);
 
         const owner = await Owner.findOne({
             verifyToken: token,

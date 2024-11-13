@@ -7,10 +7,8 @@ import Owner from "@/models/ownerModel";
 export async function POST(request) {
     try {
         await connect();
-        console.log("Database connected");
 
         const sanghId = await getDataFromToken(request);
-        console.log("sanghId", sanghId);
 
         // Validate the SanghId
         if (!sanghId) {

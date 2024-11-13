@@ -22,7 +22,6 @@ export async function GET(request, {params}) {
       },
     }).populate('createdBy', 'registerNo name'); // Ensure this matches the field in the Order schema
 
-    console.log(OrderRecord);
 
     return NextResponse.json({
       message: "orders records fetched successfully",

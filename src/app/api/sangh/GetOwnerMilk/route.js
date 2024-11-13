@@ -7,10 +7,8 @@ import Owner from "@/models/ownerModel";
 export async function GET(request) {
     try {
         await connect();
-        console.log("Database connected");
 
         const sanghId = await getDataFromToken(request);
-        console.log("sanghId", sanghId);
 
         // Validate the SanghId
         if (!sanghId) {
@@ -40,8 +38,6 @@ export async function GET(request) {
                 message: "No milk records found for this owner.",
             }, { status: 404 });
         }
-
-        console.log("Milk Records Found:", milkRecords);
 
         return NextResponse.json({
             message: "Milk records retrieved successfully.",

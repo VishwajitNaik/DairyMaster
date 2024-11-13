@@ -15,9 +15,7 @@ export async function GET(request) {
     }
 
     // Find the owner by ID
-    const owner = await Owner.findById(ownerId).select('dairyName'); // Assuming the owner's name field is 'ownerName'
-
-    console.log("Owner Name: ", owner);
+    const owner = await Owner.findById(ownerId).select('dairyName').lean(); // Assuming the owner's name field is 'ownerName'
     
 
     if (!owner) {

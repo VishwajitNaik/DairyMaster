@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const milkSchema = new mongoose.Schema({
+  registerNo: {
+    type: Number,
+    required: true,
+  },
   session: { 
     type: String,
     enum: ['morning', 'evening'],

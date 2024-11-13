@@ -10,7 +10,6 @@ export async function GET(request) {
   try {
     // Get user ID from token using the helper function
     const userId = await getDataFromToken(request);
-    console.log(userId);
 
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

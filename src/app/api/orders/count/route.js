@@ -15,14 +15,10 @@ export async function GET(request) {
       return NextResponse.json({ error: 'Register number is required' }, { status: 400 });
     }
 
-    console.log('Searching for registerNo:', registerNo);
-
     const highestOrder = await Orders.find({ registerNo })
       .sort({ orderNo: -1 })
       .limit(1)
       .select('orderNo');
-
-    console.log("Order No:", highestOrder);
 
     if (!highestOrder.length) {
       return NextResponse.json({ orderNo: 0 });

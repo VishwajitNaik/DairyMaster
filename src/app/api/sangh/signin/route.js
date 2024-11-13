@@ -11,13 +11,11 @@ export async function POST(request) {
     try {
         const reqBody = await request.json();
         const { email, password } = reqBody;
-        console.log(reqBody);
 
         const sangh = await Sangh.findOne({ email });
         if(!sangh){
             return NextResponse.json({error: "Sangh doesnot exists"})
         } 
-        console.log(sangh);
 
         //check if password is correct
         const validPassword = await bcryptjs.compare(password, sangh.password);
@@ -30,8 +28,6 @@ export async function POST(request) {
             SanghName: sangh.SanghName,
             email: sangh.email,
         };
-
-        console.log(tokenData);
 
         const token = Jwt.sign(tokenData, process.env.SANGH_TOKEN_SECRETE, {expiresIn:"1y"})
 

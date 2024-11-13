@@ -33,10 +33,7 @@ export async function POST(req) {
             endDate: new Date(endDate),      // Convert endDate to Date object
         }));
 
-        console.log("Bills with details", billsWithDetails);
-
         const savedBills = await StoreBill.insertMany(billsWithDetails);
-        console.log("Saved Bills", savedBills);
 
         savedBills.forEach(bill => {
             owner.storedBills.push(bill._id);

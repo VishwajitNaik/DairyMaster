@@ -3,7 +3,6 @@
 import { NextResponse } from 'next/server';
 import { connect } from '@/dbconfig/dbconfig';
 import Milk from '@/models/MilkModel';
-import { getDataFromToken } from '@/helpers/getDataFromToken';
 
 connect();
 

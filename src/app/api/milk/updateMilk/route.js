@@ -11,9 +11,6 @@ export async function POST(req) {
     const ownerId = await getDataFromToken(req); // Use 'req' instead of 'request'
     const { registerNo, session, date, liter, fat, snf, dar, rakkam } = await req.json();
 
-    console.log("Owner ID : ", ownerId);
-    console.log(session, date, liter, fat);
-
     if (!registerNo || !session || !date || !liter || !fat || !snf || !dar || !rakkam) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
@@ -23,8 +20,6 @@ export async function POST(req) {
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-
-    console.log("User ", user);
 
     // Use the original date without resetting the time
     const currentDate = new Date(date);
@@ -37,7 +32,6 @@ export async function POST(req) {
       date: currentDate
     });
 
-    console.log("milk Record ", milkRecord);
 
     // Declare updatedRecord outside the if-else block
     let updatedRecord;
@@ -59,8 +53,6 @@ export async function POST(req) {
     if (!updatedRecord) {
       return NextResponse.json({ message: 'Milk record not found' });
     }
-
-    console.log("Updated Record: ", updatedRecord);
 
     return NextResponse.json({ message: 'Milk record updated', record: updatedRecord });
   } catch (error) {

@@ -21,7 +21,6 @@ export async function POST(request) {
 
     // Validate rakkam data type
     if (isNaN(rakkam)) {
-      console.error("Invalid rakkam:", rakkam);
       return NextResponse.json({ error: "Rakkam must be a valid number" }, { status: 400 });
     }
 

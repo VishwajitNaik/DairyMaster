@@ -10,7 +10,6 @@ export async function POST(request) {
   try {
     const ownerId = await getDataFromToken(request);
     const { startDate, endDate } = await request.json();
-    console.log(ownerId);
 
     const owner = await Owner.findById(ownerId);
 
@@ -35,8 +34,6 @@ export async function POST(request) {
     const totalKapatRate = sthirkapatRecords.reduce((total, record) => total + (record.kapatRate || 0), 0);
     const formattedTotalKapatRate = parseFloat(totalKapatRate.toFixed(1)); // Round to 1 decimal place
 
-    console.log(formattedTotalKapatRate); // Expected output: 92.4
-
     // Define variables for results
     const results = [];
 
@@ -50,19 +47,10 @@ export async function POST(request) {
       // Calculate total liters and total rakkam
       const totalLiters = Math.floor(milkRecords.reduce((total, record) => total + record.liter, 0));
       const totalRakkam = Math.floor(milkRecords.reduce((total, record) => total + record.rakkam, 0));
+      const totalKapatRateMultiplybyTotalLiter = totalLiters * formattedTotalKapatRate;
 
-      // // Calculate total kapat rate multiplied by total liters
-      // const totalKapatRateMultiplybyTotalLiter = parseFloat(totalLiters.toFixed(1)) * parseFloat(formattedTotalKapatRate.toFixed(1));
-
-      // console.log(totalKapatRateMultiplybyTotalLiter);
-      // First, calculate total liters and total kapat rate, making sure you perform multiplication first
-const totalKapatRateMultiplybyTotalLiter = totalLiters * formattedTotalKapatRate;
-
-// Then, format the result to one decimal place
-const formattedResult = parseFloat(totalKapatRateMultiplybyTotalLiter.toFixed(1));
-
-console.log(formattedResult); // This should give you a clean output like 28.8 or 63.6
-
+      // Then, format the result to one decimal place
+      const formattedResult = parseFloat(totalKapatRateMultiplybyTotalLiter.toFixed(1));
 
       // Fetch bill kapat records for the user filtered by date range
       const billKapatRecords = await BillKapat.find({

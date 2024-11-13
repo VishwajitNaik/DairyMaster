@@ -12,7 +12,6 @@ connect();
 export async function POST(request) {
   try {
     const sanghId = await getDataFromToken(request);
-    console.log("Authenticated Sangh ID:", sanghId);
 
     if (!sanghId) {
       return NextResponse.json({ error: "Authentication failed: No Sangh ID found." }, { status: 401 });
@@ -27,8 +26,7 @@ export async function POST(request) {
 
     const reqBody = await request.json();
     const { ownerName, dairyName, phone, email, password, registerNo } = reqBody;
-    console.log("Received request body:", reqBody);
-
+   
     // Check if the owner already exists
     const existingOwner = await Owner.findOne({ email });
     if (existingOwner) {
@@ -45,16 +43,6 @@ export async function POST(request) {
     const salt = await bcryptjs.genSalt(10);
     const hashPassword = await bcryptjs.hash(password, salt);
 
-    console.log("Creating new owner with data:", {
-      registerNo,
-      ownerName,
-      dairyName,
-      sangh : sangh._id,
-      phone,
-      email,
-      password: hashPassword,
-    });
-
     // Create a new owner
     const newOwner = new Owner({
       registerNo,
@@ -68,7 +56,6 @@ export async function POST(request) {
 
     // Save the new owner
     const savedOwner = await newOwner.save();
-    console.log("Saved owner:", savedOwner);
 
     // Send verification email
     await sendEmail({ email, emailType: "VERIFY", userId: savedOwner._id });

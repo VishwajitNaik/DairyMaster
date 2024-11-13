@@ -9,7 +9,6 @@ export async function GET(request) {
     try {
         // Retrieve the owner ID from the token
         const ownerId = await getDataFromToken(request);
-        console.log("Logged-in Owner ID:", ownerId);
         
         // Fetch the specific owner from the database using the ownerId
         const owner = await Owner.findById(ownerId); // Find owner by ID
