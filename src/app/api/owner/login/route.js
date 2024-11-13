@@ -11,19 +11,15 @@ export async function POST(request) {
     const reqBody = await request.json();
     const { email, password } = reqBody;
 
-    console.log(reqBody);
-
     // Check if owner exists
     const owner = await Owner.findOne({ email });
     if (!owner) {
       return NextResponse.json({ error: "Owner does not exist" }, { status: 400 });
     }
-    console.log(`Owner found: ${JSON.stringify(owner)}`);
 
     // Check if password is correct
     const validPassword = await bcryptjs.compare(password, owner.password);
-    console.log(`Password comparison result: ${validPassword}`);
-    
+
     if (!validPassword) {
       return NextResponse.json({ error: "Invalid password" }, { status: 400 });
     }
@@ -34,7 +30,6 @@ export async function POST(request) {
       ownerName: owner.ownerName,
       email: owner.email,
     };
-    console.log(`Token data: ${JSON.stringify(tokenData)}`);
 
     // Create token
     const ownerToken = Jwt.sign(tokenData, process.env.OWNER_TOKEN_SECRETE, { expiresIn: "1d" });

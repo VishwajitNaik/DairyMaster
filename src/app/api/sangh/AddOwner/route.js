@@ -9,7 +9,6 @@ connect();
 export async function POST(request) {
     try {
         const sanghId = await getDataFromToken(request);
-        console.log(sanghId);
 
         if (!sanghId) {
             return NextResponse.json({ error: 'Invalid or missing token' }, { status: 401 });
@@ -17,9 +16,6 @@ export async function POST(request) {
 
         const reqBody = await request.json();
         const { registerNo, DairyName } = reqBody;  // Ensure registerNo is used here
-
-        console.log("Request Body:", reqBody);
-        console.log("register No", registerNo);  // This should now print the correct value
 
         if (!registerNo || !DairyName) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });

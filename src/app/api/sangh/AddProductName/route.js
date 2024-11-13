@@ -9,7 +9,6 @@ export async function POST(request) {
     try {
         
         const sanghId = await getDataFromToken(request);
-        console.log(sanghId);
 
         if (!sanghId) {
             return NextResponse.json({ error: 'Invalid or missing token' }, { status: 401 });
@@ -17,11 +16,6 @@ export async function POST(request) {
 
         const reqBody = await request.json()
         const { ProductName, ProductNo, ProductRate } = reqBody;
-
-        console.log("Product Name : ", ProductName);
-        console.log("Product No : ", ProductNo);
-
-
         
         if (!ProductName || !ProductNo || !ProductRate) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });

@@ -34,13 +34,12 @@ export async function POST(request) {
 
     // Check if a record already exists for the given session and date
     let milkRecord = await Milk.findOne({
-      createdBy: user._id,
+      createdBy: user._id || registerNo,
       session,
       milk,
       date: currentDate
     });
 
-    console.log(milkRecord);
     if (milkRecord) {
       // If a record already exists, return the message and the existing milk data
       return NextResponse.json({
@@ -51,6 +50,7 @@ export async function POST(request) {
     } else {
       // Create a new record if none exists
       milkRecord = new Milk({
+        registerNo,
         session,
         milk,
         liter,

@@ -13,7 +13,6 @@ export async function POST(request) {
 
         // Find the owner by email
         const owner = await Owner.findById({id:_id});
-        console.log("Owner", owner);
         if (!owner) {
             return NextResponse.json({ error: "Owner not found" }, { status: 404 });
         }

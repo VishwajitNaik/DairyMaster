@@ -155,7 +155,6 @@ export default function AvakDudhNond({ params }) {
     async function getOwnerUsers() {
       try {
         const res = await axios.get("/api/user/getUsers");
-        console.log(res.data);
         setUsers(res.data.data.users);
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
@@ -173,22 +172,6 @@ export default function AvakDudhNond({ params }) {
     setCurrentTime(formattedTime);
   }, []);
 
-  // const handleUserChange = (event) => {
-  //   setSelectedUserId(event.target.value); // Update selected user ID
-  //   setLastRecord(null); // Reset last record to trigger fetch
-  //   setError(null); // Reset error state
-  //   if (!autoFill) {
-  //     setFat(""); // Reset fat only if auto-fill is not selected
-  //     setSnf(""); // Reset SNF only if auto-fill is not selected
-  //   }
-  //   const selectedRegisterNo = event.target.value;
-  //   setSelectedOption(selectedRegisterNo);
-
-  //   const user = users.find(
-  //     (user) => user.registerNo === parseInt(selectedRegisterNo, 10)
-  //   );
-  //   setSelectedUser(user);
-  // };
 
     // Handle user selection by register number
     const handleUserChange = (event) => {
@@ -251,7 +234,7 @@ export default function AvakDudhNond({ params }) {
         handleSubmit();
         setTimeout(() => {
           clearForm();
-        }, 2000);
+        }, 1000);
       }
     }
   };
@@ -264,7 +247,6 @@ export default function AvakDudhNond({ params }) {
         if (Array.isArray(response.data.data) && response.data.data.length > 0) {
           // Set the first element of the array as rates
           setRates(response.data.data[0]); // Take the first rate object
-          console.log("Rates fetched:", response.data.data[0]); // Log the first rate object
         } else {
           console.log("No rates found.");
         }
@@ -282,8 +264,6 @@ export default function AvakDudhNond({ params }) {
   
   useEffect(() => {
     if (rates && Object.keys(rates).length > 0) {
-      console.log("Rates", rates);
-
       // Set buffalo and cow constants whenever rates are updated
       setBuffaloConstants({
         HF: rates.HighFatB,
@@ -317,8 +297,6 @@ export default function AvakDudhNond({ params }) {
     const { HF, R1, LF, R2 } = constants;
     const R = (R1 - R2) / (HF - LF); // Calculate R
     const FR = R1 - (HF - X) * R; // Calculate FR
-    console.log("R rate", R);
-    console.log("Calculated Fat Rate (FR):", FR); // Log FR to the console
     return FR; // Return the calculated fat rate
   };
 
@@ -377,16 +355,6 @@ export default function AvakDudhNond({ params }) {
 
   const handleSubmit = async () => {
     try {
-      // Add logging for debugging
-      console.log("Selected Register No:", selectedOption);
-      console.log("Selected Milk Type:", selectedMilk);
-      console.log("Session:", currentTime);
-      console.log("Liter:", inputRefs.current[1]?.value);
-      console.log("Fat:", inputRefs.current[2]?.value);
-      console.log("SNF:", inputRefs.current[3]?.value);
-      console.log("Dar:", inputRefs.current[4]?.value);
-      console.log("Rakkam:", inputRefs.current[5]?.value);
-      console.log("Date:", currentDate);
 
       if (!selectedMilk) {
         alert("Please select a milk type before submitting");
@@ -421,9 +389,6 @@ export default function AvakDudhNond({ params }) {
         rakkam, // Total amount (rakkam)
         date: currentDate, // Date of the milk entry
       };
-
-      console.log("Payload:", payload); // Add this to debug the payload
-
       const res = await axios.post("/api/milk/createMilk", payload);
 
       if (res.data.alert) {

@@ -20,12 +20,15 @@ export async function GET(request, {params}){
             }
         }).populate('createdBy', 'registerNo name');
 
-        console.log(userOrder);
-
-        return
+        // add nextresponse
+        return NextResponse.json({
+            message: "Milk records fetched successfully",
+            data: userOrder
+        })
         
     } catch (error) {
-        
+        console.error("Error fetching milk records:", error);
+        return NextResponse.json({ error: "Failed to fetch milk records" }, { status: 500 });
     }
 
 

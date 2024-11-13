@@ -44,7 +44,6 @@ export async function GET(request) {
       },
     }).populate("createdBy", "registerNo name");
 
-    console.log("Fetched Bill Kapat Records:", billKapatRecords);
 
     return NextResponse.json({
       message: "Bill Kapat fetched successfully",

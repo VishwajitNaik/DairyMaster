@@ -9,7 +9,6 @@ export async function GET(request) {
     try {
         // Get user data from token (authentication)
         const ownerId = await getDataFromToken(request);
-        console.log("Owner Id", ownerId);
         
         if (!ownerId) {
             return NextResponse.json({ error: "User not authenticated" }, { status: 401 });

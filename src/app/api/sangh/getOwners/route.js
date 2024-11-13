@@ -9,7 +9,6 @@ export async function GET(request) {
     try {
         // Retrieve the owner ID from the token (if needed)
         const ownerId = await getDataFromToken(request);
-        console.log(ownerId);
         
         // Fetch all owners from the database
         const owners = await Owner.find({}); // Find all owners

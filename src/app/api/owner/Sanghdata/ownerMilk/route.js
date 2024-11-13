@@ -10,7 +10,6 @@ export async function GET(request) {
     try {
         // Retrieve the owner ID from the token (if needed)
         const ownerId = await getDataFromToken(request);
-        console.log(ownerId);
 
         // Find the milk records of the owner using the ownerId
         const ownerMilkRecords = await OwnerMilk.find({ createdBy: ownerId }).populate("createdBy", "ownerName dairyName phone email"); // Use .populate() to populate the owner info

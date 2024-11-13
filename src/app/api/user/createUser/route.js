@@ -20,10 +20,6 @@ export async function POST(request) {
         const reqBody = await request.json();
         const { registerNo, name, milk, phone, bankName, accountNo, aadharNo, password } = reqBody;
 
-        console.log("Request Body:", reqBody);
-
-        console.log("aadhar No ", registerNo);
-
         // Ensure all required fields are present
         if (!registerNo || !name || !milk || !phone || !bankName || !accountNo || !aadharNo || !password) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });

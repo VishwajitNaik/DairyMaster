@@ -8,7 +8,6 @@ connect();
 export async function GET(request, { params }) {
     try {
         const { ownerId } = params;
-        console.log(ownerId);
 
         if (!ownerId) {
             return NextResponse.json({ error: "Owner ID is required" }, { status: 400 });
@@ -23,7 +22,6 @@ export async function GET(request, { params }) {
         // Fetch users created by the owner
         const ownerCreatedUsers = await User.find({ createdBy: ownerId }).populate('milkRecords'); // Populate milkRecords
 
-        console.log(ownerCreatedUsers);
 
         // Extract milk records for each user
         const usersWithMilkRecords = ownerCreatedUsers.map(user => ({

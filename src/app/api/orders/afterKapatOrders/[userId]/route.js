@@ -11,8 +11,6 @@ export async function POST(request, { params }) {
         const { userId } = params;
         const { startDate, endDate } = await request.json();
 
-        console.log(userId);
-
         if (!userId) {
             return NextResponse.json({ error: "User ID is required" }, { status: 400 });
         }

@@ -17,17 +17,11 @@ export async function POST(request) {
     const user = await User.findOne({ phone });
 
     if (!user) {
-      console.log(`User with phone number ${phone} not found`);
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-
-    console.log(`User found: ${JSON.stringify(user)}`);
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log(`Password comparison result: ${isPasswordValid}`);
 
     if (!isPasswordValid) {
-      console.log(`Invalid password for user with phone number ${phone}`);
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
