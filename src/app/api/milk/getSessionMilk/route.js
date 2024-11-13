@@ -34,6 +34,9 @@ export async function GET(request) {
             );
         });
 
+        console.log("Today's Milk Records for Current Session:", todaySessionMilkRecords);
+        
+
         // Calculate totalLiter, average fat, and average snf
         const totalLiter = todaySessionMilkRecords.reduce((sum, record) => sum + record.liter, 0);
         const averageFat = todaySessionMilkRecords.reduce((sum, record) => sum + record.fat, 0) / todaySessionMilkRecords.length || 0;
