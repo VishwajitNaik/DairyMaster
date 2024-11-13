@@ -18,7 +18,6 @@ export default function TodayMilkRecords() {
   const [avgSnfCow, setAvgSnfCow] = useState(0);
   const [avgRateCow, setAvgRateCow] = useState(0);
   const [totalRakkamCow, setTotalRakkamCow] = useState(0);
-  const [session, setSession] = useState("");
 
   useEffect(() => {
     async function fetchTodayMilkRecords() {
@@ -28,8 +27,7 @@ export default function TodayMilkRecords() {
         if (response.data && Array.isArray(response.data.milkRecords)) {
           const buffaloRecords = response.data.milkRecords.filter(record => record.milk === "म्हैस ");
           const cowRecords = response.data.milkRecords.filter(record => record.milk === "गाय ");
-          const session = response.data.milkRecords[0].session;
-          setSession(session);
+
           setMilkRecords(buffaloRecords);
           setCowMilkRecords(cowRecords);
           
@@ -88,13 +86,12 @@ export default function TodayMilkRecords() {
       
       {/* Buffalo Milk Table */}
       <h2 className="text-2xl font-semibold text-center mb-4">Buffalo Milk Records</h2>
-      <h1>session: {session}</h1>
-      <h1>Date: {new Date().toLocaleDateString()}</h1>
       <div className="overflow-x-auto mb-6">
         <table className="min-w-full bg-white border border-gray-200">
           <thead className="bg-gray-200">
             <tr>
-              <th className="text-black py-2 px-4 border-b">Register No</th>
+              <th className="text-black py-2 px-4 border-b">Date</th>
+              <th className="text-black py-2 px-4 border-b">Session</th>
               <th className="text-black py-2 px-4 border-b">Liter</th>
               <th className="text-black py-2 px-4 border-b">Fat</th>
               <th className="text-black py-2 px-4 border-b">SNF</th>
@@ -112,22 +109,24 @@ export default function TodayMilkRecords() {
             ) : (
               milkRecords.map((record, index) => (
                 <tr key={index} className="hover:bg-gray-100">
-                  <td className="text-black py-2 px-24 border-b">{record.registerNo}</td>
-                  <td className="text-black py-2 px-24 border-b">{record.liter}</td>
-                  <td className="text-black py-2 px-24 border-b">{record.fat}</td>
-                  <td className="text-black py-2 px-24 border-b">{record.snf}</td>
-                  <td className="text-black py-2 px-24 border-b">{record.dar}</td>
-                  <td className="text-black py-2 px-24 border-b">{record.rakkam}</td>
+                  <td className="text-black py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
+                  <td className="text-black py-2 px-4 border-b">{record.session}</td>
+                  <td className="text-black py-2 px-4 border-b">{record.liter}</td>
+                  <td className="text-black py-2 px-4 border-b">{record.fat}</td>
+                  <td className="text-black py-2 px-4 border-b">{record.snf}</td>
+                  <td className="text-black py-2 px-4 border-b">{record.dar}</td>
+                  <td className="text-black py-2 px-4 border-b">{record.rakkam}</td>
                 </tr>
               ))
             )}
             {milkRecords.length > 0 && (
               <tr className="font-bold bg-gray-100">
-                <td className="text-black py-2 border-b text-center">{totalLiter}</td>
-                <td className="text-black py-2 border-b text-center">{avgFat}</td>
-                <td className="text-black py-2 border-b text-center">{avgSnf}</td>
-                <td className="text-black py-2 border-b text-center">{avgRate}</td>
-                <td className="text-black py-2 border-b text-center">{totalRakkam}</td>
+                <td colSpan="2" className="py-2 px-4 border-b text-center">Total / Averages</td>
+                <td className="text-black py-2 px-4 border-b text-center">{totalLiter}</td>
+                <td className="text-black py-2 px-4 border-b text-center">{avgFat}</td>
+                <td className="text-black py-2 px-4 border-b text-center">{avgSnf}</td>
+                <td className="text-black py-2 px-4 border-b text-center">{avgRate}</td>
+                <td className="text-black py-2 px-4 border-b text-center">{totalRakkam}</td>
               </tr>
             )}
           </tbody>
@@ -140,12 +139,13 @@ export default function TodayMilkRecords() {
         <table className="min-w-full bg-white border border-gray-200">
           <thead className="bg-gray-200">
             <tr>
-              <th className="text-black py-2 px-4 border-b">Register No</th>
-              <th className="text-black py-2 border-b">Liter</th>
-              <th className="text-black py-2 border-b">Fat</th>
-              <th className="text-black py-2 border-b">SNF</th>
-              <th className="text-black py-2 border-b">Rate</th>
-              <th className="text-black py-2 border-b">Total</th>
+              <th className="text-black py-2 px-4 border-b">Date</th>
+              <th className="text-black py-2 px-4 border-b">Session</th>
+              <th className="text-black py-2 px-4 border-b">Liter</th>
+              <th className="text-black py-2 px-4 border-b">Fat</th>
+              <th className="text-black py-2 px-4 border-b">SNF</th>
+              <th className="text-black py-2 px-4 border-b">Rate</th>
+              <th className="text-black py-2 px-4 border-b">Total</th>
             </tr>
           </thead>
           <tbody>
@@ -158,22 +158,24 @@ export default function TodayMilkRecords() {
             ) : (
               cowMilkRecords.map((record, index) => (
                 <tr key={index} className="hover:bg-gray-100">
-                  <td className="text-black py-2 px-24 border-b">{record.registerNo}</td>
-                  <td className="text-black py-2 px-24 border-b">{record.liter}</td>
-                  <td className="text-black py-2 px-24 border-b">{record.fat}</td>
-                  <td className="text-black py-2 px-24 border-b">{record.snf}</td>
-                  <td className="text-black py-2 px-24 border-b">{record.dar}</td>
-                  <td className="text-black py-2 px-24 border-b">{record.rakkam}</td>
+                  <td className="text-black py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
+                  <td className="text-black py-2 px-4 border-b">{record.session}</td>
+                  <td className="text-black py-2 px-4 border-b">{record.liter}</td>
+                  <td className="text-black py-2 px-4 border-b">{record.fat}</td>
+                  <td className="text-black py-2 px-4 border-b">{record.snf}</td>
+                  <td className="text-black py-2 px-4 border-b">{record.dar}</td>
+                  <td className="text-black py-2 px-4 border-b">{record.rakkam}</td>
                 </tr>
               ))
             )}
             {cowMilkRecords.length > 0 && (
               <tr className="font-bold bg-gray-100">
-                <td className="text-black py-2 border-b text-center">{totalLiterCow}</td>
-                <td className="text-black py-2 border-b text-center">{avgFatCow}</td>
-                <td className="text-black py-2 border-b text-center">{avgSnfCow}</td>
-                <td className="text-black py-2 border-b text-center">{avgRateCow}</td>
-                <td className="text-black py-2 border-b text-center">{totalRakkamCow}</td>
+                <td colSpan="2" className="py-2 px-4 border-b text-center">Total / Averages</td>
+                <td className="text-black py-2 px-4 border-b text-center">{totalLiterCow}</td>
+                <td className="text-black py-2 px-4 border-b text-center">{avgFatCow}</td>
+                <td className="text-black py-2 px-4 border-b text-center">{avgSnfCow}</td>
+                <td className="text-black py-2 px-4 border-b text-center">{avgRateCow}</td>
+                <td className="text-black py-2 px-4 border-b text-center">{totalRakkamCow}</td>
               </tr>
             )}
           </tbody>

@@ -15,6 +15,13 @@ import Contact from "./components/Contact";
 import Map from "./components/Map";
 import AboutUs from "./components/AboutUs";
 
+import Amplify from 'aws-amplify';
+import awsconfig from '../aws-exports';
+import {withAuthenticator} from '@aws-amplify/ui-react';
+
+Amplify.configure(awsconfig);
+
+
 const Home = () => {
   const testimonialsRef = useRef(null);
   const contactRef = useRef(null);
