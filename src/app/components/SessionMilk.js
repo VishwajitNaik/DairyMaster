@@ -86,29 +86,31 @@ export default function TodayMilkRecords() {
 
   return (
     <div className="container mx-auto mt-6">
-      <h1 className="text-4xl font-bold text-center mb-6">Todays Milk Records</h1>
+      <h1 className="text-4xl font-bold text-center mb-6">आजचे दूध </h1>
       
       {/* Buffalo Milk Table */}
-      <h2 className="text-2xl font-semibold text-center mb-4">Buffalo Milk Records</h2>
-      <h1>session: {session}</h1>
-      <h1>Date: {new Date().toLocaleDateString()}</h1>
-      <div className="overflow-x-auto mb-6">
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead className="bg-gray-200">
+      <h2 className="text-2xl font-semibold bg-gray-200 py-2 px-4 w-fit rounded-lg shadow-md shadow-black text-gray-600 mb-4">म्हैस दूध </h2>
+      <h2 className="text-2xl font-semibold mb-4">
+        {session === "evening" ? "संध्याकाळ" : session === "morning" ? "सकाळ" : session}
+      </h2>
+      <h1 className="text-2xl font-semibold mb-4">तारीख : {new Date().toLocaleDateString()}</h1>
+      <div className="overflow-x-auto mb-6 rounded-md shadow-md shadow-black">
+        <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-md shadow-black">
+          <thead className="bg-gray-200 shadow-md shadow-black">
             <tr>
-              <th className="text-black py-2 px-4 border-b">Register No</th>
-              <th className="text-black py-2 px-4 border-b">Liter</th>
-              <th className="text-black py-2 px-4 border-b">Fat</th>
-              <th className="text-black py-2 px-4 border-b">SNF</th>
-              <th className="text-black py-2 px-4 border-b">Rate</th>
-              <th className="text-black py-2 px-4 border-b">Total</th>
+              <th className="text-black py-2 px-4 border-b">राजिस्टर नं.</th>
+              <th className="text-black py-2 px-4 border-b">लिटर </th>
+              <th className="text-black py-2 px-4 border-b">फॅट </th>
+              <th className="text-black py-2 px-4 border-b">एसन्फ</th>
+              <th className="text-black py-2 px-4 border-b">दर </th>
+              <th className="text-black py-2 px-4 border-b">एकूण रक्कम </th>
             </tr>
           </thead>
           <tbody>
             {milkRecords.length === 0 ? (
               <tr>
                 <td colSpan="7" className="text-black py-2 px-4 border-b text-center">
-                  No buffalo milk records available for today.
+                  आज एक ही दूध लिस्ट उपलब्ध नाही.
                 </td>
               </tr>
             ) : (
@@ -137,17 +139,17 @@ export default function TodayMilkRecords() {
       </div>
 
       {/* Cow Milk Table */}
-      <h2 className="text-2xl font-semibold text-center mb-4">Cow Milk Records</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead className="bg-gray-200">
+      <h2 className="text-2xl font-semibold bg-gray-200 py-2 px-4 w-fit rounded-lg shadow-md shadow-black text-gray-600 mb-4">गाय दूध </h2>
+      <div className="overflow-x-auto rounded-md shadow-md shadow-black">
+        <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-md shadow-black">
+          <thead className="bg-gray-200 shadow-md shadow-black">
             <tr>
-              <th className="text-black py-2 px-4 border-b">Register No</th>
-              <th className="text-black py-2 border-b">Liter</th>
-              <th className="text-black py-2 border-b">Fat</th>
-              <th className="text-black py-2 border-b">SNF</th>
-              <th className="text-black py-2 border-b">Rate</th>
-              <th className="text-black py-2 border-b">Total</th>
+            <th className="text-black py-2 px-4 border-b">राजिस्टर नं.</th>
+              <th className="text-black py-2 px-4 border-b">लिटर </th>
+              <th className="text-black py-2 px-4 border-b">फॅट </th>
+              <th className="text-black py-2 px-4 border-b">एसन्फ</th>
+              <th className="text-black py-2 px-4 border-b">दर </th>
+              <th className="text-black py-2 px-4 border-b">एकूण रक्कम </th>
             </tr>
           </thead>
           <tbody>

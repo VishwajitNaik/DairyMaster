@@ -187,7 +187,7 @@ const AddBillKapat = () => {
   };
 
   return (
-    <div className='bg-gray-800 p-6 rounded-lg mt-20 shadow-md w-full max-w-2xl mx-auto'
+    <div className='bg-gray-800 p-6 rounded-lg mt-20 shadow-md w-full max-w-2xl mx-auto shadow-black'
               style={{
         backgroundImage: 'url(/assets/mony.jpg)', 
         backgroundSize: 'cover', 
@@ -201,56 +201,37 @@ const AddBillKapat = () => {
             alt="खरेदी Icon"
             width={144}  // Approximate width in pixels for w-36
             height={144} // Approximate height in pixels for h-36
-            className="absolute rounded-full"
+            className="absolute rounded-full shadow-md shadow-black"
             style={{ top: "-80px", left: "35rem" }}
           />
           <h1 className="text-2xl font-semibold text-black mb-4 flex items-center">
           खरेदी कपात 
           </h1>
         </div>
-      <form onSubmit={handleSubmit} className='bg-gray-700 p-4 rounded-lg'>
+      <form onSubmit={handleSubmit} className='bg-gray-700 p-4 rounded-lg shadow-md shadow-gray-900'>
         <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
           <div>
-            <label htmlFor="startDate" className="text-white">Start Date:</label>
+            <label htmlFor="startDate" className="text-white mr-4">Start Date:</label>
             <input
               type="date"
-              id="startDate"
+              id="startDate" 
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="text-black"
+              className="text-black rounded-md p-2 shadow-sm shadow-white"
             />
-            <label htmlFor="endDate" className="text-white">End Date:</label>
+            <label htmlFor="endDate" className="text-white mr-4 ml-4">End Date:</label>
             <input
               type="date"
               id="endDate"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="text-black"
+              className="text-black rounded-md p-2 shadow-sm shadow-white"
             />
           </div>
         </div>
-        <button type="button" onClick={fetchMilkRecords} className='w-full py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md'>
-          Fetch Milk Records
-        </button>
-        <div className="bg-gray-600 p-4 rounded-md shadow-inner flex flex-row justify-between space-x-6 text-white">
-          <div className="flex items-center space-x-2">
-            <span className="font-bold">बील</span>
-            <span className="px-2 py-1 bg-gray-800 border border-gray-400 rounded-md text-lg">
-              {totalMilkRakkam}
-            </span>
-          </div>
-          {userDetails && (
-            <div className="flex items-center space-x-2">
-              <span className="font-bold">बाकी</span>
-              <span className="px-2 py-1 bg-gray-800 border border-gray-400 rounded-md text-lg">
-                {netPayment}
-              </span>
-            </div>
-          )}
-        </div>
 
-        {/* User selection and milk type display */}
-        <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
+{/* User selection and milk type display */}
+<div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
           <input
             type="text"
             id="code"
@@ -276,6 +257,26 @@ const AddBillKapat = () => {
           </select>
         </div>
 
+
+        <button type="button" onClick={fetchMilkRecords} className='w-36 py-2 mb-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md'>
+          Fetch Milk Records
+        </button>
+        <div className="bg-gray-600 p-4 mb-4 rounded-md shadow-inner flex flex-row justify-between space-x-6 text-white">
+          <div className="flex items-center space-x-2">
+            <span className="font-bold">बील</span>
+            <span className="px-2 py-1 bg-gray-800 border border-gray-400 rounded-md text-lg">
+              {totalMilkRakkam}
+            </span>
+          </div>
+          {userDetails && (
+            <div className="flex items-center space-x-2">
+              <span className="font-bold">बाकी</span>
+              <span className="px-2 py-1 bg-gray-800 border border-gray-400 rounded-md text-lg">
+                {netPayment}
+              </span>
+            </div>
+          )}
+        </div>
         <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
         <select
             id="order-select"

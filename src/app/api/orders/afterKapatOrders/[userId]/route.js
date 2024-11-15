@@ -5,10 +5,10 @@ import User from "@/models/userModel";
 import { NextResponse } from "next/server";
 import { getDataFromToken } from "@/helpers/getDataFromToken";
 
-export async function POST(request, { params }) {
+export async function POST(request, context) {
     try {
         const ownerId = await getDataFromToken(request);
-        const { userId } = params;
+        const { userId } = await context.params; // await context.params instead of destructuring it directly
         const { startDate, endDate } = await request.json();
 
         if (!userId) {
@@ -49,7 +49,7 @@ export async function POST(request, { params }) {
         const totalAdvance = advanceCuts.reduce((total, record) => total + (parseFloat(record.rakkam) || 0), 0);
 
         // Calculate net payment
-        const netPayment = Math.floor(totalRakkam - totalBillKapat-totalAdvance);
+        const netPayment = Math.floor(totalRakkam - totalBillKapat - totalAdvance);
 
         return NextResponse.json({
             userOrders,

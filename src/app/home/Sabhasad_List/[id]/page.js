@@ -134,7 +134,7 @@ export default function UserMilkDetails() {
   }
 
   return (
-    <div className="gradient-bg flex flex-col items-center justify-center min-h-screen">
+    <div className="gradient-bg flex flex-col min-h-screen">
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">User Details</h1>
       <div className="bg-white text-black shadow-md rounded-lg p-4 mb-4 flex items-center">

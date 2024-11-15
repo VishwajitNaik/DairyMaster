@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Image from 'next/image';
 
 const OrderForm = () => {
     const [orderTypes, setOrderTypes] = useState([]);
@@ -65,11 +66,26 @@ const OrderForm = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <div 
+        className="flex flex-col items-center justify-center min-h-screen bg-gray-100"
+        style={{
+        backgroundImage: 'url(/assets/truck.jpg)', 
+        backgroundSize: 'cover', 
+        backgroundPosition: 'center',
+      }}
+        >
             <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick pauseOnHover />
             <h1 className="text-3xl font-bold mb-8 text-gray-700">New Order</h1>
 
             <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+            <Image
+            src="/assets/truck1.avif" 
+            alt="खरेदी Icon"
+            width={144}  // Approximate width in pixels for w-36
+            height={144} // Approximate height in pixels for h-36
+            className="absolute rounded-full mt-36 ml-96 shadow-md shadow-black"
+            style={{ top: "-80px", left: "35rem" }}
+          />
                 <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">Order Information</h2>
 
                 <form onSubmit={handleSubmit} className="space-y-6">

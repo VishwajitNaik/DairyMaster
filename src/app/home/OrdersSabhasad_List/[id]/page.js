@@ -9,7 +9,6 @@ const OrdersPage = () => {
   const [error, setError] = useState(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const { setNetPayment } = useOrderContext();
 
   const { id } = useParams(); // Correctly extract the userId from params
 
@@ -40,11 +39,10 @@ const OrdersPage = () => {
         }
       }
     } catch (err) {
-      setError('Failed to fetch orders. Please try again later.');
     } finally {
       setLoading(false);
     }
-  }, [id, startDate, endDate, setNetPayment]);
+  }, [id, startDate, endDate]);
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -53,6 +51,7 @@ const OrdersPage = () => {
   }, [startDate, endDate, fetchOrders]);
 
   return (
+    <div className="gradient-bg flex flex-col r min-h-screen">
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">User Orders</h1>
 
@@ -135,6 +134,7 @@ const OrdersPage = () => {
       ) : (
         !loading && <p>No orders found for the selected date range.</p>
       )}
+    </div>
     </div>
   );
 };
