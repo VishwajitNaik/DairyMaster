@@ -9,6 +9,7 @@ export default function MilkRecords() {
   const [error, setError] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [summary, setSummary] = useState({});
 
   const fetchMilkRecords = useCallback(async () => {
     setLoading(true);
@@ -22,17 +23,49 @@ export default function MilkRecords() {
       });
       setMilkRecords(response.data.data);
       console.log("Milk Records:", response.data.data);
+      
+      // Calculate summary
+      calculateSummary(response.data.data);
     } catch (err) {
       setError("Failed to fetch milk records.");
       console.error("Error fetching milk records:", err.message);
     } finally {
       setLoading(false);
     }
-  }, [startDate, endDate]); // Add startDate and endDate as dependencies
+  }, [startDate, endDate]);
 
   useEffect(() => {
     fetchMilkRecords();
-  }, [fetchMilkRecords]); // Safe to include fetchMilkRecords as dependency
+  }, [fetchMilkRecords]);
+
+  const calculateSummary = (records) => {
+    const summaryData = { म्हैस: {}, गाय: {} };
+  
+    ["म्हैस", "गाय"].forEach((type) => {
+      const filteredRecords = records.filter(record => record.milk.trim() === type);
+  
+      const totalLiter = filteredRecords.reduce((total, record) => total + (parseFloat(record.liter) || 0), 0);
+      const totalFat = filteredRecords.reduce((total, record) => total + (parseFloat(record.fat) || 0), 0);
+      const totalSnf = filteredRecords.reduce((total, record) => total + (parseFloat(record.snf) || 0), 0);
+      const totalRate = filteredRecords.reduce((total, record) => total + (parseFloat(record.dar) || 0), 0);
+      const totalRakkam = filteredRecords.reduce((total, record) => total + (parseFloat(record.rakkam) || 0), 0);
+  
+      const avgFat = filteredRecords.length > 0 ? totalFat / filteredRecords.length : 0;
+      const avgSnf = filteredRecords.length > 0 ? totalSnf / filteredRecords.length : 0;
+      const avgRate = filteredRecords.length > 0 ? totalRate / filteredRecords.length : 0;
+  
+      summaryData[type] = {
+        totalLiter,
+        avgFat,
+        avgSnf,
+        avgRate,
+        totalRakkam,
+      };
+    });
+  
+    setSummary(summaryData);
+  };
+  
 
   return (
     <div className="container mx-auto mt-6 ">
@@ -68,7 +101,7 @@ export default function MilkRecords() {
 
       {/* Milk Records Table */}
       {!loading && !error && (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto mb-8">
           <table className="min-w-full bg-white border border-gray-200">
             <thead className="bg-gray-200">
               <tr>
@@ -118,6 +151,26 @@ export default function MilkRecords() {
               )}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Summary Section */}
+      {!loading && !error && (
+        <div className="summary-section mb-6">
+          <h2 className="text-2xl font-bold mb-4">Summary</h2>
+          {["म्हैस", "गाय"].map((type) => (
+            <div key={type} className="mb-4">
+              <h3 className="text-xl font-semibold">{type}</h3>
+              <p>Total Liter: {summary[type]?.totalLiter || 0}</p>
+              <p>Average Fat: {summary[type]?.avgFat.toFixed(2) || 0}</p>
+              <p>Average SNF: {summary[type]?.avgSnf.toFixed(2) || 0}</p>
+              <p>Average Rate: {summary[type]?.avgRate.toFixed(2) || 0}</p>
+              <p>Total Amount (रक्कम): {summary[type]?.totalRakkam || 0}</p>
+            </div>
+          ))}
+          <div className="font-bold">
+  Combined Total Amount: {(summary["म्हैस"]?.totalRakkam || 0) + (summary["गाय"]?.totalRakkam || 0)}
+</div>
         </div>
       )}
     </div>

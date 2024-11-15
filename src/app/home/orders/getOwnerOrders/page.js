@@ -53,8 +53,14 @@ const DisplayOrders = () => {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <h1 className="text-3xl font-bold mb-8 text-gray-700">Order List</h1>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100"
+        style={{
+        backgroundImage: 'url(/assets/truck.jpg)', 
+        backgroundSize: 'cover', 
+        backgroundPosition: 'center',
+      }}
+        >
+            <h1 className="text-3xl font-bold mb-8 text-white shadow-md shadow-black bg-slate-600 p-2 rounded-lg">Order List</h1>
             
             {/* Filter Buttons */}
             <div className="flex space-x-4 mb-8">

@@ -26,7 +26,7 @@ export function middleware(request) {
   const ownerToken = request.cookies.get('ownerToken')?.value || '';
   const sanghToken = request.cookies.get('sanghToken')?.value || '';
 
-  console.log(`Middleware invoked. Path: ${path}. SanghToken: ${sanghToken}`);
+  // console.log(`Middleware invoked. Path: ${path}. SanghToken: ${sanghToken}`);
 
   // Handle redirection logic
 
