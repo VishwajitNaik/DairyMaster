@@ -33,8 +33,6 @@ export async function GET(request) {
                 milk.session === currentSession
             );
         });
-
-        console.log("Today's Milk Records for Current Session:", todaySessionMilkRecords);
         
 
         // Calculate totalLiter, average fat, and average snf
@@ -42,8 +40,6 @@ export async function GET(request) {
         const averageFat = todaySessionMilkRecords.reduce((sum, record) => sum + record.fat, 0) / todaySessionMilkRecords.length || 0;
         const averageSnf = todaySessionMilkRecords.reduce((sum, record) => sum + record.snf, 0) / todaySessionMilkRecords.length || 0;
 
-        console.log("Today's Milk Records for Current Session:", todaySessionMilkRecords);
-        console.log("Total Liter:", totalLiter, "Average Fat:", averageFat, "Average SNF:", averageSnf);
 
         return NextResponse.json({
             message: "Today's milk records for current session fetched successfully",

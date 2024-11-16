@@ -50,6 +50,7 @@ const BillSummary = () => {
 
   return (
     <>
+    <div className="gradient-bg flex flex-col min-h-screen">
       <div className='bg-white p-6 rounded-lg shadow-md w-full max-w-4xl mx-auto'>
         <h1 className='text-2xl font-semibold text-black mb-4'>Bill Summary</h1>
         <form onSubmit={(e) => { e.preventDefault(); handleFetchBills(); }} className='bg-gray-100 p-4 rounded-lg shadow-md'>
@@ -148,6 +149,8 @@ const BillSummary = () => {
       {billData.length === 0 && !loading && !error && (
         <div className='mt-4 text-black text-center'>No bills found for the selected date range.</div>
       )}
+
+      </div>
     </>
   );
 };

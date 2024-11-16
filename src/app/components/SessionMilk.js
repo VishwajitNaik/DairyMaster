@@ -29,7 +29,6 @@ export default function TodayMilkRecords() {
           const buffaloRecords = response.data.milkRecords.filter(record => record.milk === "म्हैस ");
           const cowRecords = response.data.milkRecords.filter(record => record.milk === "गाय ");
           const session = response.data.milkRecords[0].session;
-          console.log("Session:", session);
           
           setSession(session);
           setMilkRecords(buffaloRecords);
