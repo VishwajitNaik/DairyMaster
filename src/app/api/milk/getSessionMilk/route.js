@@ -24,6 +24,9 @@ export async function GET(request) {
         const currentHour = new Date().getHours();
         const currentSession = currentHour < 12 ? "morning" : "evening";
 
+        console.log("Current session:", currentSession);
+        
+
         // Filter userMilk for today's records with the current session
         const todaySessionMilkRecords = owner.userMilk.filter(milk => {
             const milkDate = new Date(milk.date);
