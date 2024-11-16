@@ -30,6 +30,9 @@ export default function TodayMilkRecords() {
           const cowRecords = response.data.milkRecords.filter(record => record.milk === "गाय ");
           const session = response.data.milkRecords[0].session;
           
+          console.log("Session:", session);
+          
+
           setSession(session);
           setMilkRecords(buffaloRecords);
           setCowMilkRecords(cowRecords);
@@ -90,7 +93,7 @@ export default function TodayMilkRecords() {
       {/* Buffalo Milk Table */}
       <h2 className="text-2xl font-semibold bg-gray-200 py-2 px-4 w-fit rounded-lg shadow-md shadow-black text-gray-600 mb-4">म्हैस दूध </h2>
       <h2 className="text-2xl font-semibold mb-4">
-        {session === "evening" ? "संध्याकाळ" : session === "morning" ? "सकाळ" : session}
+        {session === "evening" ? "संध्याकाळ" : session === "morning" ? "सकाळ" : session} 
       </h2>
       <h1 className="text-2xl font-semibold mb-4">तारीख : {new Date().toLocaleDateString()}</h1>
       <div className="overflow-x-auto mb-6 rounded-md shadow-md shadow-black">
