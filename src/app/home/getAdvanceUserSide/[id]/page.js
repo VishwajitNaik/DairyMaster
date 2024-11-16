@@ -17,7 +17,6 @@ export default function AdvanceDetailsUserSide() {
   const fetchAdvance = useCallback(async () => {
     setLoading(true);
     setError(null); // Reset error state
-    console.log("Fetching advance data with:", { id, startDate, endDate });
 
     try {
       const res = await axios.get(`/api/advance/GetAdvanceUserSide`, {

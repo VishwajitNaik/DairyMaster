@@ -51,6 +51,39 @@ export default function AvakDudhNond({ params }) {
   const [autoFill, setAutoFill] = useState(false); // State for radio button
 
 
+//
+  const [susers, setSUsers] = useState([]); // Initialize users as an empty array
+  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
+
+  useEffect(() => {
+    // Fetch available users who don't have milk records for the current date and session
+    const noMilkUsers = async () => {
+      try {
+        const response = await axios.get("/api/SessionList"); // Updated API route
+        if (Array.isArray(response.data.data)) {
+          setSUsers(response.data.data); // Ensure response is an array before setting
+        } else {
+          console.error("Unexpected response format:", response.data);
+          setSUsers([]);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setSUsers([]); // Fallback to an empty array in case of error
+      } finally {
+        setIsLoading(false); // Loading complete
+      }
+    };
+
+    noMilkUsers();
+  }, []);
+
+  // Toggle modal visibility
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+//
   useEffect(() => {
     const fetchOwnerName = async () => {
       try {
@@ -682,7 +715,7 @@ export default function AvakDudhNond({ params }) {
                     <button className="px-2 py-1 bg-blue-600 text-white text-sm font-bold rounded hover:bg-blue-700 w-full">
                       View Milk Statistics
                     </button>
-                    <div className="hidden group-hover:block absolute top-0 right-full mr-4 w-64 p-4 bg-gray-100 rounded-lg shadow-lg">
+                    <div className="hidden group-hover:block absolute top-0 left-full ml-4 w-64 p-4 bg-gray-100 rounded-lg shadow-lg">
                       <table className="min-w-full">
                         <thead>
                           <tr>
@@ -692,43 +725,30 @@ export default function AvakDudhNond({ params }) {
                         </thead>
                         <tbody>
                           <tr>
-                            <td className="text-black font-bold">
-                              Total Liter
-                            </td>
-                            <td className="text-blue-600 font-bold">
-                              {totalLiterCow}
-                            </td>
+                            <td className="text-black font-bold">Total Liter</td>
+                            <td className="text-blue-600 font-bold">{totalLiterCow}</td>
                           </tr>
                           <tr>
                             <td className="text-black font-bold">Avg Fat</td>
-                            <td className="text-blue-600 font-bold">
-                              {avgFatCow}
-                            </td>
+                            <td className="text-blue-600 font-bold">{avgFatCow}</td>
                           </tr>
                           <tr>
                             <td className="text-black font-bold">Avg SNF</td>
-                            <td className="text-blue-600 font-bold">
-                              {avgSnfCow}
-                            </td>
+                            <td className="text-blue-600 font-bold">{avgSnfCow}</td>
                           </tr>
                           <tr>
                             <td className="text-black font-bold">Avg Rate</td>
-                            <td className="text-blue-600 font-bold">
-                              {avgRateCow}
-                            </td>
+                            <td className="text-blue-600 font-bold">{avgRateCow}</td>
                           </tr>
                           <tr>
-                            <td className="text-black font-bold">
-                              Total Rakkam
-                            </td>
-                            <td className="text-blue-600 font-bold">
-                              {totalRakkamCow}
-                            </td>
+                            <td className="text-black font-bold">Total Rakkam</td>
+                            <td className="text-blue-600 font-bold">{totalRakkamCow}</td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
                   </div>
+
                 </div>
 
                 <div className="relative mt-6 flex flex-col space-y-4 ml-36">
@@ -813,9 +833,52 @@ export default function AvakDudhNond({ params }) {
                     <h1 className="text-2xl text-black font-semibold"> काटा झेरो </h1>
                 </div>
               </div>
+              <div>
+              {/* Button to open the modal */}
+              <button
+                onClick={toggleModal}
+                className="py-2 px-4 bg-blue-500 text-white rounded-lg shadow-lg"
+              >
+                Show Users
+              </button>
+
+              {/* Modal for displaying user table */}
+              {isModalOpen && (
+                <div className="text-black fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
+                  <div className="bg-white text-black p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 relative">
+                    <h2 className="text-xl text-black font-semibold mb-4">Users Without Milk Records</h2>
+                    {/* Cross button */}
+                    <button
+                      onClick={toggleModal}
+                      className="text-black absolute top-2 right-2 hover:text-black text-2xl font-bold"
+                    >
+                      &times;
+                    </button>
+
+                    <table className="table-auto w-full border-collapse text-black">
+                      <thead>
+                        <tr className="bg-gray-400">
+                          <th className="border-b px-4 py-2 text-left text-black">Register No</th>
+                          <th className="border-b px-4 py-2 text-left text-black">Name</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {susers.map((user) => (
+                          <tr key={user._id}>
+                            <td className="border-b px-4 py-2 text-black">{user.registerNo}</td>
+                            <td className="border-b px-4 py-2 text-black">{user.name}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
+            </div>
+            
           </div>
-        </div>
+        </div> 
       </div>
       
 </div>
