@@ -24,29 +24,10 @@ export default function UserMilkDetails() {
   const [literKapat, setLiterKapat] = useState(0);
   const [netPayment, setNetPayment] = useState(0);
   const [kapat, setKapat] = useState([])
+  const [selectedKapat, setSelectedKapat] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-
-// Get kapat options
-  useEffect(() => {
-    async function getKapatOptions() {
-      try {
-        const res = await axios.get('/api/kapat/getKapat');
-        const sthirKapat = res.data.data.filter(item => item.KapatType === 'Sthir Kapat');
-       setKapat(sthirKapat)
-
-        const totalKapat = sthirKapat.reduce((total, item) => {
-          return total + (totalLiters * item.kapatRate);
-        }, 0);
-        setLiterKapat(Math.floor(totalKapat));
-        setNetPayment(totalRakkam - totalKapat);
-      } catch (error) {
-        console.log("Failed to fetch kapat options:", error.message);
-      }
-    }
-    getKapatOptions();
-  }, [totalLiters, totalRakkam]);
-
-  // fetch milk records
 
   const fetchMilkRecords = useCallback(async () => {
     try {
@@ -94,6 +75,7 @@ export default function UserMilkDetails() {
     }
   }, [id, startDate, endDate]);
 
+  // fetch milk records
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
@@ -107,10 +89,50 @@ export default function UserMilkDetails() {
 
     if (id) fetchUserDetails();
   }, [id, fetchMilkRecords]);
-
   const handleUpdate = (recordId) => {
     console.log('Update record: ', recordId);
   };
+
+  useEffect(() => {
+    const fetchSelectedKapat = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`/api/kapat/getKapatByIds`, {
+          params: { userId: id }, // Pass userId to the backend
+        });
+  
+        // Check if the response data is valid
+        if (response.data && response.data.data) {
+          const fetchedKapat = response.data.data;
+          setSelectedKapat(fetchedKapat); // Populate selectedKapat state with fetched data
+  
+          // Calculate total Kapat rate
+          const totalKapatRate = fetchedKapat.reduce((total, kapat) => total + kapat.kapatRate, 0);
+          
+          // Calculate the total Kapat value (liter * rate) for each Kapat item
+          const totalKapat = fetchedKapat.reduce((total, kapat) => total + (totalLiters * kapat.kapatRate), 0);
+          
+          // Update the state for literKapat and netPayment
+          setLiterKapat(totalKapat.toFixed(2)); // Store total Kapat value
+          setNetPayment((totalRakkam - totalKapat).toFixed(2)); // Calculate net payment
+  
+        } else {
+          setError('No selectedKapat found for this user');
+        }
+      } catch (err) {
+        console.error('Error fetching selectedKapat:', err);
+        setError('Failed to fetch selectedKapat');
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchSelectedKapat();
+  }, [id, totalLiters, totalRakkam]); // Trigger fetch when `id`, `totalLiters`, or `totalRakkam` change
+  
+  // Calculate total of all kapatRates and format it to 2 decimal places
+  const totalKapatRate = selectedKapat.reduce((total, kapat) => total + kapat.kapatRate, 0).toFixed(2);
+
 
   const handleDelete = async (recordId) => {
     try {
@@ -127,8 +149,6 @@ export default function UserMilkDetails() {
       console.error('Error deleting milk record: ', error.message);
     }
   };
-  
-
   if (!user) {
     return <div>Loading...</div>;
   }
@@ -275,36 +295,47 @@ export default function UserMilkDetails() {
       </div>
 
       <div className="bg-white text-black shadow-md rounded-lg p-4 mt-4">
-        <h3 className="text-lg font-semibold mb-2">Sthir Kapat</h3>
-        {kapat.length > 0 ? (
-          <table className="min-w-full bg-white text-black shadow-md rounded-lg">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b">Kapat</th>
-                <th className="py-2 px-4 border-b">रक्कम प्रति लिटर </th>
-                <th className="py-2 px-4 border-b">कपात</th>
-              </tr>
-            </thead>
-            <tbody>
-              {kapat.map((item) => (
-                <tr key={item._id}>
-                  <td className="py-2 px-4 border-b">{item.kapatName}</td>
-                  <td className="py-2 px-4 border-b">{item.kapatRate}</td>
-                  <td className="py-2 px-4 border-b">{(totalLiters * item.kapatRate).toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colSpan="2" className="py-2 px-4 border-t font-semibold">Total कपात</td>
-                <td className="py-2 px-4 border-t">{literKapat.toFixed(2)}</td>
-              </tr>
-            </tfoot>
-          </table>
-        ) : (
-          <p>No Sthir Kapat records found.</p>
-        )}
-      </div>
+  <h3 className="text-lg font-semibold mb-2">Sthir Kapat</h3>
+  {selectedKapat.length > 0 ? (
+    <table className="min-w-full bg-white text-black shadow-md rounded-lg">
+      <thead>
+        <tr>
+          <th className="py-2 px-4 border-b">Kapat</th>
+          <th className="py-2 px-4 border-b">रक्कम प्रति लिटर </th>
+          <th className="py-2 px-4 border-b">कपात</th>
+        </tr>
+      </thead>
+      <tbody>
+        {selectedKapat.map((item) => (
+          <tr key={item._id}>
+            <td className="py-2 px-4 border-b">{item.kapatName}</td>
+            <td className="py-2 px-4 border-b">{item.kapatRate}</td>
+            <td className="py-2 px-4 border-b">
+              {(totalLiters * item.kapatRate).toFixed(2)}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colSpan="2" className="py-2 px-4 border-t font-semibold">
+            Total कपात
+          </td>
+          <td className="py-2 px-4 border-t">
+            {/* Calculate total literKapat */}
+            {selectedKapat.reduce(
+              (total, item) => total + totalLiters * item.kapatRate,
+              0
+            ).toFixed(2)}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  ) : (
+    <p>No Sthir Kapat records found.</p>
+  )}
+</div>
+
 
 
       <div className="mt-4 p-4 bg-white text-black shadow-md rounded-lg">

@@ -28,10 +28,10 @@ export async function GET(request, { params }) {
     let user;
     if (ownerId) {
       // Authenticated request - fetch user created by the owner, selecting specific fields
-      user = await User.findOne({ _id: registerNo, createdBy: ownerId }).select("name registerNo milk");
+      user = await User.findOne({ _id: registerNo, createdBy: ownerId }).select("name registerNo milk selectedKapat");
     } else {
       // Non-authenticated request - fetch user regardless of creator, selecting specific fields
-      user = await User.findOne({ _id: registerNo }).select("name registerNo milk");
+      user = await User.findOne({ _id: registerNo }).select("name registerNo milk selectedKapat");
     }
 
     if (!user) {

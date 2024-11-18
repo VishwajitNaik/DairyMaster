@@ -72,6 +72,10 @@ const userSchema = new mongoose.Schema({
         ref: 'BillKapat',
         default: []
     }],
+    selectedKapat: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Sthirkapat' 
+    }], // Reference to Kapat
 }, { timestamps: true });
 
 // Add a compound unique index on registerNo and createdBy to ensure uniqueness within the scope of an owner

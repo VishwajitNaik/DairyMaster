@@ -13,7 +13,7 @@ export default function Sabhasad() {
   const [updatedUserData, setUpdatedUserData] = useState({});
   const [responseMessage, setResponseMessage] = useState("");
   const [userToDelete, setUserToDelete] = useState(null); // State for user to delete
-
+  
   useEffect(() => {
     async function getOwnerUsers() {
       try {
@@ -29,20 +29,6 @@ export default function Sabhasad() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUpdatedUserData({ ...updatedUserData, [name]: value });
-  };
-
-  const handleUpdateSubmit = async () => {
-    try {
-      const response = await axios.put(`/api/user/UpdateUser`, {
-        userId: editingUser._id,
-        updatedData: updatedUserData,
-      });
-      setResponseMessage("User updated successfully!");
-      setUsers(users.map(user => (user._id === editingUser._id ? response.data.data : user)));
-      setEditingUser(null);
-    } catch (error) {
-      setResponseMessage(`Failed to update user: ${error.response?.data?.error || error.message}`);
-    }
   };
 
   // Handle user deletion with confirmation
@@ -63,6 +49,21 @@ export default function Sabhasad() {
 
   const cancelDelete = () => {
     setUserToDelete(null); // Cancel the deletion
+  };
+
+  // Handle the user update submission
+  const handleUpdateSubmit = async () => {
+    try {
+      const response = await axios.put(`/api/user/UpdateUser`, {
+        userId: editingUser._id,
+        updatedData: updatedUserData,
+      });
+      setResponseMessage("User updated successfully!");
+      setUsers(users.map(user => (user._id === editingUser._id ? response.data.data : user)));
+      setEditingUser(null);
+    } catch (error) {
+      setResponseMessage(`Failed to update user: ${error.response?.data?.error || error.message}`);
+    }
   };
 
   return (
@@ -168,11 +169,22 @@ export default function Sabhasad() {
         </div>
       )}
 
+      {/* Edit User Modal */}
       {editingUser && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="bg-white p-8 rounded-md shadow-md w-1/3">
             <h2 className="text-black text-center text-2xl font-bold mb-4">Update User</h2>
             <form>
+              <label className='text-black'>
+                Register No:
+                <input
+                  type="text"
+                  name="registerNo"
+                  value={updatedUserData.registerNo || ""}
+                  onChange={handleInputChange}
+                  className="text-black w-full p-2 mt-1 mb-4 border rounded"
+                />
+              </label>
               <label className='text-black'>
                 Name:
                 <input
@@ -193,22 +205,50 @@ export default function Sabhasad() {
                   className="text-black w-full p-2 mt-1 mb-4 border rounded"
                 />
               </label>
-              <div className="flex space-x-4">
-                <button
-                  type="button"
-                  onClick={handleUpdateSubmit}
-                  className="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded"
-                >
-                  Save Changes
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditingUser(null)}
-                  className="bg-red-500 hover:bg-red-700 text-white p-2 rounded"
-                >
-                  Cancel
-                </button>
-              </div>
+              <label className='text-black'>
+                Aadhar No:
+                <input
+                  type="text"
+                  name="aadharNo"
+                  value={updatedUserData.aadharNo || ""}
+                  onChange={handleInputChange}
+                  className="text-black w-full p-2 mt-1 mb-4 border rounded"
+                />
+              </label>
+              <label className='text-black'>
+                Bank Name:
+                <input
+                  type="text"
+                  name="bankName"
+                  value={updatedUserData.bankName || ""}
+                  onChange={handleInputChange}
+                  className="text-black w-full p-2 mt-1 mb-4 border rounded"
+                />
+              </label>
+              <label className='text-black'>
+                Account No:
+                <input
+                  type="text"
+                  name="accountNo"
+                  value={updatedUserData.accountNo || ""}
+                  onChange={handleInputChange}
+                  className="text-black w-full p-2 mt-1 mb-4 border rounded"
+                />
+              </label>
+              <button
+                type="button"
+                onClick={handleUpdateSubmit}
+                className="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded w-full mt-4"
+              >
+                Save Changes
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditingUser(null)}
+                className="bg-gray-500 hover:bg-gray-700 text-white p-2 rounded w-full mt-4"
+              >
+                Cancel
+              </button>
             </form>
           </div>
         </div>

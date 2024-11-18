@@ -3,9 +3,27 @@ import { ToastContainer, toast as Toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Make sure to include the CSS
 import axios from 'axios';
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 const PopUp = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
+  const [kapat, setKapat] = useState([])
+  const [selectedKapat, setSelectedKapat] = useState([]); // For tracking selected Sthir Kapat options
+
+
+  useEffect(() => {
+    async function getKapatOptions() {
+      try {
+        const res = await axios.get('/api/kapat/getKapat');
+        const sthirKapat = res.data.data.filter(item => item.KapatType === 'Sthir Kapat');
+       setKapat(sthirKapat)
+      } catch (error) {
+        console.log("Failed to fetch kapat options:", error.message);
+      }
+    }
+    getKapatOptions();
+  },[]);
+
   const [user, setUser] = useState({
     registerNo: '',
     name: '',
@@ -21,9 +39,15 @@ const PopUp = ({ isOpen, onClose }) => {
     event.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('/api/user/createUser', user);
+      // Add selectedKapat to the payload
+      const payload = {
+        ...user,
+        selectedKapat, // Include the selected Kapat options
+      };
+  
+      const res = await axios.post('/api/user/createUser', payload);
       console.log("User created successfully:", res.data.data);
-
+  
       // Reset the form fields
       setUser({
         registerNo: '',
@@ -35,7 +59,7 @@ const PopUp = ({ isOpen, onClose }) => {
         aadharNo: '',
         password: '',
       });
-
+      setSelectedKapat([]); // Reset selected Kapat options
       Toast.success("User created successfully!");
     } catch (error) {
       console.log("Add User Failed:", error.message);
@@ -44,13 +68,22 @@ const PopUp = ({ isOpen, onClose }) => {
       setLoading(false);
     }
   };
+  
+
+  const toggleKapatSelection = (kapatId) => {
+    if (selectedKapat.includes(kapatId)) {
+      setSelectedKapat(selectedKapat.filter((id) => id !== kapatId));
+    } else {
+      setSelectedKapat([...selectedKapat, kapatId]);
+    }
+  };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
-      <div className="relative bg-white p-4 w-[40%] h-[60%] rounded shadow-lg">
+      <div className="relative bg-white p-4 w-[40%] h-[80%] rounded shadow-lg">
         <button
           className="absolute top-2 right-2 text-gray-600"
           onClick={onClose}
@@ -140,6 +173,26 @@ const PopUp = ({ isOpen, onClose }) => {
               onChange={(e) => setUser({...user, password: e.target.value})}
             />
           </div>
+
+          <div className="w-full px-2 mb-4">
+              <h3 className="text-xl text-black font-semibold mb-2">स्थिर कपाट पर्याय</h3>
+              <div className="flex flex-wrap gap-4">
+                {kapat.map((item) => (
+                  <div key={item._id} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`kapat-${item._id}`}
+                      checked={selectedKapat.includes(item._id)}
+                      onChange={() => toggleKapatSelection(item._id)}
+                      className="mr-2"
+                    />
+                    <label htmlFor={`kapat-${item._id}`} className="text-black">
+                      {item.kapatName} - ₹{item.kapatRate}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
           <div className="w-full px-2">
             <button 
               type="submit" 
