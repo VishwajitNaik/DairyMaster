@@ -5,7 +5,8 @@ import AggregateMilk from '@/app/components/AggrigateTotal'
 const page = () => {
   return (
     <div className="gradient-bg flex flex-col items-center justify-center min-h-screen">
-      <GetUserMilk />
+      {/* <GetUserMilk /> */}
+      <AggregateMilk />
     </div>
   )
 }
