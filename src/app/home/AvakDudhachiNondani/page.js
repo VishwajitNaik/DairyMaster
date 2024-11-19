@@ -837,43 +837,44 @@ export default function AvakDudhNond({ params }) {
               {/* Button to open the modal */}
               <button
                 onClick={toggleModal}
-                className="py-2 px-4 bg-blue-500 text-white rounded-lg shadow-lg"
+                className=" py-2 px-4 bg-blue-500 text-white rounded-lg shadow-lg"
               >
                 Show Users
               </button>
 
               {/* Modal for displaying user table */}
               {isModalOpen && (
-                <div className="text-black fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
-                  <div className="bg-white text-black p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 relative">
-                    <h2 className="text-xl text-black font-semibold mb-4">Users Without Milk Records</h2>
-                    {/* Cross button */}
-                    <button
-                      onClick={toggleModal}
-                      className="text-black absolute top-2 right-2 hover:text-black text-2xl font-bold"
-                    >
-                      &times;
-                    </button>
+                  <div className="text-black fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-10">
+                    <div className="bg-white text-black p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 relative max-h-[600px] overflow-y-auto">
+                      <h2 className="text-xl text-black font-semibold mb-4">Users Without Milk Records</h2>
+                      {/* Cross button */}
+                      <button
+                        onClick={toggleModal}
+                        className="text-black absolute top-2 right-2 hover:text-black text-2xl font-bold"
+                      >
+                        &times;
+                      </button>
 
-                    <table className="table-auto w-full border-collapse text-black">
-                      <thead>
-                        <tr className="bg-gray-400">
-                          <th className="border-b px-4 py-2 text-left text-black">Register No</th>
-                          <th className="border-b px-4 py-2 text-left text-black">Name</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {susers.map((user) => (
-                          <tr key={user._id}>
-                            <td className="border-b px-4 py-2 text-black">{user.registerNo}</td>
-                            <td className="border-b px-4 py-2 text-black">{user.name}</td>
+                      <table className="table-auto w-full border-collapse text-black">
+                        <thead>
+                          <tr className="bg-gray-400">
+                            <th className="border-b px-4 py-2 text-left text-black">Register No</th>
+                            <th className="border-b px-4 py-2 text-left text-black">Name</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {susers.map((user) => (
+                            <tr key={user._id}>
+                              <td className="border-b px-4 py-2 text-black">{user.registerNo}</td>
+                              <td className="border-b px-4 py-2 text-black">{user.name}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+
             </div>
             </div>
             
