@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connect } from "@/dbconfig/dbconfig";
 import User from "@/models/userModel";
+import Owner from "@/models/ownerModel";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -8,25 +9,40 @@ connect();
 
 export async function POST(request) {
   try {
-    const { phone, password } = await request.json();
+    const { phone, password, registerNo, milk } = await request.json();
 
-    if (!phone || !password) {
-      return NextResponse.json({ error: "Phone number and password are required" }, { status: 400 });
+    // Validate required fields
+    if (!phone || !password || !registerNo || !milk) {
+      return NextResponse.json(
+        { error: "Phone, password, owner registerNo, and milk are required" },
+        { status: 400 }
+      );
     }
 
-    const user = await User.findOne({ phone });
+    // Find the owner using their registerNo
+    const owner = await Owner.findOne({ registerNo });
+    if (!owner) {
+      return NextResponse.json({ error: "Owner not found" }, { status: 404 });
+    }
 
+    // Find the user based on phone, milk, and the owner's ID
+    const user = await User.findOne({ phone, milk, createdBy: owner._id });
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
 
+    // Validate password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
     // Create a JWT token
-    const userToken = jwt.sign({ userId: user._id }, process.env.USER_TOKEN_SECRETE, { expiresIn: '1h' });
+    const userToken = jwt.sign(
+      { userId: user._id },
+      process.env.USER_TOKEN_SECRETE,
+      { expiresIn: "1h" }
+    );
 
     // Set the token in a cookie
     const response = NextResponse.json({
@@ -35,20 +51,21 @@ export async function POST(request) {
       user: {
         _id: user._id,
         phone: user.phone,
+        milk: user.milk,
+        name: user.name,
       },
     });
 
     response.cookies.set({
-      name: 'userToken', // Unique cookie name for user token
+      name: "userToken",
       value: userToken,
-      httpOnly: true, // Ensure the cookie is only accessible by the server
+      httpOnly: true,
       maxAge: 60 * 60, // 1 hour
-      path: '/', // Cookie available to all paths
-      secure: process.env.NODE_ENV === 'production', // Cookie only sent over HTTPS in production
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
     });
 
     return response;
-
   } catch (error) {
     console.error("Error logging in user:", error);
     return NextResponse.json({ error: "Login Error: " + error.message }, { status: 500 });

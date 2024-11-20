@@ -17,11 +17,11 @@ const userSchema = new mongoose.Schema({
         type: String, // Changed from Number to String
         required: true,
         validate: {
-            validator: function(v) {
+            validator: function (v) {
                 return /^\d{10}$/.test(v); // Adjust regex based on your requirements
             },
-            message: props => `${props.value} is not a valid phone number!`
-        }
+            message: props => `${props.value} is not a valid phone number!`,
+        },
     },
     bankName: {
         type: String,
@@ -30,18 +30,16 @@ const userSchema = new mongoose.Schema({
     accountNo: {
         type: String, // Changed from Number to String
         required: true,
-        unique: true,
     },
     aadharNo: {
         type: String, // Changed from Number to String
         required: true,
-        unique: true,
         validate: {
-            validator: function(v) {
+            validator: function (v) {
                 return /^\d{12}$/.test(v); // Adjust regex based on your requirements
             },
-            message: props => `${props.value} is not a valid Aadhar number!`
-        }
+            message: props => `${props.value} is not a valid Aadhar number!`,
+        },
     },
     password: {
         type: String,
@@ -55,31 +53,31 @@ const userSchema = new mongoose.Schema({
     milkRecords: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Milk',
-        default: [] // Ensure default value is an empty array
+        default: [], // Ensure default value is an empty array
     }],
     userOrders: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
-        default: []
+        default: [],
     }],
     userAdvance: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Advance',
-        default: []
+        default: [],
     }],
     userBillKapat: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'BillKapat',
-        default: []
+        default: [],
     }],
-    selectedKapat: [{ 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Sthirkapat' 
+    selectedKapat: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Sthirkapat',
     }], // Reference to Kapat
 }, { timestamps: true });
 
-// Add a compound unique index on registerNo and createdBy to ensure uniqueness within the scope of an owner
 userSchema.index({ registerNo: 1, createdBy: 1 }, { unique: true });
+
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
