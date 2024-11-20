@@ -106,14 +106,52 @@ const AggregateUserTotals = () => {
       setLoading(false);
     }
   };
-
   const handlePrint = () => {
     const printContents = document.getElementById("summary-section").innerHTML;
     const newWindow = window.open();
-    newWindow.document.write(`<html><body>${printContents}</body></html>`);
+    newWindow.document.write(`
+      <html>
+        <head>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              margin: 0;
+              padding: 0;
+            }
+            .table-auto {
+              width: 100%;
+              border-collapse: collapse;
+            }
+            .table-auto th, .table-auto td {
+              border: 1px solid #ccc;
+              padding: 8px;
+              text-align: left;
+            }
+            .table-auto th {
+              background-color: #f2f2f2;
+            }
+            @media print {
+              button {
+                display: none;
+              }
+              #summary-section {
+                width: 100%;
+                padding: 10px;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div>
+            ${printContents}
+          </div>
+        </body>
+      </html>
+    `);
     newWindow.document.close();
     newWindow.print();
   };
+  
 
   // Calculate totals for all users
   const totalRakkam = userTotals.reduce((sum, user) => sum + user.totalRakkam, 0);

@@ -107,8 +107,8 @@ const Drawer = ({ isOpen, onClose }) => {
               </Link>
             </li>
             <li className="mb-2 flex items-center">
-              <Link href="/settings" className="hover:underline text-black">
-                Settings
+              <Link href="/home/Summary" className="hover:underline text-black">
+               बील समरी रीपोर्ट 
               </Link>
             </li>
 
