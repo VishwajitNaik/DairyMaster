@@ -23,6 +23,7 @@
     "dotenv": "^16.4.5",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^2.5.2",
     "moment-timezone": "^0.5.46",
     "mongoose": "^8.7.2",
     "next": "15.0.1",

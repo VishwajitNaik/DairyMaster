@@ -75,6 +75,9 @@ export async function POST(request) {
       });
     }
 
+    // Sort the results by registerNo
+    results.sort((a, b) => a.registerNo - b.registerNo); // Sorts in ascending order
+
     return NextResponse.json({ data: results });
   } catch (error) {
     console.error("Error generating bills:", error);

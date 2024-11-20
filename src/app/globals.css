@@ -122,3 +122,48 @@ body {
   background: linear-gradient(to bottom right, #4a90e2, #9013fe); /* Example gradient */
   min-height: 100vh; /* Ensures the background covers the full viewport height */
 }
+
+
+@media print {
+  /* Set the page size to A4 and orientation to landscape */
+  @page {
+    size: A4 landscape;
+    margin: 20mm; /* Adjust margins as needed */
+  }
+
+  /* Make sure the page content fits inside the printable area */
+  body {
+    width: 100%;
+    font-size: 12pt; /* Adjust font size to fit content */
+  }
+
+  /* Make table content fit well */
+  table {
+    width: 100%; /* Ensure the table takes up the full page width */
+    table-layout: fixed; /* Prevents the table from breaking out of the page */
+  }
+
+  /* Optional: Scale the entire page content if necessary */
+  .gradient-bg {
+    transform: scale(0.85); /* Scale content to fit better */
+    transform-origin: top left; /* Keep the content aligned from top left */
+  }
+  
+  /* Adjust margins and paddings for printing */
+  .p-3, .py-2, .px-4 {
+    padding: 5px !important; /* Reduce padding for printing */
+  }
+
+  .text-left {
+    text-align: left;
+  }
+
+  .font-semibold {
+    font-weight: normal !important; /* Optional: Make font weight lighter for print */
+  }
+
+  /* Optional: Hide elements that are not needed in print, like buttons */
+  .gradient-bg button, .gradient-bg form {
+    display: none;
+  }
+}
