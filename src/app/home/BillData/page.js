@@ -139,7 +139,8 @@ const BillSummary = () => {
                   </tr>
                 </thead>
                 <tbody className='divide-y divide-gray-300'>
-                  {billData.map((item, index) => (
+                  {billData.filter((item) => parseFloat(item.totalLiters) > 0)
+                  .map((item, index) => (
                     <tr key={index} className='hover:bg-gray-100'>
                       <td className=' text-black border border-gray-300'>{item.registerNo}</td>
                       <td className='p-3 text-black border border-gray-300'>{item.user}</td>
@@ -166,48 +167,48 @@ const BillSummary = () => {
                 Save Bills
               </button>
               <div className='mt-24 bg-gray-100 p-4 rounded-lg'>
-<h3 className='text-lg font-semibold text-black'>Final Summary Report</h3>
-<div className='mt-2'>
-  <table className='min-w-full table-auto'>
-    <thead>
-      <tr>
-        <th className='text-black px-4 py-2 text-left font-semibold'>Description</th>
-        <th className='text-black px-4 py-2 text-left font-semibold'>Amount</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td className='text-black px-4 py-2'><strong>Total Liters:</strong></td>
-        <td className='text-black px-4 py-2'>{totalLiters}</td>
-      </tr>
-      <tr>
-        <td className='text-black px-4 py-2'><strong>Total Rakkam:</strong></td>
-        <td className='text-black px-4 py-2'>{totalRakkam}</td>
-      </tr>
-      <tr>
-        <td className='text-black px-4 py-2'><strong>Total Kapat Rate:</strong></td>
-        <td className='text-black px-4 py-2'>{totalKapatRate}</td>
-      </tr>
-      <tr>
-        <td className='text-black px-4 py-2'><strong>Total Bill Kapat:</strong></td>
-        <td className='text-black px-4 py-2'>{totalBillKapat}</td>
-      </tr>
-      <tr>
-        <td className='text-black px-4 py-2'><strong>Total Net Payment:</strong></td>
-        <td className='text-black px-4 py-2'>{totalNetPayment}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-<div className="flex justify-center mt-6">
-  <button
-    onClick={handlePrint}
-    className='py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md'
-  >
-    Print Bills
-  </button>
-</div>
-</div>
+              <h3 className='text-lg font-semibold text-black'>Final Summary Report</h3>
+              <div className='mt-2'>
+                <table className='min-w-full table-auto'>
+                  <thead>
+                    <tr>
+                      <th className='text-black px-4 py-2 text-left font-semibold'>Description</th>
+                      <th className='text-black px-4 py-2 text-left font-semibold'>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className='text-black px-4 py-2'><strong>Total Liters:</strong></td>
+                      <td className='text-black px-4 py-2'>{totalLiters}</td>
+                    </tr>
+                    <tr>
+                      <td className='text-black px-4 py-2'><strong>Total Rakkam:</strong></td>
+                      <td className='text-black px-4 py-2'>{totalRakkam}</td>
+                    </tr>
+                    <tr>
+                      <td className='text-black px-4 py-2'><strong>Total Kapat Rate:</strong></td>
+                      <td className='text-black px-4 py-2'>{totalKapatRate}</td>
+                    </tr>
+                    <tr>
+                      <td className='text-black px-4 py-2'><strong>Total Bill Kapat:</strong></td>
+                      <td className='text-black px-4 py-2'>{totalBillKapat}</td>
+                    </tr>
+                    <tr>
+                      <td className='text-black px-4 py-2'><strong>Total Net Payment:</strong></td>
+                      <td className='text-black px-4 py-2'>{totalNetPayment}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div className="flex justify-center mt-6">
+                <button
+                  onClick={handlePrint}
+                  className='py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md'
+                >
+                  Print Bills
+                </button>
+              </div>
+              </div>
             </div>
           </div>
         )}
