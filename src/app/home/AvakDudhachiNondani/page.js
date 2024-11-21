@@ -543,7 +543,7 @@ export default function AvakDudhNond({ params }) {
           >
             <h1 className="text-xl mr-12">मुख्यविभाग</h1>
             <h1 className="text-2xl text-white font-semibold relative z-10">
-          <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <span className="z-1 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
             {ownerName || 'Guest'}
           </span>
           <span className="absolute inset-0 text-white opacity-20 blur-sm">
