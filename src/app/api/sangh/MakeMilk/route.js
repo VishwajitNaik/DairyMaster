@@ -56,7 +56,10 @@ export async function POST(request) {
         }
 
         // Find the owner by sanghId
-        const owner = await Owner.findOne({ sangh: sanghId });
+        const owner = await Owner.findOne({ sangh: sanghId, registerNo });
+
+        console.log("Found owner:", owner);
+
         if (!owner) {
             console.log("Owner not found for SanghId:", sanghId);
             return NextResponse.json(

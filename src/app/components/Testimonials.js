@@ -46,16 +46,21 @@ const Testimonials = () => {
 
   return (
     <>
-      <div className='text-black' style={{ fontSize: '50px' }}>
+      <div className="text-black text-3xl sm:text-4xl md:text-5xl font-semibold mb-6">
         What Our Users Say
       </div>
 
       <Swiper
         modules={[Navigation, Pagination]}
         spaceBetween={30}
-        slidesPerView={3}
+        slidesPerView={1} // Default to 1 slide per view
         navigation
         pagination={{ clickable: true }}
+        breakpoints={{
+          640: { slidesPerView: 1 }, // On mobile, show one card per row
+          768: { slidesPerView: 2 }, // On medium screens, show two cards per row
+          1024: { slidesPerView: 3 }, // On larger screens, show three cards per row
+        }}
       >
         {testimonials.map((testimonial, index) => (
           <SwiperSlide key={index}>
@@ -67,11 +72,11 @@ const Testimonials = () => {
                 alt={`${testimonial.name}'s testimonial`} 
                 className="w-64 h-48 mb-4 rounded"
               />
-              <p className="text-sm text-gray-600 mb-2">{testimonial.position}</p>
-              <p className="text-xs text-gray-500 mb-4">{testimonial.name}</p>
+              <p className="text-xs sm:text-sm text-gray-600 mb-2">{testimonial.position}</p>
+              <p className="text-xs sm:text-sm text-gray-500 mb-4">{testimonial.name}</p>
               <button
                 onClick={() => handleButtonClick(testimonial.videoUrl)}
-                className="bg-blue-200 text-black py-2 px-4 rounded hover:bg-blue-600 transition duration-300"
+                className="bg-blue-200 text-black py-2 px-4 rounded hover:bg-blue-600 transition duration-300 text-xs sm:text-sm"
               >
                 Watch Video
               </button>

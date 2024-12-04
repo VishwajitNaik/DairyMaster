@@ -76,7 +76,7 @@ export default function Navbar() {
     रीपोर्ट: [
       { href: "/home/Sabhasad_List", label: "उत्पादकाची यादी " },
       { href: "/home/BillData", label: "बील पेमेंट " },
-      { href: "/Rates/GetRates", label: "दर पत्रक " },
+      { href: "/home/Rates/GetRates", label: "दर पत्रक पाहणे  " },
       { href: "/home/AddOwnerOrders", label: "ऑर्डर करणे " },
       { href: "/home/orders/getOwnerOrders", label: "संघ ऑर्डर पाहणे " },
     ],

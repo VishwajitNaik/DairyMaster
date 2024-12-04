@@ -33,6 +33,12 @@ const sanghSchema = new mongoose.Schema({
         ref: 'SanghOnwer',
         default: [],
     }],
+    Kapat: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'OnwerKapat',
+        default: [],
+    }],
+    
     isAdmin: {
         type: Boolean,
         default: true,

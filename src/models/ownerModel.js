@@ -74,6 +74,11 @@ userOrders: [{
     ref: 'userOrders',
     default: []
 }],
+ownerBillKapat: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'OnwerKapat',
+    default: []
+}],
   verifyToken: String,
   verifyTokenExpiry: Date,
   resetPasswordToken: { type: String },
