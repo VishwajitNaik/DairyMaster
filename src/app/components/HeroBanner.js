@@ -48,15 +48,18 @@ const styles = {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: '20px',
     borderRadius: '8px',
+    width: '90%', // Ensure content doesn't take the full width on small screens
   },
   headline: {
     fontSize: '48px',
     fontWeight: 'bold',
     margin: '0 0 20px',
+    lineHeight: '1.2', // Adjust line height for better readability
   },
   description: {
     fontSize: '18px',
     margin: '0 0 30px',
+    lineHeight: '1.5', // Adjust line height for better readability
   },
   ctaButton: {
     padding: '10px 20px',
@@ -68,6 +71,22 @@ const styles = {
     borderRadius: '5px',
     cursor: 'pointer',
     transition: 'background-color 0.3s ease',
+  },
+  // Media Queries for Mobile Responsiveness
+  '@media (max-width: 768px)': {
+    banner: {
+      height: '50vh', // Reduce banner height for smaller screens
+    },
+    headline: {
+      fontSize: '32px', // Smaller font size for the headline on mobile
+    },
+    description: {
+      fontSize: '16px', // Smaller font size for description
+    },
+    ctaButton: {
+      fontSize: '14px', // Smaller button text on mobile
+      padding: '8px 16px', // Adjust button padding for mobile
+    },
   },
 };
 

@@ -88,8 +88,20 @@ const SanghNavBar = () => {
           <Link href="/home/AllDairies/MakeMilk" className="hover:bg-blue-700 px-3 py-2 rounded">
             Add Milk
           </Link>
+          <Link href="/home/AllDairies/OwnerKapat" className="hover:bg-blue-700 px-3 py-2 rounded">
+            Add Kapat
+          </Link>
+          <Link href="/home/AllDairies/OwnerBills" className="hover:bg-blue-700 px-3 py-2 rounded">
+            Owner Bills  
+          </Link>
+          <Link href="/home/AllDairies/ExtraRate" className="hover:bg-blue-700 px-3 py-2 rounded">
+            Liter Extra rate
+          </Link>
           <Link href="/home/AllDairies/Orders/GetOwnerOrders" className="hover:bg-blue-700 px-3 py-2 rounded">
             Order History
+          </Link>
+          <Link href="/home/AllDairies/OwnerMilks" className="hover:bg-blue-700 px-3 py-2 rounded">
+            Owner Milks
           </Link>
           <Link href="/logout" className="hover:bg-blue-700 px-3 py-2 rounded">
             Logout

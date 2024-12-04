@@ -5,10 +5,16 @@ import LayOutCom from "@/app/components/HomePage/LayouCom";
 export default function RootLayout({ children }) {
   const pathname = usePathname(); // Get the current path
 
+  // Check for excluded paths and patterns
+  const excludePaths = ['/home', '/home/AllDairies'];
+  const isExcludedDynamicPath =
+    pathname.startsWith('/home/milkRecords/getMilksUserSide') ||
+    pathname.startsWith('/home/AllDairies/');
+
   return (
     <html lang="en">
       <body>
-        {pathname !== '/home' && <LayOutCom />} {/* Hide on /home */}
+        {!excludePaths.includes(pathname) && !isExcludedDynamicPath && <LayOutCom />}
         {children}
       </body>
     </html>
