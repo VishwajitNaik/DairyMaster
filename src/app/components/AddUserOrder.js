@@ -143,7 +143,7 @@ const AddUserOrder = () => {
         </div>
         <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
           <div className='flex flex-col mb-4 md:mb-0'>
-            <label htmlFor="code" className='text-white font-medium'>U. code:</label>
+            <label htmlFor="code" className='text-white font-medium'>रजीस्टर नं </label>
             <input
               type="text"
               id="code"
@@ -156,14 +156,14 @@ const AddUserOrder = () => {
             />
           </div>
           <div className='flex flex-col mb-4 md:mb-0'>
-            <label htmlFor="user-select" className='text-white font-medium'>User:</label>
+            <label htmlFor="user-select" className='text-white font-medium'>उत्पादक </label>
             <select
               id="user-select"
               className="p-2 w-52 rounded-md border border-gray-500 bg-gray-600 text-white"
               value={selectedOption}
               onChange={handleUserChange}
             >
-              <option value="">Choose...</option>
+              <option value="">उत्पादकाचे नाव </option>
               {users.map((user) => (
                 <option key={user.registerNo} value={user.registerNo}>
                   {user.name}
@@ -172,14 +172,14 @@ const AddUserOrder = () => {
             </select>
           </div>
           <div className='flex flex-col'>
-            <label htmlFor="milk-select" className='text-white font-medium'>Milk Type:</label>
+            <label htmlFor="milk-select" className='text-white font-medium'>दूध प्रकार</label>
             <select
               id="milk-select"
               className="p-2 w-20 rounded-md border border-gray-500 bg-gray-600 text-white"
               value={selectedUser?.milk || ''}
               disabled
             >
-              <option value="">Choose...</option>
+              <option value="">दूध प्रकार</option>
               {users.map((user) => (
                 <option key={user.registerNo} value={user.milk}>
                   {user.milk}
