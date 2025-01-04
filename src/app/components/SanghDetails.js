@@ -87,7 +87,7 @@ const Page = () => {
 
   return (
     <>
-      <Navbar sanghName={owner.sangh} /> {/* Pass the fetched Sangh name to the Navbar */}
+      <Navbar /> {/* Pass the fetched Sangh name to the Navbar */}
       <div className="container text-black mx-auto mt-6">
         <div className="flex justify-center mb-6">
           <h1 className="text-4xl font-bold">सभासद लिस्ट</h1>
@@ -115,6 +115,7 @@ const Page = () => {
           <table className="min-w-full bg-white border border-gray-200">
             <thead className="bg-gray-200">
               <tr>
+                <th className="py-2 px-4 border-b">Reg No.</th>
                 <th className="py-2 px-4 border-b">Owner Name</th>
                 <th className="py-2 px-4 border-b">Dairy Name</th>
                 <th className="py-2 px-4 border-b">Phone</th>
@@ -133,11 +134,12 @@ const Page = () => {
               ) : (
                 owner.map((ownerList, index) => (
                   <tr key={index} className="hover:bg-gray-100">
-                    <td className="py-2 border-b">{ownerList.ownerName}</td>
-                    <td className="py-2 border-b">{ownerList.dairyName}</td>
-                    <td className="py-2 border-b">{ownerList.phone}</td>
-                    <td className="py-2 border-b">{ownerList.email}</td>
-                    <td className="py-2 border-b">
+                    <td className="py-2 border-b pl-12">{ownerList.registerNo}</td>
+                    <td className="py-2 border-b pl-12">{ownerList.ownerName}</td>
+                    <td className="py-2 border-b pl-12">{ownerList.dairyName}</td>
+                    <td className="py-2 border-b pl-12">{ownerList.phone}</td>
+                    <td className="py-2 border-b pl-12">{ownerList.email}</td>
+                    <td className="py-2 border-b pl-12">
                       <Link href={`/home/AllDairies/${ownerList._id}`}>
                         <button className='bg-blue-400 hover:bg-blue-700 text-white rounded-md p-2 flex items-center'>
                           <span>User Details</span>

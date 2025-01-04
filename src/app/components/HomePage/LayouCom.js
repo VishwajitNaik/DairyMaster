@@ -1,17 +1,15 @@
-'use client'
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Drawer from '../Models/drawerMoldel';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import CheckKapat from "../CheckKapat"
-import AddUserOrder from "../AddUserOrder"
-import Addadvance from "../AddAdvance"
-import AddBillKapat from "../AddBillKapat"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import Image from 'next/image';
 
 export default function Navbar() {
-  
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState({
     माहिती_भरणे: false,
@@ -19,19 +17,18 @@ export default function Navbar() {
     इतर: false,
   });
 
-  const router = useRouter()
+  const router = useRouter();
+  const navbarRef = useRef(null);
 
   // Logout
-  const logout = async () =>{
+  const logout = async () => {
     try {
       await axios.get('/api/owner/logout');
-      router.push('/')
+      router.push('/');
     } catch (error) {
-      console.log("Logout failed: ", error.message);
+      console.log('Logout failed: ', error.message);
     }
-  }
-
-  const navbarRef = useRef(null);
+  };
 
   const toggleDropdown = (menu) => {
     setDropdownOpen((prevState) => ({
@@ -63,11 +60,16 @@ export default function Navbar() {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
+  const handlePrevious = () => {
+    router.back();
+  };
+
+  const handleNext = () => {
+    router.forward();
+  };
 
   const dropdownItems = {
     माहिती_भरणे: [
-      { href: "/home/AvakDudhachiNondani", label: "आवक दुधाची नोंदणी " },
-      { href: "/home/2", label: "स्थानिक दूध विक्री नोंद " },
       { href: "/home/GetKapat", label: "कपाती पाहणे " },
       { href: "/home/Rates/AddRates", label: "दरपत्रक भरणे " },
       { href: "/home/SthirKapat", label: " कपातीचे नावे भरणे " },
@@ -75,92 +77,75 @@ export default function Navbar() {
     रीपोर्ट: [
       { href: "/home/Sabhasad_List", label: "उत्पादकाची यादी " },
       { href: "/home/BillData", label: "बील पेमेंट " },
-      { href: "/Rates/GetRates", label: "दर पत्रक " },
+      { href: "/home/Rates/GetRates", label: "दर पत्रक पाहणे  " },
       { href: "/home/AddOwnerOrders", label: "ऑर्डर करणे " },
       { href: "/home/orders/getOwnerOrders", label: "संघ ऑर्डर पाहणे " },
+      { href: "/home/AdvanceSabhasad_List", label: "सभासद अडवांस पाहणे " },
+      { href: "/home/BillKapatSabhasad_List", label: "बिल कपात पाहणे " },
+      { href: "/home/AllUserBillKapat", label: "सर्व सभासद कपात पाहणे  " },
     ],
     इतर: [
-      { href: "/about/link-1", label: "Link 1" },
-      { href: "/about/link-2", label: "Link 2" },
-      { href: "/about/link-3", label: "Link 3" },
+      { href: "/home/AllUserOrders", label: "सर्व उत्पादक बाकी पाहणे" },
+      { href: "/home/AllUserBillKapat", label: "सर्व उत्पादक बिल कपात पाहणे " },
+      { href: "/home/milkRecords/OnwerBills", label: "संघ बिल पाहणे" },
+      { href: "/home/Docter/GetDocterVisit", label: "डॉक्टर सेवा मागणी " }
     ],
   };
 
   return (
     <>
-    <nav className="bg-gray-800 text-white" style={{ position: 'sticky', zIndex: 100 }} ref={navbarRef}>
-      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-        <div className="relative flex items-center justify-between h-16">
-          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-            <button
-              onClick={() => toggleDropdown('services')}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-            >
-              <span className="sr-only">Open main menu</span>
-              <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
-              </svg>
-            </button>
-          </div>
-          <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="flex-shrink-0">
-            <Drawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
-               <h1 onClick={toggleDrawer}>  MyApp </h1>
+      <nav className="bg-gray-800 text-white" style={{ position: 'sticky', zIndex: 100 }} ref={navbarRef}>
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+          <div className="relative flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <Drawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
+              <h1 onClick={toggleDrawer} className="text-xl font-bold cursor-pointer">MyApp</h1>
             </div>
-            <div className="hidden sm:block sm:ml-6">
-              <div className="flex space-x-4">
-                {Object.keys(dropdownItems).map((menu) => (
-                  <div key={menu} className="relative">
-                    <button
-                      onClick={() => toggleDropdown(menu)}
-                      className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium"
-                    >
-                      {menu.charAt(0).toUpperCase() + menu.slice(1)}
-                    </button>
-                    {dropdownOpen[menu] && (
-                      <div className="absolute z-10 left-0 w-48 py-2 mt-2 bg-white rounded-md shadow-xl">
-                        {dropdownItems[menu].map((item, index) => (
-                          <Link
-                            key={index}
-                            href={item.href}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
-                          >
-                            {item.label}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-                <Link
-                  href="/home/updateDetails/OnwerUpdate"
-                  className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  MyProfile
-                </Link>
-
-                <button onClick={logout} className="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-md">
-                    Logout
-                </button>
-                <button>दूध लिहा</button>
-
-              <Link 
-              href="/home/AddOwnerOrders"
+            <div className="hidden sm:flex space-x-4">
+              {Object.keys(dropdownItems).map((menu) => (
+                <div key={menu} className="relative">
+                  <button
+                    onClick={() => toggleDropdown(menu)}
+                    className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    {menu.charAt(0).toUpperCase() + menu.slice(1)}
+                  </button>
+                  {dropdownOpen[menu] && (
+                    <div className="absolute left-0 w-48 py-2 mt-2 bg-white rounded-md shadow-xl">
+                      {dropdownItems[menu].map((item, index) => (
+                        <Link
+                          key={index}
+                          href={item.href}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center space-x-4">
+              <button onClick={handlePrevious} className="hover:text-gray-300">
+                <FontAwesomeIcon icon={faArrowLeft} size="lg" />
+              </button>
+              <button onClick={handleNext} className="hover:text-gray-300">
+                <FontAwesomeIcon icon={faArrowRight} size="lg" />
+              </button>
+              <button onClick={logout} className="text-gray-300 hover:text-white">
+                <FontAwesomeIcon icon={faSignOutAlt} size="lg" />
+              </button>
+              <Link
+                href="/home/updateDetails/OnwerUpdate"
+                className="hover:bg-gray-700 px-3 py-2 rounded-full"
               >
-                New Order
+                <Image className="rounded-full" src="/assets/avatar.jpg" alt="User" width={30} height={30} />
               </Link>
-
-              </div>
             </div>
           </div>
         </div>
-      </div>
-    </nav>
-    <div>
-    </div>
-
+      </nav>
     </>
-
-
   );
 }

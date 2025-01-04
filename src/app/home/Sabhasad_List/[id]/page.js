@@ -155,51 +155,51 @@ export default function UserMilkDetails() {
 
   return (
     <div className="gradient-bg flex flex-col min-h-screen">
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">User Details</h1>
-      <div className="bg-white text-black shadow-md rounded-lg p-4 mb-4 flex items-center">
-        <Image
-          src="/assets/avatar.jpg" 
-          alt={user.name}
-          width={100}
-          height={100}
-          className="w-20 h-20 rounded-full mr-4"
-        />  
-        <div>
-          <p>
-            <span className="font-semibold">Name:</span> {user.name}
-          </p>
-          <p>
-            <span className="font-semibold">Register No:</span> {user.registerNo}
-          </p>
-          <p>
-            <span className="font-semibold">Milk Type:</span> {user.milk}
-          </p>
+      <div className="container mx-auto p-4">
+        <h1 className="text-2xl font-bold mb-4">User Details</h1>
+        <div className="bg-white text-black shadow-md rounded-lg p-4 mb-4 flex items-center">
+          <Image
+            src="/assets/avatar.jpg" 
+            alt={user.name}
+            width={100}
+            height={100}
+            className="w-20 h-20 rounded-full mr-4"
+          />  
+          <div>
+            <p>
+              <span className="font-semibold">Name:</span> {user.name}
+            </p>
+            <p>
+              <span className="font-semibold">Register No:</span> {user.registerNo}
+            </p>
+            <p>
+              <span className="font-semibold">Milk Type:</span> {user.milk}
+            </p>
+          </div>
         </div>
-      </div>
-      <h2 className="text-xl font-semibold mb-2">Milk Records</h2>
+        <h2 className="text-xl font-semibold mb-2">Milk Records</h2>
 
-      <div className="mb-6 flex items-center justify-center space-x-4">
-  <div className="flex items-center space-x-2">
+        <div className="mb-6 flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+  <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
     <label className="text-black font-semibold">Start Date:</label>
-    <DatePicker 
-      className="text-black border-2 border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      selected={startDate} 
-      onChange={(date) => setStartDate(date)} 
+    <DatePicker
+      className="text-black border-2 border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto"
+      selected={startDate}
+      onChange={(date) => setStartDate(date)}
     />
   </div>
 
-  <div className="flex items-center space-x-2">
+  <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
     <label className="text-black font-semibold">End Date:</label>
-    <DatePicker 
-      className="text-black border-2 border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      selected={endDate} 
-      onChange={(date) => setEndDate(date)} 
+    <DatePicker
+      className="text-black border-2 border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto"
+      selected={endDate}
+      onChange={(date) => setEndDate(date)}
     />
   </div>
 
   <button
-    className="ml-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+    className="w-full sm:w-auto mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
     onClick={fetchMilkRecords}
   >
     Fetch Records
@@ -207,92 +207,121 @@ export default function UserMilkDetails() {
 </div>
 
 
-      <div className="flex justify-between">
-        <div className="w-1/2 pr-2">
-          <h3 className="text-lg font-semibold mb-2">Morning Records</h3>
-          {morningRecords.length > 0 ? (
-            <table className="min-w-full bg-white text-black shadow-md rounded-lg">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b">Date</th>
-                  <th className="py-2 px-4 border-b">Liter</th>
-                  <th className="py-2 px-4 border-b">Fat</th>
-                  <th className="py-2 px-4 border-b">SNF</th>
-                  <th className="py-2 px-4 border-b">Dar</th>
-                  <th className="py-2 px-4 border-b">Rakkam</th>
-                  <th className="py-2 px-4 border-b">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {morningRecords.map((record) => (
-                  <tr key={record._id}>
-                    <td className="py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
-                    <td className="py-2 px-4 border-b">{record.liter}</td>
-                    <td className="py-2 px-4 border-b">{record.fat}</td>
-                    <td className="py-2 px-4 border-b">{record.snf}</td>
-                    <td className="py-2 px-4 border-b">{record.dar}</td>
-                    <td className="py-2 px-4 border-b">{record.rakkam}</td>
-                    <td className="py-2 px-4 border-b flex space-x-2">
-                      <FontAwesomeIcon icon={faEdit} className="text-yellow-500 cursor-pointer" onClick={() => handleUpdate(record._id)} />
-                      <FontAwesomeIcon icon={faTrash} className="text-red-500 cursor-pointer" onClick={() => handleDelete(record._id)} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colSpan="3" className="py-2 px-4 border-t font-semibold">Total</td>
-                  <td className="py-2 px-4 border-t">{totalMorningLiters.toFixed(2)}</td>
-                  <td className="py-2 px-4 border-t">{totalMorningRakkam.toFixed(2)}</td>
-                </tr>
-              </tfoot>
-            </table>
-          ) : (
-            <p>No morning records found.</p>
-          )}
-        </div>
-        <div className="w-1/2 pl-2">
-          <h3 className="text-lg font-semibold mb-2">Evening Records</h3>
-          {eveningRecords.length > 0 ? (
-            <table className="min-w-full bg-white text-black shadow-md rounded-lg">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b">Date</th>  
-                  <th className="py-2 px-4 border-b">Liter</th>
-                  <th className="py-2 px-4 border-b">Fat</th>
-                  <th className="py-2 px-4 border-b">Dar</th>
-                  <th className="py-2 px-4 border-b">Rakkam</th>
-                  <th className="py-2 px-4 border-b">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {eveningRecords.map((record) => (
-                  <tr key={record._id}>
-                    <td className="py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
-                    <td className="py-2 px-4 border-b">{record.liter}</td>
-                    <td className="py-2 px-4 border-b">{record.fat}</td>
-                    <td className="py-2 px-4 border-b">{record.dar}</td>
-                    <td className="py-2 px-4 border-b">{record.rakkam}</td>
-                    <td className="py-2 px-4 border-b flex space-x-2">
-                      <FontAwesomeIcon icon={faEdit} className="text-yellow-500 cursor-pointer" onClick={() => handleUpdate(record._id)} />
-                      <FontAwesomeIcon icon={faTrash} className="text-red-500 cursor-pointer" onClick={() => handleDelete(record._id)} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colSpan="3" className="py-2 px-4 border-t font-semibold">Total</td>
-                  <td className="py-2 px-4 border-t">{totalEveningLiters.toFixed(2)}</td>
-                  <td className="py-2 px-4 border-t">{totalEveningRakkam.toFixed(2)}</td>
-                </tr>
-              </tfoot>
-            </table>
-          ) : (
-            <p>No evening records found.</p>
-          )}
-        </div>
+
+<div className="flex flex-col lg:flex-row justify-between">
+  <div className="w-full lg:w-1/2 lg:pr-2 mb-4 lg:mb-0">
+    <h3 className="text-lg font-semibold mb-2">Morning Records</h3>
+    {morningRecords.length > 0 ? (
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white text-black shadow-md rounded-lg text-xs lg:text-base">
+          <thead>
+            <tr>
+              <th className="py-2 px-4 border-b">Date</th>
+              <th className="py-2 px-4 border-b">Liter</th>
+              <th className="py-2 px-4 border-b">Fat</th>
+              <th className="py-2 px-4 border-b">SNF</th>
+              <th className="py-2 px-4 border-b">Dar</th>
+              <th className="py-2 px-4 border-b">Rakkam</th>
+              <th className="py-2 px-4 border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {morningRecords.map((record) => (
+              <tr key={record._id}>
+                <td className="py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
+                <td className="py-2 px-4 border-b">{record.liter}</td>
+                <td className="py-2 px-4 border-b">{record.fat}</td>
+                <td className="py-2 px-4 border-b">{record.snf}</td>
+                <td className="py-2 px-4 border-b">{record.dar}</td>
+                <td className="py-2 px-4 border-b">{record.rakkam}</td>
+                <td className="py-2 px-4 border-b flex space-x-2">
+                  <FontAwesomeIcon
+                    icon={faEdit}
+                    className="text-yellow-500 cursor-pointer"
+                    onClick={() => handleUpdate(record._id)}
+                  />
+                  <FontAwesomeIcon
+                    icon={faTrash}
+                    className="text-red-500 cursor-pointer"
+                    onClick={() => handleDelete(record._id)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan="4" className="py-2 px-4 border-t font-semibold">
+                Total
+              </td>
+              <td className="py-2 px-4 border-t">{totalMorningLiters.toFixed(2)}</td>
+              <td className="py-2 px-4 border-t">{totalMorningRakkam.toFixed(2)}</td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
+    ) : (
+      <p>No morning records found.</p>
+    )}
+  </div>
+  <div className="w-full lg:w-1/2 lg:pr-2 mb-4 lg:mb-0">
+    <h3 className="text-lg font-semibold mb-2">Evening Records</h3>
+    {eveningRecords.length > 0 ? (
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white text-black shadow-md rounded-lg text-xs lg:text-base">
+          <thead>
+            <tr>
+              <th className="py-2 px-4 border-b">Date</th>
+              <th className="py-2 px-4 border-b">Liter</th>
+              <th className="py-2 px-4 border-b">Fat</th>
+              <th className="py-2 px-4 border-b">SNF</th>
+              <th className="py-2 px-4 border-b">Dar</th>
+              <th className="py-2 px-4 border-b">Rakkam</th>
+              <th className="py-2 px-4 border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {eveningRecords.map((record) => (
+              <tr key={record._id}>
+                <td className="py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
+                <td className="py-2 px-4 border-b">{record.liter}</td>
+                <td className="py-2 px-4 border-b">{record.fat}</td>
+                <td className="py-2 px-4 border-b">{record.snf}</td>
+                <td className="py-2 px-4 border-b">{record.dar}</td>
+                <td className="py-2 px-4 border-b">{record.rakkam}</td>
+                <td className="py-2 px-4 border-b flex space-x-2">
+                  <FontAwesomeIcon
+                    icon={faEdit}
+                    className="text-yellow-500 cursor-pointer"
+                    onClick={() => handleUpdate(record._id)}
+                  />
+                  <FontAwesomeIcon
+                    icon={faTrash}
+                    className="text-red-500 cursor-pointer"
+                    onClick={() => handleDelete(record._id)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan="4" className="py-2 px-4 border-t font-semibold">
+                Total
+              </td>
+              <td className="py-2 px-4 border-t">{totalEveningLiters.toFixed(2)}</td>
+              <td className="py-2 px-4 border-t">{totalEveningLiters.toFixed(2)}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    ) : (
+      <p>No morning records found.</p>
+    )}
+  </div>
+
+</div>
+
 
       <div className="bg-white text-black shadow-md rounded-lg p-4 mt-4">
   <h3 className="text-lg font-semibold mb-2">Sthir Kapat</h3>

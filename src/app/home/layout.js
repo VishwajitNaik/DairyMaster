@@ -9,7 +9,8 @@ export default function RootLayout({ children }) {
   const excludePaths = ['/home', '/home/AllDairies'];
   const isExcludedDynamicPath =
     pathname.startsWith('/home/milkRecords/getMilksUserSide') ||
-    pathname.startsWith('/home/AllDairies/');
+    pathname.startsWith('/home/AllDairies/') ||
+    pathname.startsWith('/home/orders/getOrdersUserside');
 
   return (
     <html lang="en">

@@ -1,12 +1,11 @@
 import SavedBill from '@/app/components/SavedBill';
-import SavedBillsAggregate from "../../components/SavedBillAggrigate";
+import SavedBillMobile from '@/app/components/MObileView/SavedBill';
 const SavedBills = () => {
 
   return (
     <div>
       <SavedBill />
-      <h1>Summary Report</h1>
-      <SavedBillsAggregate />
+      {/* <SavedBillMobile /> */}
     </div>
   );
 };

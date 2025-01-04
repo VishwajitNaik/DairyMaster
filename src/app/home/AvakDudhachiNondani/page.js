@@ -541,9 +541,16 @@ export default function AvakDudhNond({ params }) {
             className="bg-gray-500 bg-opacity-50 rounded-md p-4 flex items-center"
             style={{ height: "50px", width: "100%" }}
           >
-            <h1 className="text-xl mr-12">मुख्यविभाग</h1>
+            <h1 className="text-xl mr-12 -mt-8">
+            <Image
+              src="/milkhub-192.png"
+              alt="Background Image"
+              width={100}
+              height={10}
+            />
+            </h1>
             <h1 className="text-2xl text-white font-semibold relative z-10">
-          <span className="z-1 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <span className="z-1 text-blue-500">
             {ownerName || 'Guest'}
           </span>
           <span className="absolute inset-0 text-white opacity-20 blur-sm">
@@ -557,7 +564,7 @@ export default function AvakDudhNond({ params }) {
               style={{ height: "450px", width: "700px" }}
             >
               <div className="flex flex-col">
-                <div className="w-auto h-12 flex flex-row p-2">
+                <div className="w-auto h-14 flex flex-row p-2">
                   <h1 className="text-xl">दिनांक</h1>
                   <input
                     type="date"
@@ -574,16 +581,17 @@ export default function AvakDudhNond({ params }) {
                     <option value="morning">सकाळ </option>
                     <option value="evening">संध्याकाळ </option>
                   </select>
-                  <div>
-                  <label className="ml-2 bg-blue-800 p-2 text-white rounded-md">
+                  <div className="ml-12 rounded-lg">
+                  <label className="ml-2 flex items-center bg-blue-800 px-4 py-2 text-white rounded-full cursor-pointer">
                     <input
-                      className="mr-2"
+                      className="mr-3 w-6 h-6"
                       type="radio"
                       checked={autoFill}
                       onChange={handleAutoFillChange}
                     />
-                    मागील 
+                    मागील
                   </label>
+
                 </div>
                 </div>
                 <div className=" w-auto h-12 flex flex-row p-2">
@@ -640,14 +648,14 @@ export default function AvakDudhNond({ params }) {
                   >
                     <input
                       type="text"
-                      className="h-8 w-20 m-4 text-black block shadow-md rounded-md"
+                      className="p-2 h-8 w-20 m-4 text-black block shadow-md rounded-md"
                       placeholder="लिटर"
                       ref={(ref) => (inputRefs.current[1] = ref)}
                       onKeyPress={(e) => handleKeyPress(e, 1)}
                     />
                     <input
                       type="text"
-                      className="h-8 w-20 m-4 text-black block shadow-md rounded-md"
+                      className="p-2 h-8 w-20 m-4 text-black block shadow-md rounded-md"
                       placeholder="फॅट"
                       onChange={handleFatChange}
                       value={fat}
@@ -656,7 +664,7 @@ export default function AvakDudhNond({ params }) {
                     />
                     <input
                       type="text"
-                      className="h-8 w-20 m-4 text-black block shadow-md rounded-md"
+                      className="p-2 h-8 w-20 m-4 text-black block shadow-md rounded-md"
                       placeholder="SNF"
                       onChange={handleSnfChange}
                       value={snf}
@@ -665,14 +673,14 @@ export default function AvakDudhNond({ params }) {
                     />
                     <input
                       type="text"
-                      className="h-8 w-20 m-4 text-black block shadow-md rounded-md"
+                      className="p-2 h-8 w-20 m-4 text-black block shadow-md rounded-md"
                       placeholder="दर"
                       ref={(ref) => (inputRefs.current[4] = ref)}
                       readOnly
                     />
                     <input
                       type="text"
-                      className="h-8 w-20 m-4 text-black block shadow-md rounded-md"
+                      className="p-2 h-8 w-20 m-4 text-black block shadow-md rounded-md"
                       placeholder="रक्कम"
                       ref={(ref) => (inputRefs.current[5] = ref)}
                       onKeyPress={(e) => handleKeyPress(e, 0)}
@@ -709,13 +717,13 @@ export default function AvakDudhNond({ params }) {
                 style={{ marginLeft: "-650px" }}
               >
                 <div className="relative mt-6 flex flex-col space-y-4">
-                  <h1>गाय दूध</h1>
+                
                   {/* Main Hover Button */}
                   <div className="group relative">
-                    <button className="px-2 py-1 bg-blue-600 text-white text-sm font-bold rounded hover:bg-blue-700 w-full">
-                      View Milk Statistics
+                    <button className="px-2 py-4 z-0 mt-2 bg-blue-600 text-white text-sm font-bold rounded hover:bg-blue-700 w-full">
+                    गाय दूध विवरण
                     </button>
-                    <div className="hidden group-hover:block absolute top-0 left-full ml-4 w-64 p-4 bg-gray-100 rounded-lg shadow-lg">
+                    <div className="hidden group-hover:block absolute top-0 left-full ml-4 w-64 p-4 bg-gray-100 rounded-lg shadow-lg z-10">
                       <table className="min-w-full">
                         <thead>
                           <tr>
@@ -752,13 +760,13 @@ export default function AvakDudhNond({ params }) {
                 </div>
 
                 <div className="relative mt-6 flex flex-col space-y-4 ml-36">
-                  <h1>म्हैस दूध</h1>
+                  <h1></h1>
                   {/* Main Hover Button for Buffalo Milk */}
                   <div className="group relative">
-                    <button className="px-2 py-1 bg-blue-600 text-white text-sm font-bold rounded hover:bg-blue-700 w-full">
-                      View Milk Statistics
+                    <button className="px-2 py-4 bg-blue-600 text-white text-sm font-bold rounded hover:bg-blue-700 w-full">
+                    म्हैस दूध विवरण
                     </button>
-                    <div className="hidden group-hover:block absolute top-0 right-full mr-4 w-64 p-4 bg-gray-100 rounded-lg shadow-lg">
+                    <div className="hidden group-hover:block absolute top-0 right-full mr-4 w-64 p-4 bg-gray-100 rounded-lg shadow-lg z-10">
                       <table className="min-w-full">
                         <thead>
                           <tr>
@@ -810,7 +818,7 @@ export default function AvakDudhNond({ params }) {
               <div className="flex flex-row space-x-6">
               <div className="relative mt-6 flex flex-col space-y-4 ml-36">
                     <Image
-                      src="/assets/cen2.jpg"
+                      src="/assets/cen.png"
                       alt="Image"
                       className="rounded-lg"
                       width={100}
@@ -821,7 +829,7 @@ export default function AvakDudhNond({ params }) {
 
                   <div className="relative mt-6 flex flex-col space-y-4 ml-36">
                     <Image
-                      src="/assets/cen2.jpg"
+                      src="/assets/cen.png"
                       alt="Image"
                       className="rounded-lg"
                       width={100}
@@ -839,14 +847,14 @@ export default function AvakDudhNond({ params }) {
                 onClick={toggleModal}
                 className=" py-2 px-4 bg-blue-500 text-white rounded-lg shadow-lg"
               >
-                Show Users
+                न आलेले उत्पादक
               </button>
 
               {/* Modal for displaying user table */}
               {isModalOpen && (
-                  <div className="text-black fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-10">
+                  <div className="text-black fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-10 mt-12 rounded-md">
                     <div className="bg-white text-black p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 relative max-h-[600px] overflow-y-auto">
-                      <h2 className="text-xl text-black font-semibold mb-4">Users Without Milk Records</h2>
+                      <h2 className="text-xl text-black font-semibold mb-4">न आलेले उत्पादक </h2>
                       {/* Cross button */}
                       <button
                         onClick={toggleModal}
@@ -858,8 +866,8 @@ export default function AvakDudhNond({ params }) {
                       <table className="table-auto w-full border-collapse text-black">
                         <thead>
                           <tr className="bg-gray-400">
-                            <th className="border-b px-4 py-2 text-left text-black">Register No</th>
-                            <th className="border-b px-4 py-2 text-left text-black">Name</th>
+                            <th className="border-b px-4 py-2 text-left text-black">रजीस्टर नं </th>
+                            <th className="border-b px-4 py-2 text-left text-black">उत्पादकाचे नाव </th>
                           </tr>
                         </thead>
                         <tbody>

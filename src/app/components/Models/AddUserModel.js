@@ -84,18 +84,19 @@ const PopUp = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
       <div className="relative bg-white p-4 w-[40%] h-[80%] rounded shadow-lg">
-        <button
-          className="absolute top-2 right-2 text-gray-600"
-          onClick={onClose}
-        >
-          ✖️
-        </button>
+      <button
+        className="absolute top-2 right-2 text-gray-600 hover:bg-red-500 hover:text-white hover:shadow-lg transition-all duration-200 p-2 rounded-md  `"
+        onClick={onClose}
+      >
+        ✖️
+      </button>
+
         <h2 className="text-2xl text-black font-bold mb-4">उत्पादक भरणे</h2>
         <form className="text-black flex flex-wrap -mx-2" onSubmit={handleAddUser}>
           <div className="w-full md:w-1/2 px-2 mb-4">
             <label className="text-black"> उत्पादक नं . </label>
             <input 
-              className="border border-gray-300 rounded w-full"
+              className="h-8 border border-gray-300 rounded w-full"
               type="number" 
               placeholder="रजिस्टर No"
               value={user.registerNo}
@@ -107,7 +108,7 @@ const PopUp = ({ isOpen, onClose }) => {
             <input 
               type="text" 
               placeholder="डेअरीचे नाव" 
-              className="border border-gray-300 rounded w-full"
+              className="h-8 border border-gray-300 rounded w-full"
               value={user.name}
               onChange={(e) => setUser({...user, name: e.target.value})}
             />
@@ -129,7 +130,7 @@ const PopUp = ({ isOpen, onClose }) => {
             <input 
               type="number" 
               placeholder="Phone Number" 
-              className="border border-gray-300 rounded w-full"
+              className="h-8 border border-gray-300 rounded w-full"
               value={user.phone}
               onChange={(e) => setUser({...user, phone: e.target.value})}
             />
@@ -139,7 +140,7 @@ const PopUp = ({ isOpen, onClose }) => {
             <input 
               type="text" 
               placeholder="Bank Name" 
-              className="border border-gray-300 rounded w-full"
+              className="h-8 border border-gray-300 rounded w-full"
               value={user.bankName}
               onChange={(e) => setUser({...user, bankName: e.target.value})}
             />
@@ -149,7 +150,7 @@ const PopUp = ({ isOpen, onClose }) => {
             <input 
               type="number" 
               placeholder="Bank Account Number" 
-              className="border border-gray-300 rounded w-full"
+              className="h-8 border border-gray-300 rounded w-full"
               value={user.accountNo}
               onChange={(e) => setUser({...user, accountNo: e.target.value})}
             />
@@ -158,7 +159,7 @@ const PopUp = ({ isOpen, onClose }) => {
             <label className="text-black">आधार नंबर </label>
             <input 
               type="Number" 
-              className="border border-gray-300 rounded w-full"
+              className="h-8 border border-gray-300 rounded w-full"
               value={user.aadharNo}
               onChange={(e) => setUser({...user, aadharNo: e.target.value})}
             />
@@ -168,7 +169,7 @@ const PopUp = ({ isOpen, onClose }) => {
             <input 
               type="password" 
               placeholder="Password" 
-              className="p-2 border border-gray-300 rounded w-full"
+              className="p-2 h-8 border border-gray-300 rounded w-full"
               value={user.password}
               onChange={(e) => setUser({...user, password: e.target.value})}
             />
@@ -194,13 +195,17 @@ const PopUp = ({ isOpen, onClose }) => {
               </div>
             </div>
           <div className="w-full px-2">
+
+          <div className="flex justify-center items-center mt-4">
             <button 
               type="submit" 
-              className="bg-green-500 text-white p-2 rounded w-full"
+              className="bg-green-500 text-white p-2 rounded w-36"
               disabled={loading}
             >
               {loading ? 'Submitting...' : 'Submit'}
             </button>
+          </div>
+
           </div>
           <ToastContainer />
         </form>

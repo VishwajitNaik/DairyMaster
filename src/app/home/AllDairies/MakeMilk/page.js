@@ -194,39 +194,48 @@ const OwnerMilk = () => {
     event.preventDefault();
 
     const allFieldsFilled =
-      Object.values(milkDetails).every((x) => x !== "") &&
-      registerNo &&
-      sampleNo &&
-      selectedDairyName;
+        Object.values(milkDetails).every((x) => x !== "") &&
+        registerNo &&
+        sampleNo &&
+        selectedDairyName;
 
     if (!allFieldsFilled) {
-      setError("Please fill all required fields.");
-      return;
+        setError("Please fill all required fields.");
+        return;
     }
 
     const payload = {
-      registerNo: parseInt(registerNo, 10),
-      sampleNo: parseInt(sampleNo, 10),
-      session: currentTime,
-      dairyName: selectedDairyName,
-      ...milkDetails,
-      milkLiter: calculatedMilkLiter || milkDetails.milkLiter,
-      date: new Date(currentDate),
+        registerNo: parseInt(registerNo, 10),
+        sampleNo: parseInt(sampleNo, 10),
+        session: currentTime,
+        dairyName: selectedDairyName,
+        ...milkDetails,
+        milkLiter: calculatedMilkLiter || milkDetails.milkLiter,
+        date: new Date(currentDate),
     };
 
     try {
-      const res = await axios.post("/api/sangh/MakeMilk", payload);
-      setRegisterNo("");
-      setSampleNo("");
-      setSelectedDairyName("");
-      setMilkDetails(initialMilkDetails);
-      setCalculatedMilkLiter(null); // Reset calculated milk liter
-      setError(null);
+        const res = await axios.post("/api/sangh/MakeMilk", payload);
+
+        if (res.status === 200 && res.data.message.includes("Milk record for this session")) {
+            // Handle case where milk record already exists
+            setError(res.data.alert || "A record for this session and date already exists.");
+        } else if (res.status === 201) {
+            // Handle successful submission
+            setRegisterNo("");
+            setSampleNo("");
+            setSelectedDairyName("");
+            setMilkDetails(initialMilkDetails);
+            setCalculatedMilkLiter(null); // Reset calculated milk liter
+            setError(null);
+            alert(res.data.alert || "Milk entry added successfully.");
+        }
     } catch (error) {
-      console.error("Error storing milk information:", error.message);
-      setError("Failed to submit milk entry.");
+        console.error("Error storing milk information:", error.message);
+        setError(error.response?.data?.alert || "Failed to submit milk entry.");
     }
-  };
+};
+
 
   return (
     <>

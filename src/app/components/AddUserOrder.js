@@ -95,7 +95,6 @@ const AddUserOrder = () => {
       console.log(res.data.message);
       setSelectedOption('');
       setSelectedUser(null);
-      setSelectedOptionOrder('');
       setRakkam('');
       inputRefs.current.forEach(ref => {
         if (ref) ref.value = '';
@@ -108,46 +107,71 @@ const AddUserOrder = () => {
 
   return (
     <div className="relative bg-cover bg-center">
-    <div className='bg-blue-100 p-6 rounded-lg mt-20 shadow-lg w-full max-w-2xl mx-auto'>
-    <div className="relative">
-      <Image
-        src="/assets/feed-bag.webp" 
-        alt="खरेदी Icon"
-        width={144}  // Approximate width in pixels for w-36
-        height={144} // Approximate height in pixels for h-36
-        className="absolute rounded-full"
-        style={{ top: "-80px", left: "25rem" }}
-      />
-      <h1 className="text-2xl font-semibold text-black mb-4 flex items-center">
-        उत्पादक खरेदी
-        <Image src="/assets/feed-bag.webp" alt="खरेदी Icon" width={48} height={48} className="inline-block ml-2" />
-        <Image src="/assets/feed-bag.webp" alt="खरेदी Icon" width={48} height={48} className="inline-block ml-2" />
-        <Image src="/assets/feed-bag.webp" alt="खरेदी Icon" width={48} height={48} className="inline-block ml-2" />
-      </h1>
-    </div>
-
-      <form onSubmit={handleSubmit} className='bg-gray-400 p-4 rounded-lg'>
-        <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
-          <div className='flex flex-col mb-4 md:mb-0'>
-            <label htmlFor="date" className='text-white font-medium'>दिनांक:</label>
+    <div className="bg-blue-100 p-6 rounded-lg mt-20 shadow-lg w-full max-w-2xl mx-auto">
+      <div className="relative">
+        <Image
+          src="/assets/feed-bag.png"
+          alt="खरेदी Icon"
+          width={144}
+          height={144}
+          className="absolute hidden md:block"
+          style={{ top: "-110px", left: "30rem" }}
+        />
+        <h1 className="text-xl md:text-2xl font-semibold text-black mb-4 flex flex-wrap items-center justify-center md:justify-start">
+          उत्पादक खरेदी
+          <Image
+            src="/assets/feed-bag.png"
+            alt="खरेदी Icon"
+            width={36}
+            height={36}
+            className="inline-block ml-2"
+          />
+          <Image
+            src="/assets/feed-bag.png"
+            alt="खरेदी Icon"
+            width={36}
+            height={36}
+            className="inline-block ml-2"
+          />
+          <Image
+            src="/assets/feed-bag.png"
+            alt="खरेदी Icon"
+            width={36}
+            height={36}
+            className="inline-block ml-2"
+          />
+        </h1>
+      </div>
+  
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gray-400 p-4 rounded-lg"
+      >
+        <div className="flex flex-wrap md:space-x-4 mb-4">
+          <div className="flex flex-col mb-4 w-full md:w-1/3">
+            <label htmlFor="date" className="text-white font-medium">
+              दिनांक:
+            </label>
             <input
               type="date"
               id="date"
               className="p-2 rounded-md border border-gray-500 bg-gray-600 text-white"
               value={currentDate}
               onChange={(e) => setCurrentDate(e.target.value)}
-              max={new Date().toISOString().split('T')[0]} // Restrict future dates
+              max={new Date().toISOString().split("T")[0]}
             />
           </div>
-
         </div>
-        <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
-          <div className='flex flex-col mb-4 md:mb-0'>
-            <label htmlFor="code" className='text-white font-medium'>रजीस्टर नं </label>
+  
+        <div className="flex flex-wrap md:space-x-4 mb-4">
+          <div className="flex flex-col mb-4 w-full md:w-1/6">
+            <label htmlFor="code" className="text-white font-medium">
+              रजीस्टर नं
+            </label>
             <input
               type="text"
               id="code"
-              className='w-24 p-2 rounded-md border border-gray-500 bg-gray-600 text-white'
+              className="p-2 rounded-md border border-gray-500 bg-gray-600 text-white"
               value={selectedOption}
               onChange={(e) => setSelectedOption(e.target.value)}
               onBlur={handleRegisterNoBlur}
@@ -155,15 +179,17 @@ const AddUserOrder = () => {
               required
             />
           </div>
-          <div className='flex flex-col mb-4 md:mb-0'>
-            <label htmlFor="user-select" className='text-white font-medium'>उत्पादक </label>
+          <div className="flex flex-col mb-4 w-full md:w-1/2">
+            <label htmlFor="user-select" className="text-white font-medium">
+              उत्पादक
+            </label>
             <select
               id="user-select"
-              className="p-2 w-52 rounded-md border border-gray-500 bg-gray-600 text-white"
+              className="p-2 rounded-md border border-gray-500 bg-gray-600 text-white"
               value={selectedOption}
               onChange={handleUserChange}
             >
-              <option value="">उत्पादकाचे नाव </option>
+              <option value="">उत्पादकाचे नाव</option>
               {users.map((user) => (
                 <option key={user.registerNo} value={user.registerNo}>
                   {user.name}
@@ -171,12 +197,14 @@ const AddUserOrder = () => {
               ))}
             </select>
           </div>
-          <div className='flex flex-col'>
-            <label htmlFor="milk-select" className='text-white font-medium'>दूध प्रकार</label>
+          <div className="flex flex-col w-full md:w-1/6">
+            <label htmlFor="milk-select" className="text-white font-medium">
+              दूध प्रकार
+            </label>
             <select
               id="milk-select"
-              className="p-2 w-20 rounded-md border border-gray-500 bg-gray-600 text-white"
-              value={selectedUser?.milk || ''}
+              className="p-2 rounded-md border border-gray-500 bg-gray-600 text-white"
+              value={selectedUser?.milk || ""}
               disabled
             >
               <option value="">दूध प्रकार</option>
@@ -188,13 +216,19 @@ const AddUserOrder = () => {
             </select>
           </div>
         </div>
-        <div className='mb-4'>
-          <label htmlFor="order-select" className='text-white font-medium'>खरेदी डाटा:</label>
+  
+        <div className="mb-4">
+          <label
+            htmlFor="order-select"
+            className="text-white font-medium block mb-2"
+          >
+            खरेदी डाटा:
+          </label>
           <select
             id="order-select"
             value={selectedOptionOrder}
             onChange={handleChange}
-            className="p-2 rounded-md border border-gray-500 bg-gray-600 text-white"
+            className="p-2 rounded-md border border-gray-500 bg-gray-600 text-white w-full"
           >
             <option value="">Choose an option...</option>
             {kapat.map((k) => (
@@ -204,23 +238,36 @@ const AddUserOrder = () => {
             ))}
           </select>
         </div>
-        <div className='mb-4'>
-          <label htmlFor="amount" className='text-white font-medium'>रक्कम:</label>
+  
+        <div className="mb-4">
+          <label
+            htmlFor="amount"
+            className="text-white font-medium block mb-2"
+          >
+            रक्कम:
+          </label>
           <input
             type="text"
             id="amount"
-            className="p-2 rounded-md border border-gray-500 bg-gray-600 text-white"
+            className="p-2 rounded-md border border-gray-500 bg-gray-600 text-white w-full"
             value={rakkam}
             onChange={(e) => setRakkam(e.target.value)}
             required
           />
         </div>
-        <button type="submit" className='w-full py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md'>
-          Submit
-        </button>
+  
+        <div className="flex justify-center items-center">
+          <button
+            type="submit"
+            className="w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md"
+          >
+            Submit
+          </button>
+        </div>
       </form>
     </div>
-    </div>
+  </div>
+  
   );
 };
 

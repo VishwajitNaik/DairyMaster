@@ -78,14 +78,6 @@ const OrderForm = () => {
             <h1 className="text-3xl font-bold mb-8 text-gray-700">New Order</h1>
 
             <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-            <Image
-            src="/assets/truck1.avif" 
-            alt="खरेदी Icon"
-            width={144}  // Approximate width in pixels for w-36
-            height={144} // Approximate height in pixels for h-36
-            className="absolute rounded-full mt-36 ml-96 shadow-md shadow-black"
-            style={{ top: "-80px", left: "35rem" }}
-          />
                 <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">Order Information</h2>
 
                 <form onSubmit={handleSubmit} className="space-y-6">

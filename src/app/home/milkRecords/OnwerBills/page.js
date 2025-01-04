@@ -45,6 +45,7 @@ const OwnerBillsTable = () => {
   }
 
   return (
+    <div className="gradient-bg flex flex-col min-h-screen">
     <div className="overflow-x-auto bg-white">
       <table className="table-auto border-collapse border border-gray-300 w-full">
         <thead>
@@ -231,6 +232,7 @@ const OwnerBillsTable = () => {
     </div>
   </div>
       )}
+    </div>
     </div>
   );
 };

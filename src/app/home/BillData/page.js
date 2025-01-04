@@ -50,10 +50,17 @@ const BillSummary = () => {
   };
 
   const totalLiters = billData.reduce((acc, item) => acc + parseFloat(item.totalLiters || 0), 0).toFixed(1);
+  const totalBuffLiter = billData.filter(item => item.totalBuffLiter).reduce((acc, item) => acc + parseFloat(item.totalBuffLiter || 0), 0).toFixed(1);
+  const totalCowLiter = billData.filter(item => item.totalCowLiter).reduce((acc, item) => acc + parseFloat(item.totalCowLiter || 0), 0).toFixed(1);
   const totalRakkam = billData.reduce((acc, item) => acc + parseFloat(item.totalRakkam || 0), 0).toFixed(1);
+  const totalBuffRakkam = billData.filter(item => item.totalBuffRakkam).reduce((acc, item) => acc + parseFloat(item.totalBuffRakkam || 0), 0).toFixed(1);
+  const totalCowRakkam = billData.filter(item => item.totalCowRakkam).reduce((acc, item) => acc + parseFloat(item.totalCowRakkam || 0), 0).toFixed(1);
   const totalKapatRate = billData.reduce((acc, item) => acc + parseFloat(item.totalKapatRateMultiplybyTotalLiter || 0), 0).toFixed(1);
+  const totalBuffBillKapat = billData.reduce((acc, item) => acc + parseFloat(item.totalBuffBillKapat || 0), 0).toFixed(1);
+  const totalCowBillKapat = billData.reduce((acc, item) => acc + parseFloat(item.totalCowBillKapat || 0), 0).toFixed(1);
   const totalBillKapat = billData.reduce((acc, item) => acc + parseFloat(item.totalBillKapat || 0), 0).toFixed(1);
   const totalNetPayment = billData.reduce((acc, item) => acc + parseFloat(item.netPayment || 0), 0).toFixed(1);
+
 
   return (
     <>
@@ -84,11 +91,11 @@ const BillSummary = () => {
       <div className="gradient-bg flex flex-col min-h-screen">
         {!billsGenerated ? (
           <div className='bg-white p-6 rounded-lg shadow-md w-full max-w-4xl mx-auto'>
-            <h1 className='text-2xl font-semibold text-black mb-4'>Bill Summary</h1>
+            <h1 className='text-2xl font-semibold text-black mb-4'>बिल तयार करणे </h1>
             <form onSubmit={(e) => { e.preventDefault(); handleFetchBills(); }} className='bg-gray-100 p-4 rounded-lg shadow-md'>
               <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
                 <div className='flex flex-col mb-4 md:mb-0'>
-                  <label htmlFor="startDate" className='text-black font-medium'>Start Date:</label>
+                  <label htmlFor="startDate" className='text-black font-medium'>पासून</label>
                   <input
                     type="date"
                     id="startDate"
@@ -99,7 +106,7 @@ const BillSummary = () => {
                   />
                 </div>
                 <div className='flex flex-col mb-4 md:mb-0'>
-                  <label htmlFor="endDate" className='text-black font-medium'>End Date:</label>
+                  <label htmlFor="endDate" className='text-black font-medium'>पर्यंत</label>
                   <input
                     type="date"
                     id="endDate"
@@ -123,7 +130,11 @@ const BillSummary = () => {
           </div>
         ) : (
           <div className='mt-6 bg-white p-6 rounded-lg shadow-md w-full max-w-6xl mx-auto'>
-            <h2 className='text-xl font-semibold text-black mb-4 mt-6'>Bill Details</h2>
+            <h2 className='text-xl font-semibold text-black mb-4 mt-6'>बिल तपशील </h2>
+            <div className='flex justify-between flax-row'>
+            <h2 className='text-xl font-semibold text-black mb-4'>पासून  {new Date(startDate).toLocaleDateString('en-GB')}</h2>
+            <h2 className='text-xl font-semibold text-black mb-4'>पर्यंत  {new Date(endDate).toLocaleDateString('en-GB')}</h2>
+            </div>
             <div className='overflow-x-auto'>
               <table className='w-full min-w-full border border-gray-300'>
                 <thead>
@@ -144,9 +155,9 @@ const BillSummary = () => {
                     <tr key={index} className='hover:bg-gray-100'>
                       <td className=' text-black border border-gray-300'>{item.registerNo}</td>
                       <td className='p-3 text-black border border-gray-300'>{item.user}</td>
-                      <td className='p-3 text-black border border-gray-300'>{item.totalLiters}</td>
+                      <td className='p-3 text-black border border-gray-300'>{Math.floor(item.totalLiters)}</td>
                       <td className='p-3 text-black border border-gray-300'>{item.totalRakkam}</td>
-                      <td className='p-3 text-black border border-gray-300'>{item.totalKapatRateMultiplybyTotalLiter}</td>
+                      <td className='p-3 text-black border border-gray-300'>{Math.floor(item.totalKapatRateMultiplybyTotalLiter)}</td>
                       <td className='p-3 text-black border border-gray-300'>{item.totalBillKapat}</td>
                       <td className='p-3 text-black border border-gray-300'>{item.netPayment}</td>
                       <td className='p-3 text-black border border-gray-300'>{item.sahi}</td>
@@ -167,39 +178,102 @@ const BillSummary = () => {
                 Save Bills
               </button>
               <div className='mt-24 bg-gray-100 p-4 rounded-lg'>
-              <h3 className='text-lg font-semibold text-black'>Final Summary Report</h3>
+              <h3 className='text-lg font-semibold text-black'>समरी रीपोर्ट</h3>
               <div className='mt-2'>
-                <table className='min-w-full table-auto'>
+
+              {/* Buffalo Table */}
+              <div className='flex flex-row justify-between space-x-4'>
+              {/* Buffalo Table */}
+              <div className='w-1/2 bg-blue-100'>
+                <h2 className='text-blue-600 text-lg font-bold mt-4'>म्हैस तपशील</h2>
+                <table className='min-w-full table-auto border-collapse border border-gray-200'>
                   <thead>
                     <tr>
-                      <th className='text-black px-4 py-2 text-left font-semibold'>Description</th>
-                      <th className='text-black px-4 py-2 text-left font-semibold'>Amount</th>
+                      <th className='text-black px-4 py-2 text-left font-semibold'>प्रकार </th>
+                      <th className='text-black px-4 py-2 text-left font-semibold'>रक्कम </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td className='text-black px-4 py-2'><strong>Total Liters:</strong></td>
+                      <td className='text-black px-4 py-2'><strong>लिटर </strong></td>
+                      <td className='text-black px-4 py-2'>{totalBuffLiter}</td>
+                    </tr>
+                    <tr>
+                      <td className='text-black px-4 py-2'><strong>रक्कम </strong></td>
+                      <td className='text-black px-4 py-2'>{totalBuffRakkam}</td>
+                    </tr>
+                    <tr>
+                      <td className='text-black px-4 py-2'><strong>बिल कपात </strong></td>
+                      <td className='text-black px-4 py-2'>{totalBuffBillKapat}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+                {/* Cow Table */}
+                <div className='w-1/2 bg-blue-100'>
+                  <h2 className='text-blue-600 text-lg font-bold mt-4'>गाय तपशील </h2>
+                  <table className='min-w-full table-auto border-collapse border border-gray-200'>
+                    <thead>
+                      <tr>
+                        <th className='text-black px-4 py-2 text-left font-semibold'>प्रकार </th>
+                        <th className='text-black px-4 py-2 text-left font-semibold'>रक्कम </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className='text-black px-4 py-2'><strong>लिटर </strong></td>
+                        <td className='text-black px-4 py-2'>{totalCowLiter}</td>
+                      </tr>
+                      <tr>
+                        <td className='text-black px-4 py-2'><strong>रक्कम </strong></td>
+                        <td className='text-black px-4 py-2'>{totalCowRakkam}</td>
+                      </tr>
+                      <tr>
+                        <td className='text-black px-4 py-2'><strong>बिल कपात </strong></td>
+                        <td className='text-black px-4 py-2'>{totalCowBillKapat}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+
+                {/* Final Total Table */}
+                <h2 className='text-lg font-bold mt-4'>Final Totals</h2>
+                <table className='min-w-full table-auto border-collapse border border-gray-200'>
+                  <thead>
+                    <tr>
+                      <th className='text-black px-4 py-2 text-left font-semibold'>प्रकार </th>
+                      <th className='text-black px-4 py-2 text-left font-semibold'>रक्कम </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className='text-black px-4 py-2'><strong>एकूण लिटर </strong></td>
                       <td className='text-black px-4 py-2'>{totalLiters}</td>
                     </tr>
                     <tr>
-                      <td className='text-black px-4 py-2'><strong>Total Rakkam:</strong></td>
+                      <td className='text-black px-4 py-2'><strong>एकूण रक्कम </strong></td>
                       <td className='text-black px-4 py-2'>{totalRakkam}</td>
                     </tr>
                     <tr>
-                      <td className='text-black px-4 py-2'><strong>Total Kapat Rate:</strong></td>
+                      <td className='text-black px-4 py-2'><strong>एकूण कपात </strong></td>
                       <td className='text-black px-4 py-2'>{totalKapatRate}</td>
                     </tr>
                     <tr>
-                      <td className='text-black px-4 py-2'><strong>Total Bill Kapat:</strong></td>
+                      <td className='text-black px-4 py-2'><strong>एकूण बिल कपात </strong></td>
                       <td className='text-black px-4 py-2'>{totalBillKapat}</td>
                     </tr>
                     <tr>
-                      <td className='text-black px-4 py-2'><strong>Total Net Payment:</strong></td>
+                      <td className='text-black px-4 py-2'><strong>निव्वळ रक्कम </strong></td>
                       <td className='text-black px-4 py-2'>{totalNetPayment}</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
+
+
               <div className="flex justify-center mt-6">
                 <button
                   onClick={handlePrint}

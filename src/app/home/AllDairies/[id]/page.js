@@ -110,7 +110,6 @@ const SingleDairy = () => {
           <div className="bg-white text-black shadow-md rounded-lg p-4 mb-4">
             <p><span className='font-semibold'>Name:</span> {owner.ownerName}</p>
             <p><span className='font-semibold'>Dairy Name:</span> {owner.dairyName}</p>
-            <p><span className='font-semibold'>Owner ID:</span> {owner._id}</p>
           </div>
 
           <h2 className="text-xl font-bold mb-2">Users Created by {owner.ownerName}</h2>

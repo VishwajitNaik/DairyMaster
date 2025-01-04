@@ -5,7 +5,6 @@ const ownerSchema = new mongoose.Schema({
   registerNo: {
     type: Number,
     required: [true, "Please provide an Register No"],
-    unique: true,
   },
   ownerName: {
     type: String,
@@ -55,6 +54,16 @@ const ownerSchema = new mongoose.Schema({
     ref: 'Orders',
     default: [],
   }],
+  DocterVisit: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'GetDocterVisit',
+    default: [],
+  }],
+  Address: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'AddAddress',
+    default: [],
+  }],
   storedBills: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'StoreBill' 
@@ -84,6 +93,8 @@ ownerBillKapat: [{
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
 });
+
+ownerSchema.index({ registerNo: 1, sangh: 1 }, { unique: true });
 
 const Owner = mongoose.models.Owner || mongoose.model('Owner', ownerSchema);
 export default Owner;

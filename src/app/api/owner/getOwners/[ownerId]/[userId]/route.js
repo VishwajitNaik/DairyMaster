@@ -7,7 +7,6 @@ connect();
 
 export async function GET(request, { params }) {
   try {
-z
 
     if (!owner) {
       return NextResponse.json({ error: "Owner not found" }, { status: 404 });

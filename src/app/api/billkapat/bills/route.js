@@ -45,8 +45,28 @@ export async function POST(request) {
       });
 
       // Calculate total liters and total rakkam
-      const totalLiters = Math.floor(milkRecords.reduce((total, record) => total + record.liter, 0));
+    const totalLiters = milkRecords.reduce((total, record) => total + record.liter, 0);
+
+    // Calculate the total milk liters for buffalo ("म्हैस ")
+      const totalBuffLiter = milkRecords
+      .filter(record => record.milk === "म्हैस ") // Filter records for buffalo milk
+      .reduce((total, record) => total + record.liter, 0); // Sum the liters
+
+    // Calculate the total milk liters for cow ("गाय ")  
+      const totalCowLiter = milkRecords
+      .filter(record => record.milk === "गाय ") // Filter records for cow milk
+      .reduce((total, record) => total + record.liter, 0); // Sum the liters
       const totalRakkam = Math.floor(milkRecords.reduce((total, record) => total + record.rakkam, 0));
+    // calculate totatl buff Rakkam
+      const totalBuffRakkam = milkRecords
+      .filter(record => record.milk === "म्हैस ") // Filter records for buffalo milk
+      .reduce((total, record) => total + record.rakkam, 0); // Sum the rakkam
+
+    // calculate totatl cow Rakkam
+      const totalCowRakkam = milkRecords
+      .filter(record => record.milk === "गाय ") // Filter records for cow milk
+      .reduce((total, record) => total + record.rakkam, 0); // Sum the rakkam
+
       const totalKapatRateMultiplybyTotalLiter = totalLiters * formattedTotalKapatRate;
 
       // Then, format the result to one decimal place
@@ -59,6 +79,16 @@ export async function POST(request) {
       });
 
       const totalBillKapat = billKapatRecords.reduce((total, record) => total + record.rate, 0);
+      // calculate total buff bill kapat
+      const totalBuffBillKapat  = billKapatRecords
+      .filter(record => record.milktype === "म्हैस ") // Filter records for buffalo milk
+      .reduce((total, record) => total + record.rate, 0); // Sum the rakkam
+
+      // calculate total cow bill kapat
+      const totalCowBillKapat  = billKapatRecords
+      .filter(record => record.milktype === "गाय ") // Filter records for cow milk
+      .reduce((total, record) => total + record.rate, 0); // Sum the rakkam
+      
 
       // Calculate net payment
       const netPayment = Math.floor(totalRakkam - totalKapatRateMultiplybyTotalLiter - totalBillKapat);
@@ -68,6 +98,12 @@ export async function POST(request) {
         registerNo: user.registerNo,
         user: user.name,
         totalLiters,
+        totalBuffLiter,
+        totalCowLiter,
+        totalBuffRakkam,
+        totalCowRakkam,
+        totalBuffBillKapat,
+        totalCowBillKapat,
         totalRakkam,
         totalKapatRateMultiplybyTotalLiter, // This value remains unchanged
         totalBillKapat,

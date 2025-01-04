@@ -20,6 +20,10 @@ export default function OwnerMilkDetails() {
     const [totalMorningRakkam, setTotalMorningRakkam] = useState(0);
     const [totalEveningLiters, setTotalEveningLiters] = useState(0);
     const [totalEveningRakkam, setTotalEveningRakkam] = useState(0);
+    const [morningBuffMilk, setMorningBuffMilk] = useState([]);
+    const [morningCowMilk, setMorningCowMilk] = useState([]);
+    const [eveningBuffMilk, setEveningBuffMilk] = useState([]);
+    const [eveningCowMilk, setEveningCowMilk] = useState([]);
     const [totalLiters, setTotalLiters] = useState(0);
     const [totalRakkam, setTotalRakkam] = useState(0);
     const [startDate, setStartDate] = useState(new Date());
@@ -52,17 +56,25 @@ export default function OwnerMilkDetails() {
                 console.log("Fetched milk records:", milkRecords); // Debugging line
     
                 const morning = milkRecords.filter((record) => record.session === "morning");
+                const morningBuffMilk = morning.filter((record) => record.milkType === "buff");
+                const morningCowMilk = morning.filter((record) => record.milkType === "cow");
+
+                setMorningBuffMilk(morningBuffMilk);
+                setMorningCowMilk(morningCowMilk);
+
                 const evening = milkRecords.filter((record) => record.session === "evening");
-    
-                console.log("Morning Records:", morning); // Debugging line
-                console.log("Evening Records:", evening); // Debugging line
+                const eveningBuffMilk = evening.filter((record) => record.milkType === "buff");
+                const eveningCowMilk = evening.filter((record) => record.milkType === "cow");
+
+                setEveningBuffMilk(eveningBuffMilk);
+                setEveningCowMilk(eveningCowMilk);
+                
     
                 setMorningRecords(morning);
                 setEveningRecords(evening);
     
                 const totalMorning = morning.reduce(
                     (totals, record) => {
-                        console.log("Record during morning reduction:", record); // Debugging line
                         totals.milkLiter += record.milkLiter || 0; // Ensure this is a number
                         totals.amount += record.amount || 0; // Ensure this is a number
                         return totals;
@@ -72,7 +84,6 @@ export default function OwnerMilkDetails() {
     
                 const totalEvening = evening.reduce(
                     (totals, record) => {
-                        console.log("Record during evening reduction:", record); // Debugging line
                         totals.liters += record.liters || 0; // Ensure this is a number
                         totals.amount += record.amount || 0; // Ensure this is a number
                         return totals;
@@ -87,7 +98,7 @@ export default function OwnerMilkDetails() {
                 setTotalMorningRakkam(totalMorning.amount);
                 setTotalEveningLiters(totalEvening.milkLiter);
                 setTotalEveningRakkam(totalEvening.amount);
-                setTotalLiters(totalMorning.milkLiter + totalEvening.liters);
+                setTotalLiters(totalMorning.milkLiter + totalEvening.milkLiter);
                 setTotalRakkam(totalMorning.amount + totalEvening.amount);
             } catch (error) {
                 console.error("Error fetching milk records:", error.message);
@@ -95,17 +106,36 @@ export default function OwnerMilkDetails() {
         }
         fetchMilkRecords();
     }, [id, startDate, endDate]);
+
+    useEffect(() => {
+        console.log("Updated Morning Buff Milk State:", morningBuffMilk);
+    }, [morningBuffMilk]);
+    
+    useEffect(() => {
+        console.log("Updated Evening Buff Milk State:", eveningBuffMilk);
+    }, [eveningBuffMilk]);
+
+    useEffect(() => {
+        console.log("Updated Morning Buff Milk State:", eveningCowMilk);
+    }, [eveningCowMilk]);
+    
+    useEffect(() => {
+        console.log("Updated Evening Buff Milk State:", eveningCowMilk);
+    }, [eveningCowMilk]);
+    
     
 
     const handleDelete = async (recordId) => {
         // Logic to delete the record
         try {
-            await axios.delete(`/api/sangh/deleteMilkRecord/${recordId}`);
+            await axios.delete(`/api/sangh/deleteMilkRecord?id=${recordId}`);
             toast.success('Record deleted successfully!');
+            setMorningRecords((prevRecords) => prevRecords.filter((record) => record._id !== recordId));
+            setEveningRecords((prevRecords) => prevRecords.filter((record) => record._id !== recordId));
             // Refresh the records after deletion
             fetchMilkRecords();
         } catch (error) {
-            toast.error('Failed to delete record.');
+            console.error("Error deleting record:", error.message);
         }
     };
 
@@ -119,7 +149,6 @@ export default function OwnerMilkDetails() {
             <ToastContainer />
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold mb-4">Owner Milk Details</h1>
-                <Link href={`/home/AllDairies/OwnerMilks/${id}/add`} className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Add Milk Record</Link>
             </div>
             <div className="grid grid-cols-2 gap-4 mb-4">
             <div className="bg-white text-black shadow-md rounded-lg p-4 mb-4 flex items-center">
@@ -136,7 +165,7 @@ export default function OwnerMilkDetails() {
                 </div>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md">
-                    <h2 className="font-bold">Select Date Range</h2>
+                    <h2 className="font-bold text-blue-900">तारीख निवडा </h2>
                     <DatePicker 
                         selected={startDate} 
                         onChange={date => setStartDate(date)} 
@@ -157,102 +186,159 @@ export default function OwnerMilkDetails() {
                     />
                 </div>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow-md">
-                <h2 className="text-black font-bold">Morning Milk Records</h2>
-                {morningRecords.length > 0 ? (
-                    <>
-                        <table className="min-w-full bg-white text-black shadow-md rounded-lg">
-                            <thead>
-                                <tr>
-                                    <th className="py-2 px-4 border-b">Date</th>
-                                    <th className="py-2 px-4 border-b">Milk KG</th>
-                                    <th className="py-2 px-4 border-b">Milk Liter</th>
-                                    <th className="py-2 px-4 border-b">Fat</th>
-                                    <th className="py-2 px-4 border-b">Rakkam</th>
-                                    <th className="py-2 px-4 border-b">senedCen</th>
-                                    <th className="py-2 px-4 border-b">acceptedCen</th>
-                                    <th className="py-2 px-4 border-b">smeledCen</th>
-                                    <th className="py-2 px-4 border-b">Actions</th>
+            <div className="bg-blue-300 p-4 rounded-lg shadow-md" style={{ width: '60%' }}>
+            {/* Morning Buffalo Milk Records */}
+            <h2 className="text-black font-bold">Morning Buffalo Milk Records</h2>
+            {morningBuffMilk.length > 0 ? (
+                <>
+                    <table className="min-w-full bg-white text-black shadow-md rounded-lg">
+                        <thead>
+                            <tr>
+                                <th className="py-2 px-4 border-b">दिनांक</th>
+                                <th className="py-2 px-4 border-b">दूध प्रकार</th>
+                                <th className="py-2 px-4 border-b">दूध किलो</th>
+                                <th className="py-2 px-4 border-b">दूध लिटर </th>
+                                <th className="py-2 px-4 border-b">फॅट </th>
+                                <th className="py-2 px-4 border-b">रक्कम </th>
+                                <th className="py-2 px-4 border-b"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {morningBuffMilk.map((record) => (
+                                <tr key={record._id}>
+                                    <td className="py-2 px-8 border-b">{new Date(record.date).toLocaleDateString()}</td>
+                                    <td className="py-2 px-8 border-b">{record.milkType}</td>
+                                    <td className="py-2 px-8 border-b">{record.milkKG}</td>
+                                    <td className="py-2 px-8 border-b">{record.milkLiter}</td>
+                                    <td className="py-2 px-8 border-b">{record.fat}</td>
+                                    <td className="py-2 px-8 border-b">{record.amount}</td>
+                                    <td className="py-2 px-4 border-b flex space-x-2">
+                                        <FontAwesomeIcon icon={faEdit} className="text-yellow-500 cursor-pointer" onClick={() => handleUpdate(record._id)} />
+                                        <FontAwesomeIcon icon={faTrash} className="text-red-500 cursor-pointer" onClick={() => handleDelete(record._id)} />
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {morningRecords.map((record) => (
-                                    <tr key={record._id}>
-                                        <td className="py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
-                                        <td className="py-2 px-4 border-b">{record.milkKG}</td>
-                                        <td className="py-2 px-4 border-b">{record.milkLiter}</td>
-                                        <td className="py-2 px-4 border-b">{record.fat}</td>
-                                        <td className="py-2 px-4 border-b">{record.amount}</td>
-                                        <td className="py-2 px-4 border-b">{record.senedCen}</td>
-                                        <td className="py-2 px-4 border-b">{record.acceptedCen}</td>
-                                        <td className="py-2 px-4 border-b">{record.smeledCen}</td>
-                                        
-                                        <td className="py-2 px-4 border-b flex space-x-2">
-                                            <FontAwesomeIcon icon={faEdit} className="text-yellow-500 cursor-pointer" onClick={() => handleUpdate(record._id)} />
-                                            <FontAwesomeIcon icon={faTrash} className="text-red-500 cursor-pointer" onClick={() => handleDelete(record._id)} />
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <div className="mt-4">
-                            <h3 className="text-black font-bold">Total Morning Liters: {totalMorningLiters}</h3>
-                            <h3 className="text-black font-bold">Total Morning Rakkam: {totalMorningRakkam}</h3>
-                        </div>
-                    </>
-                ) : (
-                    <p className="text-red-500">No morning records found.</p>
-                )}
+                            ))}
+                        </tbody>
+                    </table>
+                </>
+            ) : (
+                <p className="text-red-500">No morning buffalo records found.</p>
+            )}
 
-                <h2 className="text-black font-bold">Evening Milk Records</h2>
-                {eveningRecords.length > 0 ? (
-                    <>
-                        <table className="min-w-full bg-white text-black shadow-md rounded-lg mt-4">
-                            <thead>
-                                <tr>
-                                <th className="py-2 px-4 border-b">Date</th>
-                                    <th className="py-2 px-4 border-b">Milk KG</th>
-                                    <th className="py-2 px-4 border-b">Milk Liter</th>
-                                    <th className="py-2 px-4 border-b">Fat</th>
-                                    <th className="py-2 px-4 border-b">Rakkam</th>
-                                    <th className="py-2 px-4 border-b">senedCen</th>
-                                    <th className="py-2 px-4 border-b">acceptedCen</th>
-                                    <th className="py-2 px-4 border-b">smeledCen</th>
-                                    <th className="py-2 px-4 border-b">Actions</th>
+            {/* Morning Cow Milk Records */}
+            <h2 className="text-black font-bold mt-6">Morning Cow Milk Records</h2>
+            {morningCowMilk.length > 0 ? (
+                <>
+                    <table className="min-w-full bg-white text-black shadow-md rounded-lg">
+                        <thead>
+                            <tr>
+                            <th className="py-2 px-4 border-b">दिनांक</th>
+                                <th className="py-2 px-4 border-b">दूध प्रकार</th>
+                                <th className="py-2 px-4 border-b">दूध किलो</th>
+                                <th className="py-2 px-4 border-b">दूध लिटर </th>
+                                <th className="py-2 px-4 border-b">फॅट </th>
+                                <th className="py-2 px-4 border-b">रक्कम </th>
+                                <th className="py-2 px-4 border-b"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {morningCowMilk.map((record) => (
+                                <tr key={record._id}>
+                                    <td className="py-2 px-8 border-b">{new Date(record.date).toLocaleDateString()}</td>
+                                    <td className="py-2 px-8 border-b">{record.milkType}</td>
+                                    <td className="py-2 px-8 border-b">{record.milkKG}</td>
+                                    <td className="py-2 px-8 border-b">{record.milkLiter}</td>
+                                    <td className="py-2 px-8 border-b">{record.fat}</td>
+                                    <td className="py-2 px-8 border-b">{record.amount}</td>
+                                    <td className="py-2 px-4 border-b flex space-x-2">
+                                        <FontAwesomeIcon icon={faEdit} className="text-yellow-500 cursor-pointer" onClick={() => handleUpdate(record._id)} />
+                                        <FontAwesomeIcon icon={faTrash} className="text-red-500 cursor-pointer" onClick={() => handleDelete(record._id)} />
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {eveningRecords.map((record) => (
-                                    <tr key={record._id}>
-                                    <td className="py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
-                                        <td className="py-2 px-4 border-b">{record.milkKG}</td>
-                                        <td className="py-2 px-4 border-b">{record.milkLiter}</td>
-                                        <td className="py-2 px-4 border-b">{record.fat}</td>
-                                        <td className="py-2 px-4 border-b">{record.amount}</td>
-                                        <td className="py-2 px-4 border-b">{record.senedCen}</td>
-                                        <td className="py-2 px-4 border-b">{record.acceptedCen}</td>
-                                        <td className="py-2 px-4 border-b">{record.smeledCen}</td>
-                                        <td className="text-black py-2 px-4 border-b flex space-x-2">
-                                            <FontAwesomeIcon icon={faEdit} className="text-yellow-500 cursor-pointer" onClick={() => handleUpdate(record._id)} />
-                                            <FontAwesomeIcon icon={faTrash} className="text-red-500 cursor-pointer" onClick={() => handleDelete(record._id)} />
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <div className="mt-4">
-                            <h3 className="text-black font-bold">Total Evening Liters: {totalEveningLiters}</h3>
-                            <h3 className="text-black font-bold">Total Evening Rakkam: {totalEveningRakkam}</h3>
-                        </div>
-                    </>
-                ) : (
-                    <p className="text-red-500">No evening records found.</p>
-                )}
-            </div>
-            <div className="mt-6">
-                <h3 className="text-black font-bold">Overall Total Liters: {totalLiters}</h3>
-                <h3 className="text-black font-bold">Overall Total Rakkam: {totalRakkam}</h3>
-            </div>
+                            ))}
+                        </tbody>
+                    </table>
+                </>
+            ) : (
+                <p className="text-red-500">No morning cow records found.</p>
+            )}
+
+            {/* Evening Buffalo Milk Records */}
+            <h2 className="text-black font-bold mt-6">Evening Buffalo Milk Records</h2>
+            {eveningBuffMilk.length > 0 ? (
+                <>
+                    <table className="min-w-full bg-gray-100 text-black shadow-md rounded-lg">
+                        <thead>
+                            <tr>
+                            <th className="py-2 px-4 border-b">दिनांक</th>
+                                <th className="py-2 px-4 border-b">दूध प्रकार</th>
+                                <th className="py-2 px-4 border-b">दूध किलो</th>
+                                <th className="py-2 px-4 border-b">दूध लिटर </th>
+                                <th className="py-2 px-4 border-b">फॅट </th>
+                                <th className="py-2 px-4 border-b">रक्कम </th>
+                                <th className="py-2 px-4 border-b"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {eveningBuffMilk.map((record) => (
+                                <tr key={record._id}>
+                                    <td className="py-2 px-8 border-b">{new Date(record.date).toLocaleDateString()}</td>
+                                    <td className="py-2 px-8 border-b">{record.milkType}</td>
+                                    <td className="py-2 px-8 border-b">{record.milkKG}</td>
+                                    <td className="py-2 px-8 border-b">{record.milkLiter}</td>
+                                    <td className="py-2 px-8 border-b">{record.fat}</td>
+                                    <td className="py-2 px-8 border-b">{record.amount}</td>
+                                    <td className="py-2 px-4 border-b flex space-x-2">
+                                        <FontAwesomeIcon icon={faEdit} className="text-yellow-500 cursor-pointer" onClick={() => handleUpdate(record._id)} />
+                                        <FontAwesomeIcon icon={faTrash} className="text-red-500 cursor-pointer" onClick={() => handleDelete(record._id)} />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </>
+            ) : (
+                <p className="text-red-500">No evening buffalo records found.</p>
+            )}
+
+            {/* Evening Cow Milk Records */}
+            <h2 className="text-black font-bold mt-6">Evening Cow Milk Records</h2>
+            {eveningCowMilk.length > 0 ? (
+                <>
+                    <table className="min-w-full bg-gray-100 text-black shadow-md rounded-lg">
+                        <thead>
+                            <tr>
+                            <th className="py-2 px-4 border-b">दिनांक</th>
+                                <th className="py-2 px-4 border-b">दूध प्रकार</th>
+                                <th className="py-2 px-4 border-b">दूध किलो</th>
+                                <th className="py-2 px-4 border-b">दूध लिटर </th>
+                                <th className="py-2 px-4 border-b">फॅट </th>
+                                <th className="py-2 px-4 border-b">रक्कम </th>
+                                <th className="py-2 px-4 border-b"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {eveningCowMilk.map((record) => (
+                                <tr key={record._id}>
+                                    <td className="py-2 px-8 border-b">{new Date(record.date).toLocaleDateString()}</td>
+                                    <td className="py-2 px-8 border-b">{record.milkType}</td>
+                                    <td className="py-2 px-8 border-b">{record.milkKG}</td>
+                                    <td className="py-2 px-8 border-b">{record.milkLiter}</td>
+                                    <td className="py-2 px-8 border-b">{record.fat}</td>
+                                    <td className="py-2 px-8 border-b">{record.amount}</td>
+                                    <td className="py-2 px-4 border-b flex space-x-2">
+                                        <FontAwesomeIcon icon={faEdit} className="text-yellow-500 cursor-pointer" onClick={() => handleUpdate(record._id)} />
+                                        <FontAwesomeIcon icon={faTrash} className="text-red-500 cursor-pointer" onClick={() => handleDelete(record._id)} />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </>
+            ) : (
+                <p className="text-red-500">No evening cow records found.</p>
+            )}
+        </div>
         </div>
     );
 }

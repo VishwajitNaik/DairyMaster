@@ -46,14 +46,21 @@ const AggregateUserTotals = () => {
       const filteredRecords = records.filter(record => record.milk.trim() === type);
 
       // Total Liter and Rakkam by Time (Morning and Evening)
-      const morningRecords = filteredRecords.filter(record => record.greetings === "Morning");
-      const eveningRecords = filteredRecords.filter(record => record.greetings === "Evening");
+      const morningRecords = filteredRecords.filter(record => record.session === "morning");
+      const eveningRecords = filteredRecords.filter(record => record.session === "evening");
+
+      console.log("Morning Records:", morningRecords);
+      
 
       const totalMorningLiter = morningRecords.reduce((total, record) => total + (parseFloat(record.liter) || 0), 0);
       const totalMorningRakkam = morningRecords.reduce((total, record) => total + (parseFloat(record.rakkam) || 0), 0);
+    
+      
 
       const totalEveningLiter = eveningRecords.reduce((total, record) => total + (parseFloat(record.liter) || 0), 0);
       const totalEveningRakkam = eveningRecords.reduce((total, record) => total + (parseFloat(record.rakkam) || 0), 0);
+
+      
 
       // Total Liter, Fat, SNF, Rate, and Rakkam
       const totalLiter = filteredRecords.reduce((total, record) => total + (parseFloat(record.liter) || 0), 0);

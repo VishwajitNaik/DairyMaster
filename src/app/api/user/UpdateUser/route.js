@@ -24,6 +24,8 @@ export async function PUT(request) {
 
         // Find the user by ID and update the fields
         const updatedUser = await User.findByIdAndUpdate(userId, updatedData, { new: true });
+        console.log("Updated User:", updatedUser);
+        
 
         if (!updatedUser) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });

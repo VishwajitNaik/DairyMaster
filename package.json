@@ -11,6 +11,7 @@
   "dependencies": {
     "@aws-amplify/ui-react": "^6.5.5",
     "@clerk/nextjs": "^6.4.0",
+    "@ducanh2912/next-pwa": "^10.2.9",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
@@ -20,6 +21,7 @@
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "crypto": "^1.0.1",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
@@ -27,17 +29,18 @@
     "moment-timezone": "^0.5.46",
     "mongoose": "^8.7.2",
     "next": "15.0.1",
+    "next-pwa": "^5.6.0",
     "nodemailer": "^6.9.15",
     "react": "^18.3.1",
     "react-datepicker": "^7.5.0",
     "react-dom": "^18.3.1",
-    "react-slick": "^0.30.2",
+    "react-slick": "^0.30.3",
     "react-speech-recognition": "^3.10.0",
     "react-toastify": "^10.0.6",
     "slick-carousel": "^1.8.1",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
-    "swiper": "^11.1.14"
+    "swiper": "^11.1.15"
   },
   "devDependencies": {
     "eslint": "^8",
