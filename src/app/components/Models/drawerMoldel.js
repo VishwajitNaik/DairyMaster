@@ -111,6 +111,11 @@ const Drawer = ({ isOpen, onClose }) => {
                बील समरी रीपोर्ट 
               </Link>
             </li>
+            <li className="mb-2 flex items-center">
+              <Link href="/home/Bonus" className="hover:underline text-black">
+               बोनस  
+              </Link>
+            </li>
 
             <button onClick={logout} className= " text-black font-bold rounded-md">
                     Logout

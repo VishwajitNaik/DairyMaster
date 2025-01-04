@@ -20,6 +20,8 @@ export async function GET(request, { params }) {
             }
         }).populate('createdBy', 'registerNo ownerName');
 
+        
+
         return NextResponse.json({
             message: "Milk records fetched successfully",
             data: makeMilkRecords

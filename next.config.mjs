@@ -1,3 +1,5 @@
+import withPWA from 'next-pwa';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -5,7 +7,7 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'picsum.photos', // Define the hostname
-        pathname: '/**', // This allows all paths under the given hostname
+        pathname: '/**', // Allow all paths under the given hostname
       },
     ],
   },
@@ -22,4 +24,11 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withPWA({
+  dest: "public",
+  disable: process.env.NODE_ENV === 'development', // Disable PWA in development mode
+  register: true,
+  skipWaiting: true,
+  sw: '/sw.js', // Specify the service worker path if needed
+  buildExcludes: [/middleware-manifest.json$/], // Avoid caching middleware manifest
+})(nextConfig);

@@ -21,6 +21,7 @@ export default function Sabhasad() {
   }, []);
 
   return (
+    <div className="gradient-bg flex flex-col min-h-screen">
     <div className="container text-black mx-auto mt-6">
       <div className="flex justify-center mb-6">
         <h1 className="text-4xl font-bold text-white">दुधाची लिस्ट</h1>
@@ -69,6 +70,7 @@ export default function Sabhasad() {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 }

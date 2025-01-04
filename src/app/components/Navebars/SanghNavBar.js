@@ -1,123 +1,150 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Drawer from '../../components/Models/drawerSanghodel';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import Image from 'next/image';
 
-const SanghNavBar = () => {
-  const [owner, setOwner] = useState([]);
-  const [sanghName, setSanghName] = useState('');
+export default function Navbar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(null);
+  const dropdownRef = useRef(null);
 
-  // Fetch owner data
-  useEffect(() => {
-    async function getOwners() {
-      try {
-        const res = await axios.get("/api/sangh/getOwners");
-        console.log("sangh Data", res.data.data);
-        setOwner(res.data.data);
-        
-        // Assuming you want the sangh of the first owner for now
-        if (res.data.data.length > 0) {
-          setSanghName(res.data.data[0].sangh);
-        }
-      } catch (error) {
-        console.log("Failed to fetch users:", error.message);
-      }
+  const router = useRouter();
+
+  const logout = async () => {
+    try {
+      await axios.get('/api/owner/logout');
+      router.push('/');
+    } catch (error) {
+      console.log('Logout failed: ', error.message);
     }
-    getOwners();
+  };
+
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+
+  const dropdownItems = {
+    माहिती_भरणे: [
+      { href: "/home/AllDairies/OrdersName", label: "Product Name " },
+      { href: "/home/AllDairies/MakeMilk", label: "Add Milks " },
+      { href: "/home/SthirKapat", label: " कपातीचे नावे भरणे " },
+      { href: "/home/AllDairies/Docter/AddTagType", label: "Add Tag Type " },
+      { href: "/home/AllDairies/Docter/Decieses", label: "Add Decises " },
+
+    ],
+    रीपोर्ट: [
+      { href: "/home/AllDairies/Orders/GetOwnerOrders", label: "Order History " },
+      { href: "/home/AllDairies/getAllMilk", label: "All Owner Milks " },
+      { href: "/home/AllDairies/OwnerMilks", label: "Owner-wise Milks  " },
+      { href: "/home/AllDairies/OwnerKapat", label: "Add Kapat " },
+      { href: "/home/AllDairies/OwnerBills", label: "Owner Bills " },
+      { href: "/home/AllDairies/ExtraRate", label: "extra Rate " },
+      { href: "/home/AllDairies/Orders/GetOwnerOrders", label: " Order History " },
+    ],
+    इतर: [
+      { href: "/home/AllDairies/Docter/GetTagType", label: "get tag Type" },
+      { href: "/home/AllDairies/Docter/GetDecieses", label: "Get Decieses  names" },
+      { href: "/home/milkRecords/OnwerBills", label: "संघ बिल पाहणे" },
+      { href: "/home/Docter/GetDocterVisit", label: "डॉक्टर सेवा मागणी " }
+    ],
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setActiveMenu(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   return (
-    <div>
-      {/* Top Navbar */}
-      <nav className="bg-blue-600 p-4 shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
-          {/* Drawer Toggle Button */}
-          <button
-            onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-            className="text-white mr-4 focus:outline-none"
-          >
-            ☰
-          </button>
-          {/* Display the Sangh name dynamically if available, else fallback to a default */}
-          <div className="text-white font-bold text-xl">
-            {sanghName || 'Welcome'}
-          </div>
-          <div className="flex space-x-4">
-            <Link href="/" className="text-white hover:bg-blue-700 px-3 py-2 rounded">
-              Home
-            </Link>
-            <Link href="/home/AllDairies/OrdersName" className="text-white hover:bg-blue-700 px-3 py-2 rounded">
-              Add Product Name 
-            </Link>
-            <Link href="/home/AllDairies/MakeMilk" className="text-white hover:bg-blue-700 px-3 py-2 rounded">
-              Add Milk
-            </Link>
-            <Link href="/home/AllDairies/Orders/GetOwnerOrders" className="text-white hover:bg-blue-700 px-3 py-2 rounded">
-              Order History
-            </Link>
-            <Link href="/logout" className="text-white hover:bg-blue-700 px-3 py-2 rounded">
-              Logout
-            </Link>
+    <>
+      <nav className="bg-gray-800 text-white" style={{ position: 'sticky', zIndex: 50 }}>
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+          <div className="relative flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <button onClick={toggleDrawer} className="text-xl font-bold cursor-pointer">
+              <FontAwesomeIcon icon={faBars} size="lg" />
+              </button>
+            </div>
+            <div className="flex flex-row" ref={dropdownRef}>
+              {Object.keys(dropdownItems).map((menu) => (
+                <div key={menu} className="relative -ml-2">
+                  <button
+                    onClick={() => setActiveMenu(activeMenu === menu ? null : menu)}
+                    className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    {menu}
+                  </button>
+                  {activeMenu === menu && (
+                    <div className="absolute left-0 w-48 py-2 mt-2 bg-white rounded-md shadow-xl">
+                      {dropdownItems[menu].map((item, index) => (
+                        <Link
+                          key={index}
+                          href={item.href}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center space-x-4">
+              <button onClick={logout} className="text-gray-300 hover:text-white">
+                <FontAwesomeIcon icon={faSignOutAlt} size="lg" />
+              </button>
+              <Link
+                href="/home/updateDetails/OnwerUpdate"
+                className="hover:bg-gray-700 px-3 py-2 rounded-full"
+              >
+                <Image className="rounded-full" src="/assets/avatar.png" alt="User" width={30} height={30} />
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
-
-      {/* Left Drawer */}
-      <div
-        className={`fixed top-0 left-0 h-full bg-blue-300 shadow-lg z-50 transform ${
-          isDrawerOpen ? 'translate-x-0' : '-translate-x-full'
-        } transition-transform duration-300 ease-in-out`}
-        style={{ width: '250px' }}
-      >
-        <button
-          onClick={() => setIsDrawerOpen(false)}
-          className="text-white p-4 focus:outline-none"
-        >
-          <FontAwesomeIcon icon={faTimes} size="lg" /> {/* Close icon */}
-        </button>
-        <div className="flex flex-col mt-4 text-white space-y-4">
-          <Link href="/home/AllDairies/getAllMilk" className="hover:bg-blue-700 px-3 py-2 rounded">
-            All Milks
-          </Link>
-          <Link href="/home/AllDairies/OwnerMilks" className="hover:bg-blue-700 px-3 py-2 rounded">
-            Owner wise Milk 
-          </Link>
-          <Link href="/home/AllDairies/MakeMilk" className="hover:bg-blue-700 px-3 py-2 rounded">
-            Add Milk
-          </Link>
-          <Link href="/home/AllDairies/OwnerKapat" className="hover:bg-blue-700 px-3 py-2 rounded">
-            Add Kapat
-          </Link>
-          <Link href="/home/AllDairies/OwnerBills" className="hover:bg-blue-700 px-3 py-2 rounded">
-            Owner Bills  
-          </Link>
-          <Link href="/home/AllDairies/ExtraRate" className="hover:bg-blue-700 px-3 py-2 rounded">
-            Liter Extra rate
-          </Link>
-          <Link href="/home/AllDairies/Orders/GetOwnerOrders" className="hover:bg-blue-700 px-3 py-2 rounded">
-            Order History
-          </Link>
-          <Link href="/home/AllDairies/OwnerMilks" className="hover:bg-blue-700 px-3 py-2 rounded">
-            Owner Milks
-          </Link>
-          <Link href="/logout" className="hover:bg-blue-700 px-3 py-2 rounded">
-            Logout
-          </Link>
+      {/* Drawer for Mobile View */}
+      <Drawer isOpen={isDrawerOpen} onClose={toggleDrawer}>
+        <div className="p-4">
+          {Object.keys(dropdownItems).map((menu) => (
+            <div key={menu} className="mb-4">
+              <h2
+                onClick={() => setActiveMenu(activeMenu === menu ? null : menu)}
+                className="font-bold text-lg cursor-pointer hover:text-gray-900"
+              >
+                {menu}
+              </h2>
+              {activeMenu === menu && (
+                <ul className="mt-2">
+                  {dropdownItems[menu].map((item, index) => (
+                    <li key={index} className="py-1">
+                      <Link href={item.href} className="text-sm text-gray-700 hover:text-gray-900">
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
         </div>
-      </div>
-      
-      {/* Optional Overlay to close the drawer when clicking outside */}
-      {isDrawerOpen && (
-        <div
-          className="fixed inset-0 bg-black opacity-50 z-40"
-          onClick={() => setIsDrawerOpen(false)}
-        />
-      )}
-    </div>
+      </Drawer>
+    </>
   );
-};
-
-export default SanghNavBar;
+}

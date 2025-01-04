@@ -122,11 +122,11 @@ const UserDetails = () => {
         <table className="min-w-full bg-gray-700 border border-gray-200 mb-4">
             <tbody>
                 <tr>
-                    <td className="py-2 px-4 border text-right font-semibold">Total Rakkam:</td>
+                    <td className="py-2 px-4 border text-right font-semibold">एकूण कपात </td>
                     <td className="py-2 px-4 border">{userDetails.totalRakkam}</td>
                 </tr>
                 <tr>
-                    <td className="py-2 px-4 border text-right font-semibold">Total Advance:</td>
+                    <td className="py-2 px-4 border text-right font-semibold">अडवांस रक्कम </td>
                     <td className="py-2 px-4 border">{userDetails.totalAdvance}</td>
                 </tr>
                 <tr>

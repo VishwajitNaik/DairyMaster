@@ -61,6 +61,14 @@ const OwnersPage = () => {
                                     <span>Owner Details</span>
                                 </button>
                                 </Link>
+
+                                </td>
+                                <td className="text-black px-6 py-4">
+                                <Link href={`/home/AllDairies/Docter/TritmentReq/${owner._id}`}>
+                                <button className="bg-blue-400 hover:bg-blue-700 text-white rounded-md p-2 flex items-center">
+                                    <span>Docter Details</span>
+                                </button>
+                                </Link>
                                 </td>
                             </tr>
                         ))}

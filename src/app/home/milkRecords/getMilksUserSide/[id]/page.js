@@ -174,28 +174,23 @@ export default function UserMilkDetails() {
               <table className="min-w-full bg-white text-black shadow-md rounded-lg">
                 <thead>
                   <tr>
+                    <th className="py-2 px-3 border-b text-xs md:text-sm">Date</th>
                     <th className="py-2 px-3 border-b text-xs md:text-sm">Liter</th>
                     <th className="py-2 px-3 border-b text-xs md:text-sm">Fat</th>
                     <th className="py-2 px-3 border-b text-xs md:text-sm">SNF</th>
                     <th className="py-2 px-3 border-b text-xs md:text-sm">Dar</th>
                     <th className="py-2 px-3 border-b text-xs md:text-sm">Rakkam</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Date</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {morningRecords.map((record) => (
                     <tr key={record._id}>
+                      <td className="py-1 px-3 border-b text-xs md:text-sm">{new Date(record.date).toLocaleDateString()}</td>
                       <td className="py-1 px-3 border-b text-xs md:text-sm">{record.liter}</td>
                       <td className="py-1 px-3 border-b text-xs md:text-sm">{record.fat}</td>
                       <td className="py-1 px-3 border-b text-xs md:text-sm">{record.snf}</td>
                       <td className="py-1 px-3 border-b text-xs md:text-sm">{record.dar}</td>
                       <td className="py-1 px-3 border-b text-xs md:text-sm">{record.rakkam}</td>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{new Date(record.date).toLocaleDateString()}</td>
-                      <td className="py-1 px-3 border-b flex space-x-2 text-xs md:text-sm">
-                        <FontAwesomeIcon icon={faEdit} className="text-yellow-500 cursor-pointer" onClick={() => handleUpdate(record._id)} />
-                        <FontAwesomeIcon icon={faTrash} className="text-red-500 cursor-pointer" onClick={() => handleDelete(record._id)} />
-                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -214,26 +209,24 @@ export default function UserMilkDetails() {
               <table className="min-w-full bg-white text-black shadow-md rounded-lg">
                 <thead>
                   <tr>
+                    <th className="py-2 px-3 border-b text-xs md:text-sm">Date</th>
                     <th className="py-2 px-3 border-b text-xs md:text-sm">Liter</th>
                     <th className="py-2 px-3 border-b text-xs md:text-sm">Fat</th>
+                    <th className="py-2 px-3 border-b text-xs md:text-sm">SNF</th>
                     <th className="py-2 px-3 border-b text-xs md:text-sm">Dar</th>
                     <th className="py-2 px-3 border-b text-xs md:text-sm">Rakkam</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Date</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Actions</th>
+                   
                   </tr>
                 </thead>
                 <tbody>
                   {eveningRecords.map((record) => (
                     <tr key={record._id}>
+                      <td className="py-1 px-3 border-b text-xs md:text-sm">{new Date(record.date).toLocaleDateString()}</td>
                       <td className="py-1 px-3 border-b text-xs md:text-sm">{record.liter}</td>
                       <td className="py-1 px-3 border-b text-xs md:text-sm">{record.fat}</td>
+                      <td className="py-1 px-3 border-b text-xs md:text-sm">{record.snf}</td>
                       <td className="py-1 px-3 border-b text-xs md:text-sm">{record.dar}</td>
                       <td className="py-1 px-3 border-b text-xs md:text-sm">{record.rakkam}</td>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{new Date(record.date).toLocaleDateString()}</td>
-                      <td className="py-1 px-3 border-b flex space-x-2 text-xs md:text-sm">
-                        <FontAwesomeIcon icon={faEdit} className="text-yellow-500 cursor-pointer" onClick={() => handleUpdate(record._id)} />
-                        <FontAwesomeIcon icon={faTrash} className="text-red-500 cursor-pointer" onClick={() => handleDelete(record._id)} />
-                      </td>
                     </tr>
                   ))}
                 </tbody>

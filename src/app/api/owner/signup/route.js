@@ -33,12 +33,6 @@ export async function POST(request) {
       return NextResponse.json({ error: "Owner already exists" }, { status: 400 });
     }
 
-        // Optional: Check for unique registerNo or other unique fields
-    const existingRegisterNo = await Owner.findOne({ registerNo });
-    if (existingRegisterNo) {
-      return NextResponse.json({ error: "Register No already in use." }, { status: 400 });
-    }
-
     // Hash the password
     const salt = await bcryptjs.genSalt(10);
     const hashPassword = await bcryptjs.hash(password, salt);
