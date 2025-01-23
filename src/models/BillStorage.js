@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 
 const StoreBillSchema = new mongoose.Schema({
+  registerNo: {
+    type: Number,
+    required: true,
+  },
   user: {
     type: String,
     required: true,

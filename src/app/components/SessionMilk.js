@@ -78,7 +78,7 @@ export default function TodayMilkRecords() {
           setError("Unexpected response format.");
         }
       } catch (err) {
-        setError("Failed to fetch today's milk records.");
+        setError("Failed fetch today's milk records.");
         console.error("Error fetching today's milk records:", err.message);
       } finally {
         setLoading(false);
@@ -140,12 +140,12 @@ export default function TodayMilkRecords() {
         <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-md shadow-black">
           <thead className="bg-gray-200 shadow-md shadow-black">
             <tr>
-              <th className="text-black py-2 px-4 border-b">राजिस्टर नं.</th>
-              <th className="text-black py-2 px-4 border-b">लिटर</th>
-              <th className="text-black py-2 px-4 border-b">फॅट</th>
-              <th className="text-black py-2 px-4 border-b">एसन्फ</th>
-              <th className="text-black py-2 px-4 border-b">दर</th>
-              <th className="text-black py-2 px-4 border-b">एकूण रक्कम</th>
+              <th className="text-black py-2 px-4 border border-gray-400">राजिस्टर नं.</th>
+              <th className="text-black py-2 px-4 border border-gray-400">लिटर</th>
+              <th className="text-black py-2 px-4 border border-gray-400">फॅट</th>
+              <th className="text-black py-2 px-4 border border-gray-400">एसन्फ</th>
+              <th className="text-black py-2 px-4 border border-gray-400">दर</th>
+              <th className="text-black py-2 px-4 border border-gray-400">एकूण रक्कम</th>
             </tr>
           </thead>
           <tbody>
@@ -157,13 +157,13 @@ export default function TodayMilkRecords() {
               </tr>
             ) : (
               milkRecords.map((record, index) => (
-                <tr key={index} className="hover:bg-gray-100">
-                  <td className="text-black py-2 px-4 border-b">{record.registerNo}</td>
-                  <td className="text-black py-2 px-4 border-b">{record.liter}</td>
-                  <td className="text-black py-2 px-4 border-b">{record.fat}</td>
-                  <td className="text-black py-2 px-4 border-b">{record.snf}</td>
-                  <td className="text-black py-2 px-4 border-b">{record.dar}</td>
-                  <td className="text-black py-2 px-4 border-b">{record.rakkam}</td>
+                <tr key={index} className="hover:bg-gray-100 text-center">
+                  <td className="text-black py-2 px-4 border border-gray-400">{record.registerNo}</td>
+                  <td className="text-black py-2 px-4 border border-gray-400">{record.liter}</td>
+                  <td className="text-black py-2 px-4 border border-gray-400">{record.fat}</td>
+                  <td className="text-black py-2 px-4 border border-gray-400">{record.snf}</td>
+                  <td className="text-black py-2 px-4 border border-gray-400">{record.dar}</td>
+                  <td className="text-black py-2 px-4 border border-gray-400">{record.rakkam}</td>
                 </tr>
               ))
             )}
@@ -212,12 +212,12 @@ export default function TodayMilkRecords() {
         <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-md shadow-black">
           <thead className="bg-gray-200 shadow-md shadow-black">
             <tr>
-              <th className="text-black py-2 px-4 border-b">राजिस्टर नं.</th>
-              <th className="text-black py-2 px-4 border-b">लिटर</th>
-              <th className="text-black py-2 px-4 border-b">फॅट</th>
-              <th className="text-black py-2 px-4 border-b">एसन्फ</th>
-              <th className="text-black py-2 px-4 border-b">दर</th>
-              <th className="text-black py-2 px-4 border-b">एकूण रक्कम</th>
+              <th className="text-black py-2 px-4 border border-gray-400">राजिस्टर नं.</th>
+              <th className="text-black py-2 px-4 border border-gray-400">लिटर</th>
+              <th className="text-black py-2 px-4 border border-gray-400">फॅट</th>
+              <th className="text-black py-2 px-4 border border-gray-400">एसन्फ</th>
+              <th className="text-black py-2 px-4 border border-gray-400">दर</th>
+              <th className="text-black py-2 px-4 border border-gray-400">एकूण रक्कम</th>
             </tr>
           </thead>
           <tbody>
@@ -229,13 +229,13 @@ export default function TodayMilkRecords() {
               </tr>
             ) : (
               cowMilkRecords.map((record, index) => (
-                <tr key={index} className="hover:bg-gray-100">
-                  <td className="text-black py-2 px-4 border-b">{record.registerNo}</td>
-                  <td className="text-black py-2 px-4 border-b">{record.liter}</td>
-                  <td className="text-black py-2 px-4 border-b">{record.fat}</td>
-                  <td className="text-black py-2 px-4 border-b">{record.snf}</td>
-                  <td className="text-black py-2 px-4 border-b">{record.dar}</td>
-                  <td className="text-black py-2 px-4 border-b">{record.rakkam}</td>
+                <tr key={index} className="hover:bg-gray-100 text-center">
+                  <td className="text-black py-2 px-4 border border-gray-400">{record.registerNo}</td>
+                  <td className="text-black py-2 px-4 border border-gray-400">{record.liter}</td>
+                  <td className="text-black py-2 px-4 border border-gray-400">{record.fat}</td>
+                  <td className="text-black py-2 px-4 border border-gray-400">{record.snf}</td>
+                  <td className="text-black py-2 px-4 border border-gray-400">{record.dar}</td>
+                  <td className="text-black py-2 px-4 border border-gray-400">{record.rakkam}</td>
                 </tr>
               ))
             )}

@@ -18,7 +18,7 @@ export async function GET(request, { params }) {
       console.log("No token provided. Proceeding without authentication.");
     }
 
-    const { registerNo } = params;
+    const { registerNo } = await params;
 
     if (!registerNo) {
       return NextResponse.json({ error: "User ID is required" }, { status: 400 });

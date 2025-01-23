@@ -35,6 +35,11 @@ const rateSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Owner",
+    required: true,
+  },
 }, { timestamps: true });
 
 export default mongoose.models.Rate || mongoose.model('Rate', rateSchema);

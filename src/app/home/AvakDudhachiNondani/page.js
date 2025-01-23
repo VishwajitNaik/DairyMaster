@@ -5,14 +5,16 @@ import axios from "axios";
 import AddUserOrder from "../../components/AddUserOrder.js";
 import Addadvance from "../../components/AddAdvance.js";
 import AddBillKapat from "../../components/AddBillKapat.js";
-import SessionMilk from "../../components/SessionMilk.js";
 import AllUserMilks from "../../components/GetUserMilk.js";
 import TenDayBill from "../../components/TendayMilk.js";
 import KapatNetpay from "../../components/KapatNetpay.js";
-import HeroBanner from "@/app/components/HeroBanner.js";
-import { getDataFromToken } from '@/helpers/getDataFromToken'; // Ensure this is set up correctly to decode the token.
-import LatestMilkRecords from '@/app/components/LatestMilkRecords.js';
+import HeroBanner from "@/app/components/HeroBannerHome.js";
+import { getDataFromToken } from "@/helpers/getDataFromToken"; // Ensure this is set up correctly to decode the token.
+import LatestMilkRecords from "@/app/components/LatestMilkRecords.js";
 import Image from "next/image.js";
+import { ToastContainer, toast as Toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link.js";
 
 export default function AvakDudhNond({ params }) {
   const [currentDate, setCurrentDate] = useState("");
@@ -39,22 +41,60 @@ export default function AvakDudhNond({ params }) {
   const [error, setError] = useState("");
   const [users, setUsers] = useState([]);
   const [owners, getOwners] = useState([]);
-  const [ownerName, setOwnerName] = useState('');
+  const [ownerName, setOwnerName] = useState("");
   const [rates, setRates] = useState({});
   const [buffaloConstants, setBuffaloConstants] = useState({});
   const [cowConstants, setCowConstants] = useState({});
   //
-  const [selectedUserId, setSelectedUserId] = useState(''); // Selected user ID
+  const [selectedUserId, setSelectedUserId] = useState(""); // Selected user ID
   const [lastRecord, setLastRecord] = useState(null); // Latest milk record
-  const [fat, setFat] = useState(''); // State for fat input
-  const [snf, setSnf] = useState(''); // State for SNF input
+  const [fat, setFat] = useState(""); // State for fat input
+  const [snf, setSnf] = useState(""); // State for SNF input
   const [autoFill, setAutoFill] = useState(false); // State for radio button
 
-
-//
+  //
   const [susers, setSUsers] = useState([]); // Initialize users as an empty array
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
+
+  const [activeComponent, setActiveComponent] = useState(null);
+  const [defaultSNF, setDefaultSNF] = useState(null);
+  const [useDefault, setUseDefault] = useState(false); // State for checkbox
+
+  
+  const fetchDefaultSNF = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await axios.get("/api/milk/GetDefaultSNF");
+      setDefaultSNF(response.data.data);
+    } catch (error) {
+      setError("Failed to fetch default SNF");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch default SNF on component mount
+  useEffect(() => {
+    fetchDefaultSNF();
+  }, []);
+
+  const renderComponent = () => {
+      switch (activeComponent) {
+          case "AddUserOrder":
+              return <AddUserOrder />;
+          case "Addadvance":
+              return <Addadvance />;
+          case "AddBillKapat":
+              return <AddBillKapat />;
+          default:
+              return <p className="text-gray-500 text-center mt-4">वरीलपैकी एका बटनवर क्लिक करा.</p>;
+      }
+  };
+
+
+
 
   useEffect(() => {
     // Fetch available users who don't have milk records for the current date and session
@@ -83,11 +123,11 @@ export default function AvakDudhNond({ params }) {
     setIsModalOpen(!isModalOpen);
   };
 
-//
+  //
   useEffect(() => {
     const fetchOwnerName = async () => {
       try {
-        const response = await fetch('/api/owner/OwnerName'); // Call your API route
+        const response = await fetch("/api/owner/OwnerName"); // Call your API route
         const data = await response.json();
 
         if (response.ok) {
@@ -188,7 +228,7 @@ export default function AvakDudhNond({ params }) {
     async function getOwnerUsers() {
       try {
         const res = await axios.get("/api/user/getUsers");
-        setUsers(res.data.data.users);
+        setUsers(res.data.data);
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
       }
@@ -205,21 +245,22 @@ export default function AvakDudhNond({ params }) {
     setCurrentTime(formattedTime);
   }, []);
 
+  // Handle user selection by register number
+  const handleUserChange = (event) => {
+    const selectedRegisterNo = event.target.value;
+    setSelectedOption(selectedRegisterNo);
 
-    // Handle user selection by register number
-    const handleUserChange = (event) => {
-      const selectedRegisterNo = event.target.value;
-      setSelectedOption(selectedRegisterNo);
-  
-      const user = users.find((user) => user.registerNo === parseInt(selectedRegisterNo, 10));
-      setSelectedUser(user); // Update selected user based on register number
-      setLastRecord(null); // Reset last record to trigger fetch
-      setError(null); // Reset error state
-      if (!autoFill) {
-        setFat(''); // Reset fat only if auto-fill is not selected
-        setSnf(''); // Reset SNF only if auto-fill is not selected
-      }
-    };
+    const user = users.find(
+      (user) => user.registerNo === parseInt(selectedRegisterNo, 10)
+    );
+    setSelectedUser(user); // Update selected user based on register number
+    setLastRecord(null); // Reset last record to trigger fetch
+    setError(null); // Reset error state
+    if (!autoFill) {
+      setFat(""); // Reset fat only if auto-fill is not selected
+      setSnf(""); // Reset SNF only if auto-fill is not selected
+    }
+  };
 
   const handleMilkChange = (event) => {
     const selectedMilkType = event.target.value;
@@ -275,15 +316,18 @@ export default function AvakDudhNond({ params }) {
   useEffect(() => {
     const fetchRates = async () => {
       try {
-        const response = await axios.get('/api/milkrate/getRates');
+        const response = await axios.get("/api/milkrate/getRates");
         // Assuming the response.data.data is an array
-        if (Array.isArray(response.data.data) && response.data.data.length > 0) {
+        if (
+          Array.isArray(response.data.data) &&
+          response.data.data.length > 0
+        ) {
           // Set the first element of the array as rates
           setRates(response.data.data[0]); // Take the first rate object
         } else {
           console.log("No rates found.");
         }
-        
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching rates:", error.message);
@@ -291,10 +335,10 @@ export default function AvakDudhNond({ params }) {
         setLoading(false);
       }
     };
-  
+
     fetchRates();
   }, []);
-  
+
   useEffect(() => {
     if (rates && Object.keys(rates).length > 0) {
       // Set buffalo and cow constants whenever rates are updated
@@ -337,6 +381,11 @@ export default function AvakDudhNond({ params }) {
     // Determine whether it's buffalo or cow milk
     const constants = X >= 5.5 ? buffaloConstants : cowConstants;
 
+    if (!constants || !constants.SNF_RANGES) {
+      Toast.error("दरपत्रक तयार करा ");
+      return 0; // Return 0 as a fallback
+    }
+
     const FR = calculateValues(X, constants); // Calculate the fat rate based on selected constants
     let TFR = FR; // Initialize total rate to Fat Rate (FR)
 
@@ -372,23 +421,29 @@ export default function AvakDudhNond({ params }) {
   };
 
   const clearForm = () => {
-    setselectedMilk("");
-    setSelectedUser("");
+    setselectedMilk(""); // Reset the selected milk
+    setSelectedUser(""); // Reset the selected user
     setSelectedOption(""); // Reset the user selection
     setFat(""); // Reset the fat input
-    setSnf(""); // Reset the SNF input
-    setCurrentDate(new Date().toISOString().split("T")[0]); // Reset the date to today
+  
+    // Check if useDefault is true
+    if (useDefault === true) {
+      setSnf(defaultSNF.snf); // Set SNF to default value if useDefault is true
+    } else {
+      setSnf(""); // Clear the SNF input if useDefault is false
+    }
+  
+    // Clear all the input fields
     inputRefs.current.forEach((input) => {
       if (input) {
-        input.value = ""; // Clear all input fields
+        input.value = ""; // Clear each input field
       }
     });
   };
-
+  
 
   const handleSubmit = async () => {
     try {
-
       if (!selectedMilk) {
         alert("Please select a milk type before submitting");
         return;
@@ -431,7 +486,6 @@ export default function AvakDudhNond({ params }) {
       }
 
       // clear form information after successful submission
-      
 
       setTimeout(() => {
         clearForm();
@@ -492,7 +546,9 @@ export default function AvakDudhNond({ params }) {
       if (!selectedUser) return; // Don't fetch if no user is selected
 
       try {
-        const res = await axios.get(`/api/milk/latest?userId=${selectedUser._id}`);
+        const res = await axios.get(
+          `/api/milk/latest?userId=${selectedUser._id}`
+        );
         if (!res.data.error) {
           setLastRecord(res.data.data); // Set last record
           setError(null); // Reset error state
@@ -514,11 +570,37 @@ export default function AvakDudhNond({ params }) {
 
   // Handle radio button change
   const handleAutoFillChange = (event) => {
-    const isChecked = event.target.checked; // Get checked state
-    setAutoFill(isChecked); // Update auto-fill state
+    const isChecked = event.target.checked;
+    setAutoFill(isChecked);
+
+    // If "Previous" checkbox is checked, clear the "Fix SNF" checkbox
+    if (isChecked) {
+      setUseDefault(false);
+    }
+
     if (isChecked && lastRecord) {
-      setFat(lastRecord.fat); // Set fat from last record
-      setSnf(lastRecord.snf); // Set SNF from last record
+      setFat(lastRecord.fat); // Autofill fat from last record
+      setSnf(lastRecord.snf); // Autofill SNF from last record
+    } else {
+      setFat(""); // Clear fat field if checkbox is unchecked
+      setSnf(""); // Clear SNF field if checkbox is unchecked
+    }
+  };
+
+  // Handle "Fix SNF" checkbox change
+  const handleCheckboxChange = () => {
+    const isChecked = !useDefault;
+    setUseDefault(isChecked);
+
+    // If "Fix SNF" checkbox is checked, clear the "Previous" checkbox
+    if (isChecked) {
+      setAutoFill(false);
+    }
+
+    if (isChecked && defaultSNF) {
+      setSnf(defaultSNF.snf); // Autofill SNF input with default value
+    } else {
+      setSnf(""); // Clear SNF input if checkbox is unchecked
     }
   };
 
@@ -526,379 +608,508 @@ export default function AvakDudhNond({ params }) {
   const handleFatChange = (event) => setFat(event.target.value);
   const handleSnfChange = (event) => setSnf(event.target.value);
 
-
-
   return (
     <>
-    <div className="relative min-h-screen">
-    <HeroBanner />
-    <div className="absolute top-12 left-0 right-0 flex justify-center items-center">
-        <div
-          className="bg-gray-400 bg-opacity-50 rounded-md flex flex-col"
-          style={{ height: "500px", width: "1000px" }}
-        >
+      <div className="banner relative min-h-screen -mb-12">
+      <video autoPlay loop muted className="opacity-50">
+        <source src="/assets/milk.mp4" type="video/mp4" /> 
+      </video>
+        <div className="absolute top-12 left-0 right-0 flex justify-center items-center">
           <div
-            className="bg-gray-500 bg-opacity-50 rounded-md p-4 flex items-center"
-            style={{ height: "50px", width: "100%" }}
+            className="bg-gray-400 bg-opacity-50 rounded-md flex flex-col"
+            style={{ height: "500px", width: "1000px" }}
           >
-            <h1 className="text-xl mr-12 -mt-8">
-            <Image
-              src="/milkhub-192.png"
-              alt="Background Image"
-              width={100}
-              height={10}
-            />
-            </h1>
-            <h1 className="text-2xl text-white font-semibold relative z-10">
-          <span className="z-1 text-blue-500">
-            {ownerName || 'Guest'}
-          </span>
-          <span className="absolute inset-0 text-white opacity-20 blur-sm">
-            {ownerName || 'Guest'}
-          </span>
-        </h1>
-          </div>
-          <div className="flex flex-row">
             <div
-              className="bg-gray-500"
-              style={{ height: "450px", width: "700px" }}
+              className="bg-gray-500 bg-opacity-50 rounded-md p-4 flex items-center"
+              style={{ height: "50px", width: "100%" }}
             >
-              <div className="flex flex-col">
-                <div className="w-auto h-14 flex flex-row p-2">
-                  <h1 className="text-xl">दिनांक</h1>
-                  <input
-                    type="date"
-                    className="ml-2 p-1 rounded-md shadow-md text-black"
-                    value={currentDate}
-                    onChange={(e) => setCurrentDate(e.target.value)}
-                    max={new Date().toISOString().split("T")[0]} // Restrict future dates
-                  />
-                  <select
-                    className="ml-2 p-1 rounded-md shadow-md text-black"
-                    value={currentTime}
-                    onChange={(e) => setCurrentTime(e.target.value)}
-                  >
-                    <option value="morning">सकाळ </option>
-                    <option value="evening">संध्याकाळ </option>
-                  </select>
-                  <div className="ml-12 rounded-lg">
-                  <label className="ml-2 flex items-center bg-blue-800 px-4 py-2 text-white rounded-full cursor-pointer">
-                    <input
-                      className="mr-3 w-6 h-6"
-                      type="radio"
-                      checked={autoFill}
-                      onChange={handleAutoFillChange}
-                    />
-                    मागील
-                  </label>
+              <h1 className="text-xl mr-12 -mt-8">
+                <Image
+                  src="/milkhub-192.png"
+                  alt="Background Image"
+                  width={100}
+                  height={10}
+                />
+              </h1>
+              <h1 className="text-2xl font-semibold relative z-0 text-gray-800 overflow-hidden">
+              <span className="relative z-10 inline-block text-white bg-clip-text text-transparent animate-slide">
+                {ownerName || "Guest"}
+              </span>
+              <span className="absolute inset-0 text-gray-300 opacity-30 blur-sm animate-slide">
+                {ownerName || "Guest"}
+              </span>
+            </h1>
 
-                </div>
-                </div>
-                <div className=" w-auto h-12 flex flex-row p-2">
-                  <label htmlFor="code" className="mr-4 ml-12">
-                    यू. कोड 
-                  </label>
-                  <input
-                    type="text"
-                    id="code"
-                    className="w-12 mr-4 text-black rounded-md shadow-lg"
-                    value={selectedOption}
-                    onChange={(e) => setSelectedOption(e.target.value)}
-                    onBlur={handleRegisterNoBlur}
-                    onFocus={handleRegisterNoFocus}
-                    ref={input1Ref}
-                    onKeyPress={(e) => handleKeyPress(e, 0)}
-                  />
-                  <select
-                    className=" mr-4 block text-black w-96 rounded-md shadow-lg"
-                    id="dropdown"
-                    value={selectedOption}
-                    onChange={handleUserChange}
-                    onKeyPress={(e) => handleKeyPress(e, 1)}
-                  >
-                    <option value="">Choose...</option>
-                    {users.map((user) => (
-                      <option key={user.registerNo} value={user.registerNo}>
-                        {user.name}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    className="block text-black w-12 rounded-md shadow-lg"
-                    id="dropdown"
-                    value={selectedMilk}
-                    onChange={(e) => {
-                      console.log("Milk type selected:", e.target.value); // Log to confirm selection
-                      setselectedMilk(e.target.value); // Ensure this updates correctly
-                    }}
-                    onKeyPress={(e) => handleKeyPress(e, 2)}
-                  >
-                    <option value="">Milk Type</option>
-                    {users.map((user) => (
-                      <option key={user.registerNo} value={user.milk}>
-                        {user.milk}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="w-auto h-12 flex flex-row">
-                  <section
-                    className="flex flex-row mt-5 ml-12 bg-slate-500"
-                    style={{ height: "80px", width: "600px" }}
-                  >
+            </div>
+            <div className="flex flex-row">
+              <div
+                className=" bg-opacity-50"
+                style={{ height: "450px", width: "700px" }}
+              >
+                <div className="flex flex-col">
+                  <div className="w-auto h-14 flex flex-row p-2">
+                    <input
+                      type="date"
+                      className="text-black p-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-1/4 bg-gray-200 rounded-md"
+                      value={currentDate}
+                      onChange={(e) => setCurrentDate(e.target.value)}
+                      max={new Date().toISOString().split("T")[0]} // Restrict future dates
+                    />
+                    <select
+                      className="text-black p-2 ml-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-1/5 bg-gray-200 rounded-md"
+                      value={currentTime}
+                      onChange={(e) => setCurrentTime(e.target.value)}
+                    >
+                      <option value="morning">सकाळ </option>
+                      <option value="evening">संध्याकाळ </option>
+                    </select>
+                    <div className="ml-4 rounded-lg flex flex-row">
+                    <label className="flex items-center cursor-pointer space-x-2">
+                      <span className="relative">
+                        <input
+                          type="checkbox"
+                          className="sr-only peer"
+                          checked={autoFill}
+                          onChange={handleAutoFillChange}
+                        />
+                        <div className="w-10 h-6 bg-gray-300 rounded-full peer-focus:ring-2 peer-focus:ring-blue-500 peer-checked:bg-blue-800 transition-all"></div>
+                        <div className="w-4 h-4 bg-white rounded-full shadow-md transform peer-checked:translate-x-4 transition-all absolute top-1 left-1"></div>
+                      </span>
+                      <span className="text-white bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 px-6 py-2 rounded-lg shadow-lg hover:scale-105 transition-transform ease-in-out">
+                        मागील
+                      </span>
+                    </label>
+
+                    {/* "Fix SNF" checkbox */}
+                    <label className="flex ml-4 items-center cursor-pointer space-x-2">
+                      <span className="relative">
+                        <input
+                          type="checkbox"
+                          className="sr-only peer"
+                          checked={useDefault}
+                          onChange={handleCheckboxChange}
+                        />
+                        <div className="w-10 h-6 bg-gray-300 rounded-full peer-focus:ring-2 peer-focus:ring-blue-500 peer-checked:bg-blue-800 transition-all"></div>
+                        <div className="w-4 h-4 bg-white rounded-full shadow-md transform peer-checked:translate-x-4 transition-all absolute top-1 left-1"></div>
+                      </span>
+                      <span className="text-white bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 px-6 py-2 rounded-lg shadow-lg hover:scale-105 transition-transform ease-in-out">
+                        फिक्स
+                      </span>
+                    </label>
+                    </div>
+                  </div>
+                  <div className=" w-auto h-12 flex flex-row p-2">
+                    <label htmlFor="code" className="mr-4 ml-12"></label>
                     <input
                       type="text"
-                      className="p-2 h-8 w-20 m-4 text-black block shadow-md rounded-md"
+                      id="code"
+                      placeholder="रजि. नं."
+                      className="text-black h-12 text-2xl font-mono p-4 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-20 bg-gray-200 rounded-md"
+                      value={selectedOption}
+                      onChange={(e) => setSelectedOption(e.target.value)}
+                      onBlur={handleRegisterNoBlur}
+                      onFocus={handleRegisterNoFocus}
+                      ref={input1Ref}
+                      onKeyPress={(e) => handleKeyPress(e, 0)}
+                      onInput={(e) => {
+                        // Remove any non-numeric characters
+                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                      }}
+                    />
+                    <select
+                      className=" text-black h-12 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-1/2 bg-gray-200 rounded-md shadow-sm"
+                      id="dropdown"
+                      value={selectedOption}
+                      onChange={handleUserChange}
+                      onKeyPress={(e) => handleKeyPress(e, 1)}
+                    >
+                      <option value="">उत्पादकाचे नाव</option>
+                      {users.map((user) => (
+                        <option key={user.registerNo} value={user.registerNo}>
+                          {user.name}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      className="h-12 text-black mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-20 bg-gray-200 rounded-md shadow-sm"
+                      id="dropdown"
+                      value={selectedMilk}
+                      onChange={(e) => {
+                        console.log("Milk type selected:", e.target.value); // Log to confirm selection
+                        setselectedMilk(e.target.value); // Ensure this updates correctly
+                      }}
+                      onKeyPress={(e) => handleKeyPress(e, 2)}
+                    >
+                      <option value="">दूध प्रकार </option>
+                      {users.map((user) => (
+                        <option key={user.registerNo} value={user.milk}>
+                          {user.milk}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="w-auto h-12 flex flex-row">
+                    <section
+                      className="flex flex-row mt-5 ml-12 bg-slate-500 p-4"
+                      style={{ height: "80px", width: "600px" }}
+                    >
+                    <input
+                      type="text"
+                      className="text-black p-4 text-2xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-24 bg-gray-200 rounded-md shadow-sm"
                       placeholder="लिटर"
                       ref={(ref) => (inputRefs.current[1] = ref)}
                       onKeyPress={(e) => handleKeyPress(e, 1)}
+                      onInput={(e) => {
+                        // Allow only numbers and a single decimal point
+                        const value = e.target.value;
+                        e.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+                      }}
                     />
-                    <input
-                      type="text"
-                      className="p-2 h-8 w-20 m-4 text-black block shadow-md rounded-md"
-                      placeholder="फॅट"
-                      onChange={handleFatChange}
-                      value={fat}
-                      ref={(ref) => (inputRefs.current[2] = ref)}
-                      onKeyPress={(e) => handleKeyPress(e, 2)}
-                    />
-                    <input
-                      type="text"
-                      className="p-2 h-8 w-20 m-4 text-black block shadow-md rounded-md"
-                      placeholder="SNF"
-                      onChange={handleSnfChange}
-                      value={snf}
-                      ref={(ref) => (inputRefs.current[3] = ref)}
-                      onKeyPress={(e) => handleKeyPress(e, 5)}
-                    />
-                    <input
-                      type="text"
-                      className="p-2 h-8 w-20 m-4 text-black block shadow-md rounded-md"
-                      placeholder="दर"
-                      ref={(ref) => (inputRefs.current[4] = ref)}
-                      readOnly
-                    />
-                    <input
-                      type="text"
-                      className="p-2 h-8 w-20 m-4 text-black block shadow-md rounded-md"
-                      placeholder="रक्कम"
-                      ref={(ref) => (inputRefs.current[5] = ref)}
-                      onKeyPress={(e) => handleKeyPress(e, 0)}
-                      readOnly
-                    />
-                  </section>
+                      <input
+                        type="text"
+                        className="text-black p-4 text-2xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-24 bg-gray-200 rounded-md shadow-sm"
+                        placeholder="फॅट"
+                        onChange={handleFatChange}
+                        value={fat}
+                        ref={(ref) => (inputRefs.current[2] = ref)}
+                        onKeyPress={(e) => handleKeyPress(e, 2)}
+                        onInput={(e) => {
+                          // Allow only numbers and a single decimal point
+                          const value = e.target.value;
+                          e.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+                        }}
+                      />
+                      <input
+                        type="text"
+                        className="text-black p-4 text-2xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-24 bg-gray-200 rounded-md shadow-sm"
+                        placeholder="SNF"
+                        onChange={handleSnfChange}
+                        value={snf}
+                        ref={(ref) => (inputRefs.current[3] = ref)}
+                        onKeyPress={(e) => handleKeyPress(e, 5)}
+                        onInput={(e) => {
+                          // Allow only numbers and a single decimal point
+                          const value = e.target.value;
+                          e.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+                        }}
+                      />
+                      <input
+                        type="text"
+                        className="text-black p-4 text-2xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-24 bg-gray-200 rounded-md shadow-sm"
+                        placeholder="दर"
+                        ref={(ref) => (inputRefs.current[4] = ref)}
+                        readOnly
+                      />
+                      <input
+                        type="text"
+                        className="text-black p-4 text-2xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-24 bg-gray-200 rounded-md shadow-sm"
+                        placeholder="रक्कम"
+                        ref={(ref) => (inputRefs.current[5] = ref)}
+                        onKeyPress={(e) => handleKeyPress(e, 0)}
+                        readOnly
+                      />
+                    </section>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div
-              className="bg-gray-500"
-              style={{ height: "450px", width: "300px" }}
-            >
-              <button
-                onClick={calculateRates}
-                className="h-8 w-48 mt-4 ml-12 rounded-lg bg-blue-500 text-white"
-              >
-                दर व रक्कम काढा
-              </button>
-              <button
-                onClick={handleSubmit}
-                className="h-8 w-48 mt-4 ml-12 rounded-lg bg-green-500 text-white"
-              >
-                Save
-              </button>
-              <button
-                onClick={handleUpdate}
-                className="h-8 w-48 mt-4 ml-12 rounded-lg bg-green-500 text-white"
-              >
-                Update
-              </button>
               <div
-                className="relative mt-8 flex flex-row space-y-4"
-                style={{ marginLeft: "-650px" }}
+                className="bg-opacity-50"
+                style={{ height: "450px", width: "300px" }}
               >
-                <div className="relative mt-6 flex flex-col space-y-4">
-                
-                  {/* Main Hover Button */}
-                  <div className="group relative">
-                    <button className="px-2 py-4 z-0 mt-2 bg-blue-600 text-white text-sm font-bold rounded hover:bg-blue-700 w-full">
-                    गाय दूध विवरण
-                    </button>
-                    <div className="hidden group-hover:block absolute top-0 left-full ml-4 w-64 p-4 bg-gray-100 rounded-lg shadow-lg z-10">
-                      <table className="min-w-full">
-                        <thead>
-                          <tr>
-                            <th className="text-left">Statistic</th>
-                            <th className="text-right">Value</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td className="text-black font-bold">Total Liter</td>
-                            <td className="text-blue-600 font-bold">{totalLiterCow}</td>
-                          </tr>
-                          <tr>
-                            <td className="text-black font-bold">Avg Fat</td>
-                            <td className="text-blue-600 font-bold">{avgFatCow}</td>
-                          </tr>
-                          <tr>
-                            <td className="text-black font-bold">Avg SNF</td>
-                            <td className="text-blue-600 font-bold">{avgSnfCow}</td>
-                          </tr>
-                          <tr>
-                            <td className="text-black font-bold">Avg Rate</td>
-                            <td className="text-blue-600 font-bold">{avgRateCow}</td>
-                          </tr>
-                          <tr>
-                            <td className="text-black font-bold">Total Rakkam</td>
-                            <td className="text-blue-600 font-bold">{totalRakkamCow}</td>
-                          </tr>
-                        </tbody>
-                      </table>
+                <div className="flex flex-col">
+                  <button
+                    onClick={calculateRates}
+                    className="w-full md:w-36 py-2 mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md hover:translate-x-3 shadow-black transition-all duration-300 ease-in-out"
+                  >
+                    दर व रक्कम काढा
+                  </button>
+                  <button
+                    onClick={handleSubmit}
+                    className="w-full md:w-36 py-2 mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md hover:translate-x-3 shadow-black transition-all duration-300 ease-in-out"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={handleUpdate}
+                    className="w-full md:w-36 py-2 mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md hover:translate-x-3 shadow-black transition-all duration-300 ease-in-out"
+                  >
+                    अपडेट 
+                  </button>
+                </div>
+                <div
+                  className="relative mt-8 flex flex-row space-y-4"
+                  style={{ marginLeft: "-650px" }}
+                >
+                  <div className="relative mt-6 flex flex-col space-y-4">
+                    {/* Main Hover Button */}
+                    <div className="group relative">
+                      <button className="w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105">
+                        गाय दूध विवरण
+                      </button>
+                      <div className="hidden group-hover:block absolute top-0 left-full ml-4 w-64 p-4 bg-gray-100 rounded-lg shadow-lg z-10">
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full border-collapse border border-gray-200 rounded-lg shadow-lg">
+                            <thead className="bg-blue-500 text-white">
+                              <tr>
+                                <th className="text-left py-3 px-4 border-b border-gray-300 font-semibold">
+                                  Statistic
+                                </th>
+                                <th className="text-right py-3 px-4 border-b border-gray-300 font-semibold">
+                                  Value
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody className="bg-white">
+                              <tr className="hover:bg-blue-50 transition-colors duration-300 ease-in-out">
+                                <td className="py-1 px-2 text-gray-700 font-bold bg-blue-200">
+                                  Total Liter
+                                </td>
+                                <td className="py-1 px-2 text-blue-600 font-bold text-right bg-blue-200">
+                                  {totalLiterCow}
+                                </td>
+                              </tr>
+                              <tr className="hover:bg-blue-50 transition-colors duration-300 ease-in-out">
+                                <td className="py-1 px-2 text-gray-700 font-bold">
+                                  Avg Fat
+                                </td>
+                                <td className="py-1 px-2 text-blue-600 font-bold text-right">
+                                  {avgFatCow}
+                                </td>
+                              </tr>
+                              <tr className="hover:bg-blue-50 transition-colors duration-300 ease-in-out">
+                                <td className="py-1 px-2 text-gray-700 font-bold bg-blue-200">
+                                  Avg SNF
+                                </td>
+                                <td className="py-1 px-2 text-blue-600 font-bold text-right bg-blue-200">
+                                  {avgSnfCow}
+                                </td>
+                              </tr>
+                              <tr className="hover:bg-blue-50 transition-colors duration-300 ease-in-out">
+                                <td className="py-1 px-2 text-gray-700 font-bold">
+                                  Avg Rate
+                                </td>
+                                <td className="py-1 px-2 text-blue-600 font-bold text-right">
+                                  {avgRateCow}
+                                </td>
+                              </tr>
+                              <tr className="hover:bg-blue-50 transition-colors duration-300 ease-in-out">
+                                <td className="py-1 px-2 text-gray-700 font-bold bg-blue-200">
+                                  Total Rakkam
+                                </td>
+                                <td className="py-1 px-2 text-blue-600 font-bold text-right bg-blue-200">
+                                  {totalRakkamCow}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                </div>
-
-                <div className="relative mt-6 flex flex-col space-y-4 ml-36">
-                  <h1></h1>
-                  {/* Main Hover Button for Buffalo Milk */}
-                  <div className="group relative">
-                    <button className="px-2 py-4 bg-blue-600 text-white text-sm font-bold rounded hover:bg-blue-700 w-full">
-                    म्हैस दूध विवरण
-                    </button>
-                    <div className="hidden group-hover:block absolute top-0 right-full mr-4 w-64 p-4 bg-gray-100 rounded-lg shadow-lg z-10">
-                      <table className="min-w-full">
-                        <thead>
-                          <tr>
-                            <th className="text-left">Statistic</th>
-                            <th className="text-right">Value</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td className="text-black font-bold">
-                              Total Liter
-                            </td>
-                            <td className="text-blue-600 font-bold">
-                              {totalLiter}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="text-black font-bold">Avg Fat</td>
-                            <td className="text-blue-600 font-bold">
-                              {avgFat}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="text-black font-bold">Avg SNF</td>
-                            <td className="text-blue-600 font-bold">
-                              {avgSnf}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="text-black font-bold">Avg Rate</td>
-                            <td className="text-blue-600 font-bold">
-                              {avgRate}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="text-black font-bold">
-                              Total Rakkam
-                            </td>
-                            <td className="text-blue-600 font-bold">
-                              {totalRakkam}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                  <div className="relative mt-6 flex flex-col space-y-2 ml-36">
+                    <h1></h1>
+                    {/* Main Hover Button for Buffalo Milk */}
+                    <div className="group relative">
+                      <button className="w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105">
+                        म्हैस दूध विवरण
+                      </button>
+                      <div className="hidden group-hover:block absolute top-0 right-full mr-4 w-64 p-4 bg-gray-100 rounded-lg shadow-lg z-10">
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full border-collapse border border-gray-300 rounded-lg shadow-lg">
+                            <thead className="bg-blue-500 text-white">
+                              <tr>
+                                <th className="text-left py-3 px-4 border-b border-gray-200 font-semibold">
+                                  Statistic
+                                </th>
+                                <th className="text-right py-3 px-4 border-b border-gray-200 font-semibold">
+                                  Value
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody className="bg-white">
+                              <tr className="hover:bg-blue-50 transition-colors duration-300 ease-in-out">
+                                <td className="py-1 px-2 text-black font-bold bg-blue-200">
+                                  Total Liter
+                                </td>
+                                <td className="py-1 px-2 text-blue-600 font-bold text-right bg-blue-200">
+                                  {totalLiter}
+                                </td>
+                              </tr>
+                              <tr className="hover:bg-blue-50 transition-colors duration-300 ease-in-out">
+                                <td className="py-1 px-2 text-black font-bold">
+                                  Avg Fat
+                                </td>
+                                <td className="py-1 px-2 text-blue-600 font-bold text-right">
+                                  {avgFat}
+                                </td>
+                              </tr>
+                              <tr className="hover:bg-blue-50 transition-colors duration-300 ease-in-out">
+                                <td className="py-1 px-2 text-black font-bold bg-blue-200">
+                                  Avg SNF
+                                </td>
+                                <td className="py-1 px-2 text-blue-600 font-bold text-right bg-blue-200">
+                                  {avgSnf}
+                                </td>
+                              </tr>
+                              <tr className="hover:bg-blue-50 transition-colors duration-300 ease-in-out">
+                                <td className="py-1 px-2 text-black font-bold">
+                                  Avg Rate
+                                </td>
+                                <td className="py-1 px-2 text-blue-600 font-bold text-right">
+                                  {avgRate}
+                                </td>
+                              </tr>
+                              <tr className="hover:bg-blue-50 transition-colors duration-300 ease-in-out">
+                                <td className="py-1 px-2 text-black font-bold bg-blue-200">
+                                  Total Rakkam
+                                </td>
+                                <td className="py-1 px-2 text-blue-600 font-bold text-right bg-blue-200">
+                                  {totalRakkam}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     </div>
+                  </div>
+                  <div>
+                    <div className="flex flex-row space-x-6">
+                    <div className="relative mt-2 flex flex-col space-y-4 ml-36">
+                      <Image
+                        src="/assets/cen.png"
+                        alt="Image"
+                        className="rounded-lg"
+                        width={100}
+                        height={300}
+                        layout="intrinsic"
+                      />
+                    </div>
+
+                      <h1 className="text-2xl text-black font-semibold">00</h1>
+
+                      <div className="relative mt-2 flex flex-col space-y-4 ml-36">
+                        <Image
+                          src="/assets/cen.png"
+                          alt="Image"
+                          className="rounded-lg"
+                          width={100}
+                          height={300}
+                          sizes="(max-width: 768px) 100vw, 768px"
+                        />
+                      </div>
+
+                      <h1 className="text-2xl text-black font-semibold">00</h1>
+                    </div>
+                    <h1 className="text-2xl text-black font-semibold">
+                      {" "}
+                      काटा झेरो{" "}
+                    </h1>
                   </div>
                 </div>
                 <div>
-              <div className="flex flex-row space-x-6">
-              <div className="relative mt-6 flex flex-col space-y-4 ml-36">
-                    <Image
-                      src="/assets/cen.png"
-                      alt="Image"
-                      className="rounded-lg"
-                      width={100}
-                      height={300}
-                    />
-                  </div>
-                  <h1>00</h1>
+                  {/* Button to open the modal */}
+                  <button
+                    onClick={toggleModal}
+                    className="w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105"
+                  >
+                    न आलेले उत्पादक
+                  </button>
+                  <Link href="/home/SessionMilk">
+                    <button
+                      className="w-full ml-2 md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105"
+                      value={currentTime}
+                    >
+                      {currentTime === "morning" ? (
+                        <span>सकाळचे दूध</span>
+                      ) : (
+                        <span>संध्याकाळचे दूध</span>
+                      )}
+                    </button>
+                  </Link>
 
-                  <div className="relative mt-6 flex flex-col space-y-4 ml-36">
-                    <Image
-                      src="/assets/cen.png"
-                      alt="Image"
-                      className="rounded-lg"
-                      width={100}
-                      height={300}
-                    />
-                  </div>
-                  <h1>00</h1>
-              </div>
-                    <h1 className="text-2xl text-black font-semibold"> काटा झेरो </h1>
+                  {/* Modal for displaying user table */}
+                  {isModalOpen && (
+                    <div className="text-black fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-10 mt-12 rounded-md">
+                      <div className="bg-white text-black p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 relative max-h-[600px] overflow-y-auto">
+                        <h2 className="text-xl text-black font-semibold mb-4">
+                          न आलेले उत्पादक{" "}
+                        </h2>
+
+                        {/* Cross button */}
+                        <button
+                          onClick={toggleModal}
+                          className="text-black absolute top-2 right-2 hover:text-black text-2xl font-bold"
+                        >
+                          &times;
+                        </button>
+
+                        <table className="table-auto w-full border-collapse text-black">
+                          <thead>
+                            <tr className="bg-gray-400">
+                              <th className="border-b px-4 py-2 text-left text-black">
+                                रजीस्टर नं{" "}
+                              </th>
+                              <th className="border-b px-4 py-2 text-left text-black">
+                                उत्पादकाचे नाव{" "}
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {susers.map((user) => (
+                              <tr key={user._id}>
+                                <td className="border-b px-4 py-2 text-black">
+                                  {user.registerNo}
+                                </td>
+                                <td className="border-b px-4 py-2 text-black">
+                                  {user.name}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-              <div>
-              {/* Button to open the modal */}
-              <button
-                onClick={toggleModal}
-                className=" py-2 px-4 bg-blue-500 text-white rounded-lg shadow-lg"
-              >
-                न आलेले उत्पादक
-              </button>
-
-              {/* Modal for displaying user table */}
-              {isModalOpen && (
-                  <div className="text-black fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-10 mt-12 rounded-md">
-                    <div className="bg-white text-black p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 relative max-h-[600px] overflow-y-auto">
-                      <h2 className="text-xl text-black font-semibold mb-4">न आलेले उत्पादक </h2>
-                      {/* Cross button */}
-                      <button
-                        onClick={toggleModal}
-                        className="text-black absolute top-2 right-2 hover:text-black text-2xl font-bold"
-                      >
-                        &times;
-                      </button>
-
-                      <table className="table-auto w-full border-collapse text-black">
-                        <thead>
-                          <tr className="bg-gray-400">
-                            <th className="border-b px-4 py-2 text-left text-black">रजीस्टर नं </th>
-                            <th className="border-b px-4 py-2 text-left text-black">उत्पादकाचे नाव </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {susers.map((user) => (
-                            <tr key={user._id}>
-                              <td className="border-b px-4 py-2 text-black">{user.registerNo}</td>
-                              <td className="border-b px-4 py-2 text-black">{user.name}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-
             </div>
-            </div>
-            
           </div>
-        </div> 
+        </div>
+        <ToastContainer />
       </div>
-      
-</div>
-   <div className="gradient-bg flex flex-col items-center justify-center min-h-screen">
-      {/* Make sure the gradient is applied to the full height */}
-      <AddUserOrder />
-      <Addadvance />
-      <AddBillKapat />
-      <SessionMilk />
-      <KapatNetpay />
-    </div>
+      <div className="min-h-screen bg-gradient-to-r from-blue-200 to-purple-300 p-8 mt-12">
+            <div className="flex justify-center space-x-4 mb-6">
+                <button
+                    onClick={() => setActiveComponent("AddUserOrder")}
+                    className={`py-2 px-4 rounded-lg ${
+                        activeComponent === "AddUserOrder" ? "bg-blue-600 text-white" : "bg-blue-300 text-gray-800"
+                    } hover:bg-blue-500 transition`}
+                >
+                    उत्पादक खरेदी
+                </button>
+                <button
+                    onClick={() => setActiveComponent("Addadvance")}
+                    className={`py-2 px-4 rounded-lg ${
+                        activeComponent === "Addadvance" ? "bg-green-600 text-white" : "bg-green-300 text-gray-800"
+                    } hover:bg-green-500 transition`}
+                >
+                    अडवांस जमा
+                </button>
+                <button
+                    onClick={() => setActiveComponent("AddBillKapat")}
+                    className={`py-2 px-4 rounded-lg ${
+                        activeComponent === "AddBillKapat" ? "bg-yellow-600 text-white" : "bg-yellow-300 text-gray-800"
+                    } hover:bg-yellow-500 transition`}
+                >
+                    खरेदी कपात
+                </button>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                {renderComponent()}
+            </div>
+        </div>
     </>
   );
 }

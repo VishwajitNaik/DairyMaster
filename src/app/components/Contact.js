@@ -21,7 +21,7 @@ const ContactForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className=" p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-black">Contact Us</h2>
+      <h2 className="text-2xl font-bold mb-4 text-black" style={{ fontFamily: 'CustomPara' }}>Contact Us</h2>
       <div className="mb-4">
         <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
         <input

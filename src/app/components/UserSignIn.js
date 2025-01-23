@@ -52,17 +52,16 @@ const SigninForm = () => {
 
   return (
     <form className="flex flex-col space-y-4" onSubmit={onLogin}>
-      <h2 className="text-2xl font-bold">User Sign In</h2>
+      <h2 className="text-2xl font-bold text-black text-center">User Sign In</h2>
       
       <input
-        className="p-2 text-black border border-gray-300 rounded"
-        type="text"
+        className="p-2 text-black border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-mdtext"
         placeholder="Phone Number"
         value={user.phone}
         onChange={(e) => setUser({ ...user, phone: e.target.value })}
       />
       <input
-        className="p-2 text-black border border-gray-300 rounded"
+        className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
         type="text"
         placeholder="Owner Register No"
         value={user.registerNo}
@@ -70,7 +69,7 @@ const SigninForm = () => {
       />
 
       <select
-        className="p-2 text-black border border-gray-300 rounded"
+        className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
         value={user.milk}
         onChange={(e) => setUser({ ...user, milk: e.target.value })}
       >
@@ -79,7 +78,7 @@ const SigninForm = () => {
       </select>
       
       <input
-        className="p-2 text-black border border-gray-300 rounded"
+        className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
         type="password"
         placeholder="Password"
         value={user.password}
@@ -88,7 +87,7 @@ const SigninForm = () => {
 
 
       <button
-        className={`bg-green-500 text-white p-2 rounded ${
+        className={`w-full py-2 px-4 bg-blue-400 text-white rounded-md text-sm font-semibold hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 ${
           buttonDisabled || loading ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         type="submit"

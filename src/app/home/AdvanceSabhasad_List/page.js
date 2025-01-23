@@ -16,7 +16,7 @@ export default function Sabhasad() {
         const res = await axios.get('/api/user/getUsers');
         console.log(res.data);
         // Update the state to match the response structure
-        setUsers(res.data.data.users);  // Adjusted to match the response format: { data: owner }
+        setUsers(res.data.data);  // Adjusted to match the response format: { data: owner }
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
       }
@@ -25,21 +25,22 @@ export default function Sabhasad() {
   }, []);
 
   return (
+    <div className="gradient-bg flex flex-col min-h-screen">
     <div className="container text-black mx-auto mt-6">
       <div className="flex justify-center mb-6">
         <h1 className="text-4xl font-bold">सभासद लिस्ट (Sabhasad List)</h1>
       </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-gray-300 border border-gray-200">
-          <thead className="bg-gray-200">
+      <div className="hidden sm:block overflow-x-auto rounded-md">
+        <table className="min-w-full bg-gray-300 border border-gray-200 rounded-md">
+          <thead className="bg-gray-500">
             <tr>
-              <th className="py-2 px-4 border-b">Register No</th>
-              <th className="py-2 px-4 border-b">Name</th>
-              <th className="py-2 px-4 border-b">Milk</th>
-              <th className="py-2 px-4 border-b">Phone</th>
-              <th className="py-2 px-4 border-b">Bank Name</th>
-              <th className="py-2 px-4 border-b">Account No</th>
-              <th className="py-2 px-4 border-b">Aadhar No</th>
+            <th className="py-2 px-4 border-b">रजिस्टर नं. </th>
+              <th className="py-2 px-4 border-b">उत्पादक नं. </th>
+              <th className="py-2 px-4 border-b">दूध प्रकार </th>
+              <th className="py-2 px-4 border-b">मोबाईल नं.</th>
+              <th className="py-2 px-4 border-b">बँकेचे नाव</th>
+              <th className="py-2 px-4 border-b">खाता नं. </th>
+              <th className="py-2 px-4 border-b">आधार नं.</th>
               <th className="py-2 px-4 border-b">Actions</th>
             </tr>
           </thead>
@@ -60,10 +61,10 @@ export default function Sabhasad() {
                   <td className="py-2 px-4 border-b">{user.bankName}</td>
                   <td className="py-2 px-4 border-b">{user.accountNo}</td>
                   <td className="py-2 px-4 border-b">{user.aadharNo}</td>
-                  <td className="py-2 px-4 border-b flex items-center space-x-4">
+                  <td className="py-2 px-4 border-b flex items-center space-x-4 bg-blue-400 text-center rounded-s-md m-2 hover:bg-blue-600">
                     {/* Link to user details */}
                         <Link href={`/home/AdvanceSabhasad_List/${user._id}`}>
-                          <Image src="/assets/monycut.jpg" alt="View" width={30} height={30} className='rounded-full' />
+                          <Image src="/assets/monycut.png" alt="View" width={30} height={30} className='rounded-full' />
                         </Link>
                   </td>
                 </tr>
@@ -72,6 +73,7 @@ export default function Sabhasad() {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
-
+import { ToastContainer, toast as Toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
@@ -18,7 +19,7 @@ export default function Sabhasad() {
     async function getOwnerUsers() {
       try {
         const res = await axios.get('/api/user/getUsers');
-        setUsers(res.data.data.users);
+        setUsers(res.data.data);
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
       }
@@ -40,7 +41,7 @@ export default function Sabhasad() {
     try {
       await axios.delete(`/api/user/DeleteUser?id=${userToDelete}`);
       setUsers(users.filter(user => user._id !== userToDelete));
-      setResponseMessage("User deleted successfully!");
+      Toast.success("User Deleted Successfully");
       setUserToDelete(null); // Reset userToDelete state after deletion
     } catch (error) {
       setResponseMessage(`Failed to delete user: ${error.response?.data?.error || error.message}`);
@@ -58,7 +59,7 @@ export default function Sabhasad() {
         userId: editingUser._id,
         updatedData: updatedUserData,
       });
-      setResponseMessage("User updated successfully!");
+      Toast.success("User Updated Successfully");
       setUsers(users.map(user => (user._id === editingUser._id ? response.data.data : user)));
       setEditingUser(null);
     } catch (error) {
@@ -85,15 +86,15 @@ export default function Sabhasad() {
       {/* Desktop Table */}
       <div className="hidden sm:block overflow-x-auto rounded-md">
         <table className="min-w-full bg-gray-300 border border-gray-200 rounded-md">
-          <thead className="bg-gray-200">
+          <thead className="bg-gray-500">
             <tr>
-              <th className="py-2 px-4 border-b">Register No</th>
-              <th className="py-2 px-4 border-b">Name</th>
-              <th className="py-2 px-4 border-b">Milk</th>
-              <th className="py-2 px-4 border-b">Phone</th>
-              <th className="py-2 px-4 border-b">Bank Name</th>
-              <th className="py-2 px-4 border-b">Account No</th>
-              <th className="py-2 px-4 border-b">Aadhar No</th>
+              <th className="py-2 px-4 border-b">रजिस्टर नं. </th>
+              <th className="py-2 px-4 border-b">उत्पादक नं. </th>
+              <th className="py-2 px-4 border-b">दूध प्रकार </th>
+              <th className="py-2 px-4 border-b">मोबाईल नं.</th>
+              <th className="py-2 px-4 border-b">बँकेचे नाव</th>
+              <th className="py-2 px-4 border-b">खाता नं. </th>
+              <th className="py-2 px-4 border-b">आधार नं.</th>
               <th className="py-2 px-4 border-b">Actions</th>
             </tr>
           </thead>
@@ -107,7 +108,7 @@ export default function Sabhasad() {
             ) : (
               users.map((user, index) => (
                 <tr key={index} className="hover:bg-gray-100">
-                  <td className="py-2 px-4 border-b">{user.registerNo}</td>
+                  <td className="py-2 px-4 border-b font-bold">{user.registerNo}</td>
                   <td className="py-2 px-4 border-b">{user.name}</td>
                   <td className="py-2 px-4 border-b">{user.milk}</td>
                   <td className="py-2 px-4 border-b">{user.phone}</td>
@@ -207,19 +208,19 @@ export default function Sabhasad() {
     {userToDelete && (
       <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
         <div className="bg-white p-8 rounded-md shadow-md w-1/3">
-          <h2 className="text-center text-2xl font-bold mb-4">Are you sure you want to delete this user?</h2>
+          <h2 className="text-center text-2xl font-bold mb-4 text-gray-800">आपणास खात्री आहे का की आपण हा वापरकर्ता हटवू इच्छिता?</h2>
           <div className="flex justify-center space-x-4">
             <button
               onClick={confirmDeleteUser}
               className="bg-red-500 hover:bg-red-700 text-white p-2 rounded"
             >
-              Yes, Delete
+              होय
             </button>
             <button
               onClick={cancelDelete}
               className="bg-gray-500 hover:bg-gray-700 text-white p-2 rounded"
             >
-              Cancel
+              नाही 
             </button>
           </div>
         </div>
@@ -229,25 +230,103 @@ export default function Sabhasad() {
     {/* Edit User Modal */}
     {editingUser && (
       <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-        <div className="bg-white p-8 rounded-md shadow-md w-1/3">
+        <div className="max-w-lg h-[70vh] bg-gray-300 mx-auto p-6 backdrop-blur-md rounded-lg shadow-md overflow-x-auto overflow-y-auto m-2">
+          <style jsx>{`
+            .max-w-lg::-webkit-scrollbar {
+              height: 8px/* Adjust the height of the scrollbar */
+            }
+            .max-w-lg::-webkit-scrollbar-track {
+              background: transparent; /* Optional: Change track background */
+            }
+            .max-w-lg::-webkit-scrollbar-thumb {
+              background: linear-gradient(to bottom right, #4a90e2, #9013fe); /* Set the scrollbar color to black */
+              border-radius: 10px; /* Optional: Add rounded corners */
+            }
+          `}</style>
           <h2 className="text-black text-center text-2xl font-bold mb-4">Update User</h2>
           <form>
             {/* Input fields */}
+            <div className='flex flex-row space-x-2'>
             <label className='text-black'>
-              Register No:
+              रजि. नं. 
               <input
                 type="text"
                 name="registerNo"
                 value={updatedUserData.registerNo || ""}
                 onChange={handleInputChange}
-                className="text-black w-full p-2 mt-1 mb-4 border rounded"
+                className="text-black p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-16 bg-gray-200 rounded-md shadow-sm"
               />
             </label>
+            <label className='text-black'>
+              उत्पादकाचे नाव 
+              <input
+                type="text"
+                name="name"
+                value={updatedUserData.name || ""}
+                onChange={handleInputChange}
+                className="text-black p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-64 bg-gray-200 rounded-md shadow-sm"
+              />
+            </label>
+            <label className='text-black'>
+              दूध प्रकार 
+              <input
+                type="text"
+                name="milk"
+                value={updatedUserData.milk || ""}
+                onChange={handleInputChange}
+                className="text-black p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-16 bg-gray-200 rounded-md shadow-sm"
+              />
+            </label>
+            </div>
+            <div className='flex flex-row space-x-2 mt-2'>
+            <label className='text-black'>
+              फोन नं.
+              <input
+                type="text"
+                name="phone"
+                value={updatedUserData.phone || ""}
+                onChange={handleInputChange}
+                className="text-black p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
+              />
+            </label>
+            <label className='text-black'>
+              आधार नं.  
+              <input
+                type="text"
+                name="aadharNo"
+                value={updatedUserData.aadharNo || ""}
+                onChange={handleInputChange}
+                className="text-black p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
+              />
+            </label>
+            </div>
+            <label className='text-black'>
+              Bnank name
+              <input
+                type="text"
+                name="bankName"
+                value={updatedUserData.bankName || ""}
+                onChange={handleInputChange}
+                className="text-black p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
+              />
+            </label>
+            <label className='text-black'>
+              Account No
+              <input
+                type="text"
+                name="accountNo"
+                value={updatedUserData.accountNo || ""}
+                onChange={handleInputChange}
+                className="text-black p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
+              />
+            </label>
+
             {/* Other form fields for user data */}
+            <div className='flex flex-row'>
             <button
               type="button"
               onClick={handleUpdateSubmit}
-              className="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded w-full mt-4"
+              className="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded w-full mt-4 mr-2"
             >
               Save Changes
             </button>
@@ -258,10 +337,12 @@ export default function Sabhasad() {
             >
               Cancel
             </button>
+            </div>
           </form>
         </div>
       </div>
     )}
+    <ToastContainer />
   </div>
   
   );

@@ -13,6 +13,9 @@ export async function GET(request, {params}){
             return NextResponse.json({ message: 'No Advance found for this user' });
         }
 
+        console.log("advance", advance);
+        
+
         return NextResponse.json({
             message: 'Advance fetched successfully',
             data: advance,

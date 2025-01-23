@@ -17,11 +17,10 @@ const UserDetails = () => {
             try {
                 const res = await axios.get("/api/user/getUsers"); // Adjust endpoint as needed
                 // Log the response data to see its structure
-                console.log("Users fetched:", res.data.data.users);
 
                 // Ensure the response is an array before setting the state
-                if (Array.isArray(res.data.data.users)) {
-                    setUsers(res.data.data.users);
+                if (Array.isArray(res.data.data)) {
+                    setUsers(res.data.data);
                 } else {
                     throw new Error("Unexpected response format");
                 }

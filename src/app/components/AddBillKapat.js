@@ -44,7 +44,7 @@ const AddBillKapat = () => {
     async function getOwnerUsers() {
       try {
         const res = await axios.get('/api/user/getUsers');
-        setUsers(res.data.data.users);
+        setUsers(res.data.data);
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
       }
@@ -204,7 +204,7 @@ const AddBillKapat = () => {
 />
 
 
-   <h1 className="text-2xl font-semibold text-black mb-4 flex items-center justify-center">
+   <h1 className="text-2xl font-semibold text-black mb-4">
      खरेदी कपात
    </h1>
  </div>
@@ -212,21 +212,19 @@ const AddBillKapat = () => {
  <form onSubmit={handleSubmit} className='bg-gray-700 p-4 rounded-lg shadow-md shadow-gray-900'>
    <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
      <div className='flex flex-col md:flex-row items-start'>
-       <label htmlFor="startDate" className="text-white mr-4">Start Date:</label>
        <input
          type="date"
          id="startDate" 
          value={startDate}
          onChange={(e) => setStartDate(e.target.value)}
-         className="text-black rounded-md p-2 shadow-sm shadow-white mb-4 md:mb-0"
+         className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
        />
-       <label htmlFor="endDate" className="text-white mr-4 ml-4">End Date:</label>
        <input
          type="date"
          id="endDate"
          value={endDate}
          onChange={(e) => setEndDate(e.target.value)}
-         className="text-black rounded-md p-2 shadow-sm shadow-white"
+         className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
        />
      </div>
    </div>
@@ -236,11 +234,17 @@ const AddBillKapat = () => {
    <input
   type="text"
   id="code"
-  className="w-full sm:w-24 md:w-20 h-10 p-2 rounded-md border border-gray-500 bg-gray-600 text-white sm:mb-4 mb-2"
+  placeholder="रजि. नं."
+  className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-24 bg-gray-200 rounded-md"
   value={selectedOption}
   onChange={(e) => setSelectedOption(e.target.value)}
   onBlur={handleRegisterNoBlur}
   onFocus={handleRegisterNoFocus}
+  onInput={(e) => {
+    // Allow only numbers and a single decimal point
+    const value = e.target.value;
+    e.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+  }}
   required
 />
 
@@ -248,9 +252,9 @@ const AddBillKapat = () => {
        id="user-select"
        value={selectedOption}
        onChange={handleUserChange}
-       className='w-full sm:w-64 md:w-96 h-10 p-2 rounded-md border border-gray-500 bg-gray-600 text-white sm:mb-4 mb-2'
-     >
-       <option value="">Select User</option>
+       className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-64 bg-gray-200 rounded-md"
+       >
+       <option value="">उत्पादकाचे नाव </option>
        {users.map(user => (
          <option key={user._id} value={user.registerNo}>
            {user.name}
@@ -266,17 +270,17 @@ const AddBillKapat = () => {
      </button>
    </div>
 
-   <div className="bg-gray-600 p-4 mb-4 rounded-md shadow-inner flex flex-row justify-between space-x-6 text-white">
+   <div className="text-black h-fit text-xl font-mono p-2 mr-4 mb-4 border-b-2 border-blue-500 outline-none bg-gray-200 rounded-md flex flex-row justify-between space-x-6">
      <div className="flex items-center space-x-2">
        <span className="font-bold">बील</span>
-       <span className="px-2 py-1 bg-gray-800 border border-gray-400 rounded-md text-lg">
+       <span className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 w-36 bg-gray-500 rounded-md">
          {totalMilkRakkam}
        </span>
      </div>
      {userDetails && (
        <div className="flex items-center space-x-2">
          <span className="font-bold">बाकी</span>
-         <span className="px-2 py-1 bg-gray-800 border border-gray-400 rounded-md text-lg">
+         <span className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 w-36 bg-gray-500 rounded-md">
            {netPayment}
          </span>
        </div>
@@ -288,9 +292,9 @@ const AddBillKapat = () => {
        id="order-select"
        value={selectedOptionOrder}
        onChange={handleChange}
-       className="p-2 rounded-md border border-gray-500 bg-gray-600 text-white w-full sm:w-64 md:w-96 sm:mb-4 mb-2"
+       className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-48 bg-gray-200 rounded-md"
      >
-       <option value="">Choose an option...</option>
+       <option value="">खरेदी डाटा </option>
        {kapat.map((k) => (
          <option key={k._id} value={k.kapatName}>
            {k.kapatName}
@@ -298,16 +302,21 @@ const AddBillKapat = () => {
        ))}
      </select>
      <input
-       type="number"
-       placeholder="Enter Rate"
+       type="text"
+       placeholder="रक्कम "
        value={rakkam}
        onChange={(e) => setRakkam(e.target.value)}
-       className='w-full sm:w-24 md:w-20 p-2 rounded-md border border-gray-500 bg-gray-600 text-white'
+       onInput={(e) => {
+        // Allow only numbers and a single decimal point
+        const value = e.target.value;
+        e.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+      }}
+       className='text-black h-fit text-xl mb-4 font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-36  bg-gray-200 rounded-md'
      />
    </div>
 
    <div className='flex justify-center items-center'>
-     <button type="submit" className='w-full sm:w-36 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md'>
+     <button type="submit" className='w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105'>
        Submit
      </button>
    </div>

@@ -72,40 +72,39 @@ const OrdersPage = () => {
         <h1 className="text-2xl font-bold mb-6">उत्पादक ऑर्डर </h1>
 
         <form
-          onSubmit={(e) => { e.preventDefault(); fetchOrders(); }}
-          className="bg-gray-100 rounded-lg shadow-md"
+          onSubmit={(e) => {
+            e.preventDefault();
+            fetchOrders();
+          }}
+          className="bg-gray-400 rounded-lg shadow-md p-4 md:p-6"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div>
-              <label htmlFor="startDate" className="text-black font-medium">Start Date</label>
-              <input
-                type="date"
-                id="startDate"
-                className=" p-2 mt-1 rounded-md border border-gray-300 bg-white text-black"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="endDate" className="text-black font-medium">End Date</label>
-              <input
-                type="date"
-                id="endDate"
-                className=" p-2 mt-1 rounded-md border border-gray-300 bg-white text-black"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                required
-              />
-            </div>
+          <div className="flex flex-col md:flex-row md:items-center mb-4 md:mb-6">
+            <input
+              type="date"
+              id="startDate"
+              className="text-black p-2 text-sm md:text-xl font-mono mb-2 md:mb-0 md:mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full md:w-1/4 bg-gray-200 rounded-md shadow-sm"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              required
+            />
+            <input
+              type="date"
+              id="endDate"
+              className="text-black p-2 text-sm md:text-xl font-mono mb-2 md:mb-0 md:mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full md:w-1/4 bg-gray-200 rounded-md shadow-sm"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              required
+            />
           </div>
-          <button 
-            type="submit" 
-            className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md"
-            disabled={loading}
-          >
-            {loading ? "Fetching..." : "Generate Bills"}
-          </button>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="w-full md:w-36 p-3 md:p-4 mt-2 md:mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105"
+              disabled={loading}
+            >
+              {loading ? "Fetching..." : "Generate Bills"}
+            </button>
+          </div>
         </form>
 
         {loading && <p className="mt-4 text-blue-500">Loading...</p>}
@@ -179,8 +178,8 @@ const OrdersPage = () => {
                   <td className="py-2 px-4 border-t">{orderData.totalAdvance?.toFixed(2)}</td>
                 </tr>
                 <tr>
-                  <td className="py-2 px-4 border-t">निव्वळ येणे बाकी </td>
-                  <td className="py-2 px-4 border-t">{orderData.netPayment?.toFixed(2)}</td>
+                  <td className="py-2 px-4 border-t font-bold text-xl">निव्वळ येणे बाकी </td>
+                  <td className="py-2 px-4 border-t font-bold text-xl">{orderData.netPayment?.toFixed(2)}</td>
                 </tr>
               </tbody>
             </table>

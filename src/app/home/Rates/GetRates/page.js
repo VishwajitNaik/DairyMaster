@@ -37,49 +37,70 @@ const RatesDisplay = () => {
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold mb-8 text-gray-700">Milk Rates</h1>
+    <div className="gradient-bg">
+    <div className="flex flex-col items-center justify-center min-h-screen px-4">
+    <h1 className="text-2xl md:text-3xl font-bold mb-8 text-white text-center bg-transparent p-2 shadow-md shadow-black ">
+      दूध दर 
+    </h1>
+  
+    <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-4 md:p-6 overflow-x-auto">
+  <table className="w-full border-collapse border border-gray-200">
+    {/* Main Header */}
+    <thead>
+      <tr>
+        <th colSpan="4" className="text-black py-3 px-2 md:px-4 border-b bg-gray-300">म्हैस दर </th>
+        <th colSpan="4" className="text-black py-3 px-2 md:px-4 border-b bg-gray-300">गाय दर </th>
+        <th className="text-black py-3 px-2 md:px-4 border-b bg-gray-300"></th>
+      </tr>
+    </thead>
+    {/* Sub Header */}
+    <thead>
+      <tr>
+        {/* Headers for Buff Rate (B) */}
+        <th className="text-black py-3 px-2 md:px-4 border-b bg-gray-200">जास्त फॅट</th>
+        <th className="text-black py-3 px-2 md:px-4 border-b bg-gray-200">जास्त फॅट दर</th>
+        <th className="text-black py-3 px-2 md:px-4 border-b bg-gray-200">कमी फॅट </th>
+        <th className="text-black py-3 px-2 md:px-4 border-b bg-gray-200">कमी फॅट दर</th>
+        {/* Headers for Cow Rate (C) */}
+        <th className="text-black py-3 px-2 md:px-4 border-b bg-gray-200">जास्त फॅट</th>
+        <th className="text-black py-3 px-2 md:px-4 border-b bg-gray-200">जास्त फॅट दर</th>
+        <th className="text-black py-3 px-2 md:px-4 border-b bg-gray-200">कमी फॅट</th>
+        <th className="text-black py-3 px-2 md:px-4 border-b bg-gray-200">कमी फॅट दर</th>
+        {/* Actions */}
+        <th className="text-black py-3 px-2 md:px-4 border-b bg-gray-200">Actions</th>
+      </tr>
+    </thead>
+    {/* Table Body */}
+    <tbody>
+      {rates.map((rate) => (
+        <tr key={rate._id} className="text-center">
+          {/* Data for Buff Rate (B) */}
+          <td className="text-black py-2 px-2 md:px-4 border-b">{rate.HighFatB}</td>
+          <td className="text-black py-2 px-2 md:px-4 border-b">{rate.HighRateB}</td>
+          <td className="text-black py-2 px-2 md:px-4 border-b">{rate.LowFatB}</td>
+          <td className="text-black py-2 px-2 md:px-4 border-b">{rate.LowRateB}</td>
+          {/* Data for Cow Rate (C) */}
+          <td className="text-black py-2 px-2 md:px-4 border-b">{rate.HighFatC}</td>
+          <td className="text-black py-2 px-2 md:px-4 border-b">{rate.HighRateC}</td>
+          <td className="text-black py-2 px-2 md:px-4 border-b">{rate.LowFatC}</td>
+          <td className="text-black py-2 px-2 md:px-4 border-b">{rate.LowRateC}</td>
+          {/* Actions */}
+          <td className="text-black py-2 px-2 md:px-4 border-b">
+            <button
+              onClick={() => deleteRate(rate._id)}
+              className="bg-red-500 text-white px-3 py-1 md:px-4 md:py-2 rounded hover:bg-red-600 text-sm md:text-base"
+            >
+              डिलिट करा 
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 
-      <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6">
-        <table className="min-w-full border-collapse border border-gray-200">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="text-black py-3 px-4 border-b">High Fat B</th>
-              <th className="text-black py-3 px-4 border-b">High Rate B</th>
-              <th className="text-black py-3 px-4 border-b">Low Fat B</th>
-              <th className="text-black py-3 px-4 border-b">Low Rate B</th>
-              <th className="text-black py-3 px-4 border-b">High Fat C</th>
-              <th className="text-black py-3 px-4 border-b">High Rate C</th>
-              <th className="text-black py-3 px-4 border-b">Low Fat C</th>
-              <th className="text-black py-3 px-4 border-b">Low Rate C</th>
-              <th className="text-black py-3 px-4 border-b">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rates.map((rate) => (
-              <tr key={rate._id} className="text-center">
-                <td className="text-black py-2 px-4 border-b">{rate.HighFatB}</td>
-                <td className="text-black py-2 px-4 border-b">{rate.HighRateB}</td>
-                <td className="text-black py-2 px-4 border-b">{rate.LowFatB}</td>
-                <td className="text-black py-2 px-4 border-b">{rate.LowRateB}</td>
-                <td className="text-black py-2 px-4 border-b">{rate.HighFatC}</td>
-                <td className="text-black py-2 px-4 border-b">{rate.HighRateC}</td>
-                <td className="text-black py-2 px-4 border-b">{rate.LowFatC}</td>
-                <td className="text-black py-2 px-4 border-b">{rate.LowRateC}</td>
-                <td className="text-black py-2 px-4 border-b">
-                  <button
-                    onClick={() => deleteRate(rate._id)}
-                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+  </div>
+  </div>
   );
 };
 

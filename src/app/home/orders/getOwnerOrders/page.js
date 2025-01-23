@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import CompleteOrderButton from '../../../components/CompleteOrderButton.js';
+import Loading from '../../../components/Loading/Loading';
 
 const DisplayOrders = () => {
     const [orders, setOrders] = useState([]); 
@@ -49,21 +50,18 @@ const DisplayOrders = () => {
     });
 
     if (loading) {
-        return <div className="text-center">Loading...</div>;
+        return <div className="text-center"><Loading /></div>;
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100"
-        style={{
-        backgroundImage: 'url(/assets/truck.jpg)', 
-        backgroundSize: 'cover', 
-        backgroundPosition: 'center',
-      }}
-        >
-            <h1 className="text-3xl font-bold mb-8 text-white shadow-md shadow-black bg-slate-600 p-2 rounded-lg">Order List</h1>
+        <div className="banner flex flex-col items-center justify-center min-h-screen bg-gray-100">
+                    <video autoPlay loop muted>
+                <source src="/assets/milk.mp4" type="video/mp4" /> 
+            </video>
+            <h1 className="text-3xl font-bold mb-8 text-white shadow-md z-10 shadow-black bg-slate-600 p-2 rounded-lg">Order List</h1>
             
             {/* Filter Buttons */}
-            <div className="flex space-x-4 mb-8">
+            <div className="z-10 flex space-x-4 mb-8">
                 <button 
                     onClick={() => handleFilterChange("Pending")} 
                     className={`px-4 py-2 rounded-lg ${filter === "Pending" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"}`}
