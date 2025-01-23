@@ -23,9 +23,11 @@ const SignupSangh = () => {
         setError(null);
 
         try {
+
             const res = await axios.post("/api/sangh/signup", sangh);
             Toast.success("Sangh signup successfully, please login now");
             console.log("SignUp Success", res.data);
+            setSangh({ SanghName: "", email: "", phone: "", password: "" });
             router.push("/");
         } catch (error) {
             console.error("SignUp Error", error);
@@ -35,59 +37,92 @@ const SignupSangh = () => {
         }
     };
 
+    const handlePhoneChange = (e) => {
+        const value = e.target.value;
+        if (value.length <= 10) {
+            setSangh({ ...sangh, phone: value });
+        }
+    };
+
     useEffect(() => {
         const allFieldsFilled = Object.values(sangh).every(field => field.length > 0);
         setButtonDisabled(!allFieldsFilled);
     }, [sangh]);
 
     return (
-        <div>
-            <form className="text-black flex flex-col space-y-4" onSubmit={onSignup}>
-                <h2 className="text-2xl font-bold">Sign Up</h2>
-                <label className='text-black'>संघाचे नाव </label>
-                <input
-                    className="border border-gray-300 rounded"
-                    type="text"
-                    placeholder="Username"
-                    value={sangh.SanghName}
-                    onChange={(e) => setSangh({ ...sangh, SanghName: e.target.value })}
-                />
-                <label className='text-black'>फोन नंबर</label>
-                <input
-                    type="text"
-                    placeholder="Phone Number"
-                    className="border border-gray-300 rounded"
-                    value={sangh.phone}
-                    onChange={(e) => setSangh({ ...sangh, phone: e.target.value })}
-                />
-                <label className='text-black'>ईमेल</label>
-                <input
-                    type="email"
-                    placeholder="abc@gmail.com"
-                    className="border border-gray-300 rounded"
-                    value={sangh.email}
-                    onChange={(e) => setSangh({ ...sangh, email: e.target.value })}
-                />
-                <label className='text-black'>पासवर्ड</label>
-                <input
-                    type="password"
-                    placeholder="Password"
-                    className="p-2 border border-gray-300 rounded"
-                    value={sangh.password}
-                    onChange={(e) => setSangh({ ...sangh, password: e.target.value })}
-                />
+        <div className="max-w-lg h-[60vh] mx-auto p-6 bg-transparent backdrop-blur-md rounded-lg shadow-md overflow-x-auto overflow-y-auto m-2">
+            <style jsx>{`
+            .max-w-lg::-webkit-scrollbar {
+                height: 8px; /* Adjust the height of the scrollbar */
+            }
+            .max-w-lg::-webkit-scrollbar-track {
+                background: transparent; /* Optional: Change track background */
+            }
+            .max-w-lg::-webkit-scrollbar-thumb {
+                background: linear-gradient(to bottom right, #4a90e2, #9013fe); /* Set the scrollbar color to black */
+                border-radius: 10px; /* Optional: Add rounded corners */
+            }
+            `}</style>
+            <form className="w-full max-w-md rounded-lg shadow-lg p-6 space-y-4" onSubmit={onSignup}>
+                <h2 className="text-2xl font-bold text-center text-black">Sign Up</h2>
+
+                <div>
+                    <label className='block text-sm font-medium text-black mb-1'>संघाचे नाव</label>
+                    <input
+                        className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
+                        type="text"
+                        placeholder="Username"
+                        value={sangh.SanghName}
+                        onChange={(e) => setSangh({ ...sangh, SanghName: e.target.value })}
+                    />
+                </div>
+
+                <div>
+                    <label className='block text-sm font-medium text-black mb-1'>फोन नंबर</label>
+                    <input
+                        type="text"
+                        placeholder="Phone Number"
+                        className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
+                        value={sangh.phone}
+                        onChange={handlePhoneChange}
+                    />
+                </div>
+
+                <div>
+                    <label className='block text-sm font-medium text-black mb-1'>ईमेल</label>
+                    <input
+                        type="email"
+                        placeholder="abc@gmail.com"
+                        className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
+                        value={sangh.email}
+                        onChange={(e) => setSangh({ ...sangh, email: e.target.value })}
+                    />
+                </div>
+
+                <div>
+                    <label className='block text-sm font-medium text-black mb-1'>पासव्र्ड</label>
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
+                        value={sangh.password}
+                        onChange={(e) => setSangh({ ...sangh, password: e.target.value })}
+                    />
+                </div>
+
                 <button
                     type="submit"
-                    className={`bg-blue-500 text-white p-2 rounded ${buttonDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`w-full py-2 px-4 bg-blue-400 text-white rounded-md text-sm font-semibold hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 ${buttonDisabled || loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     disabled={buttonDisabled || loading}
                 >
                     {loading ? 'Signing Up...' : 'Sign Up'}
                 </button>
-                {error && <p className="text-red-500">{error}</p>}
+
+                {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
             </form>
             <ToastContainer />
         </div>
     );
-}
+};
 
 export default SignupSangh;

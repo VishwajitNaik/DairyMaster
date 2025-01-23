@@ -12,14 +12,10 @@ export async function GET(request) {
         // Fetch addresses created by the owner
         const Address = await AddAddress.find({ createdBy: ownerId });
 
-        if (!Address || Address.length === 0) {
-            return NextResponse.json({ error: "No addresses found for this owner" }, { status: 404 });
-        }
-
         return NextResponse.json(
             {
                 message: "Addresses fetched successfully",
-                data: Address, // Return all addresses for the owner
+                data: Address || [], // Return an empty array if no addresses are found
             },
             { status: 200 }
         );

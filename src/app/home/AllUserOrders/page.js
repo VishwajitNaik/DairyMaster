@@ -1,73 +1,64 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Loading from "@/app/components/Loading/Loading";
 
 const UserOrdersBillKapat = () => {
   const [data, setData] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10); // Items per page
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Fetching data when the startDate and endDate change
+  // Fetching all data on component mount
   useEffect(() => {
-    if (startDate && endDate) {
-      setLoading(true);
-      setError("");
-      axios
-        .get("/api/orders/AllUserOrders", {
-          params: { startDate, endDate },
-        })
-        .then((response) => {
-          setData(response.data.data);
-        })
-        .catch(() => {
-          setError("Failed to fetch data");
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  }, [startDate, endDate]);
+    setLoading(true);
+    setError("");
+    axios
+      .get("/api/orders/AllUserOrders")
+      .then((response) => {
+        setData(response.data.data);
+      })
+      .catch(() => {
+        setError("Failed to fetch data");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  // Calculate the total remaining amount
+  const totalRemainingAmount = data.reduce((sum, user) => sum + user.remainingAmount, 0);
+
+  // Pagination logic
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentData = data.slice(startIndex, startIndex + itemsPerPage);
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
 
   return (
-    <div className="gradient-bg flex flex-col min-h-screen p-4 sm:p-8">
+    <div className="gradient-bg flex items-center flex-col min-h-screen p-4 sm:p-8">
       <h1 className="text-2xl sm:text-4xl mb-8 text-center">
-        सर्व उत्पादक बाकी पाहणे
+        सर्व उत्पादक बाकी पाहणे (संपूर्ण डेटा)
       </h1>
 
-      {/* Date range filter inputs */}
-      <div className="flex flex-wrap gap-4 justify-center items-center mb-6">
-        <div className="flex flex-col sm:flex-row items-center">
-          <label className="text-sm sm:text-base font-bold mr-2">Start Date:</label>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="p-2 text-black border rounded w-full sm:w-auto"
-          />
-        </div>
-        <div className="flex flex-col sm:flex-row items-center">
-          <label className="text-sm sm:text-base font-bold mr-2">End Date:</label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="p-2 text-black border rounded w-full sm:w-auto"
-          />
-        </div>
-      </div>
-
       {/* Loading and error messages */}
-      {loading && <p className="text-center">Loading...</p>}
+      {loading && <p className="text-center"><Loading /></p>}
       {error && <p className="text-center text-red-500">{error}</p>}
 
       {/* Data table */}
-      <div className="overflow-x-auto">
-        {data.length > 0 ? (
-          <table className="table-auto border-collapse w-full bg-white text-sm sm:text-base">
+      <div className="w-1/2 rounded-md shadow-md shadow-black">
+        {currentData.length > 0 ? (
+          <table className="table-auto border-collapse w-full bg-gray-200 text-sm sm:text-base rounded-md">
             <thead>
-              <tr className="bg-gray-200">
+              <tr className="bg-gray-400">
                 <th className="text-black border px-4 py-2">तारीख</th>
                 <th className="text-black border px-4 py-2">उत्पादक नं</th>
                 <th className="text-black border px-4 py-2">उत्पादक</th>
@@ -75,20 +66,56 @@ const UserOrdersBillKapat = () => {
               </tr>
             </thead>
             <tbody>
-              {data.map((user) => (
+              {currentData.map((user) => (
                 <tr key={user.userId} className="text-center">
-                  <td className="text-black border px-4 py-2">{new Date().toLocaleDateString()}</td>
-                  <td className="text-black border px-4 py-2">{user.registerNo}</td>
-                  <td className="text-black border px-4 py-2">{user.username}</td>
-                  <td className="text-black border px-4 py-2">{user.remainingAmount}</td>
+                  <td className="text-black border border-gray-700 px-4 py-2">
+                    {new Date().toLocaleDateString()}
+                  </td>
+                  <td className="text-black border border-gray-700 px-4 py-2">{user.registerNo}</td>
+                  <td className="text-black border border-gray-700 px-4 py-2">{user.username}</td>
+                  <td className="text-black border border-gray-700 px-4 py-2">{user.remainingAmount}</td>
                 </tr>
               ))}
+              {/* Footer row for total */}
+              <tr className="bg-gray-100 font-bold text-center">
+                <td className="text-black border border-gray-700 px-4 py-2" colSpan="3">
+                  एकूण बाकी
+                </td>
+                <td className="text-black border px-4 py-2">{totalRemainingAmount}</td>
+              </tr>
             </tbody>
           </table>
         ) : (
-          !loading && <p className="text-center">No data available for the selected date range</p>
+          !loading && <p className="text-center">डेटा उपलब्ध नाही</p>
         )}
       </div>
+
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center mt-4 space-x-4">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 border rounded ${
+              currentPage === 1 ? "bg-gray-300" : "bg-blue-500 text-white"
+            }`}
+          >
+            मागील पृष्ठ
+          </button>
+          <span className="text-black">
+            पृष्ठ {currentPage} / {totalPages}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className={`px-4 py-2 border rounded ${
+              currentPage === totalPages ? "bg-gray-300" : "bg-blue-500 text-white"
+            }`}
+          >
+            पुढील पृष्ठ
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -12,7 +12,6 @@ const HeroBanner = () => {
         <p style={styles.description}>
           Collaborate, solve problems, and build projects together. Join a community of problem solvers and innovators today.
         </p>
-        <button style={styles.ctaButton}>Get Started</button>
       </div>
     </div>
   );

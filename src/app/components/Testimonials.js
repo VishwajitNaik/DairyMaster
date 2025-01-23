@@ -46,8 +46,8 @@ const Testimonials = () => {
 
   return (
     <>
-      <div className="text-black text-3xl sm:text-4xl md:text-5xl font-semibold mb-6">
-        What Our Users Say
+      <div className="text-black text-3xl sm:text-4xl md:text-5xl font-semibold mb-6 z-60" style={{ fontFamily: 'CustomPara' }}>
+        How To Use
       </div>
 
       <Swiper
@@ -64,13 +64,13 @@ const Testimonials = () => {
       >
         {testimonials.map((testimonial, index) => (
           <SwiperSlide key={index}>
-            <div className="bg-white hover:bg-blue-200 p-6 rounded-lg shadow-md flex flex-col items-center">
+            <div className="bg-white hover:bg-blue-200 p-4 sm:p-6 rounded-lg shadow-md flex flex-col items-center">
               <Image
-                width={200}
-                height={300} 
+                width={150}
+                height={200} 
                 src={testimonial.image} 
                 alt={`${testimonial.name}'s testimonial`} 
-                className="w-64 h-48 mb-4 rounded"
+                className="w-32 h-32 sm:w-64 sm:h-48 mb-4 rounded"
               />
               <p className="text-xs sm:text-sm text-gray-600 mb-2">{testimonial.position}</p>
               <p className="text-xs sm:text-sm text-gray-500 mb-4">{testimonial.name}</p>

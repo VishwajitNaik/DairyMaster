@@ -66,18 +66,14 @@ const OrderForm = () => {
     };
 
     return (
-        <div 
-        className="flex flex-col items-center justify-center min-h-screen bg-gray-100"
-        style={{
-        backgroundImage: 'url(/assets/truck.jpg)', 
-        backgroundSize: 'cover', 
-        backgroundPosition: 'center',
-      }}
-        >
+        <div className="banner flex flex-col min-h-screen bg-gray-100">
+            <video autoPlay loop muted>
+                <source src="/assets/milk.mp4" type="video/mp4" /> 
+            </video>
             <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick pauseOnHover />
-            <h1 className="text-3xl font-bold mb-8 text-gray-700">New Order</h1>
+            <h1 className="v-content text-3xl font-bold mb-8 z-1 text-gray-700">New Order</h1>
 
-            <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+            <div className="v-content bg-gray-300 shadow-lg rounded-lg p-8 w-full max-w-md">
                 <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">Order Information</h2>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -106,7 +102,7 @@ const OrderForm = () => {
                             id="quantity"
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
-                            className="text-black w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none transition-shadow"
+                            className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
                             placeholder="Enter quantity"
                             required
                         />

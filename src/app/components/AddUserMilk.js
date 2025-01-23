@@ -232,7 +232,9 @@ const Page = () => {
     async function getOwnerUsers() {
       try {
         const res = await axios.get("/api/user/getUsers");
-        setUsers(res.data.data.users);
+        setUsers(res.data.data);
+        console.log(res.data.data);
+        
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
       }
@@ -584,7 +586,7 @@ const Page = () => {
                   height={10}
                 />
                 </h1>
-    <h1 className="text-2xl text-white font-semibold relative z-10">
+    <h1 className="text-xl text-white font-semibold relative z-10">
           <span className="z-1 text-blue-500">
             {ownerName || 'Guest'}
           </span>

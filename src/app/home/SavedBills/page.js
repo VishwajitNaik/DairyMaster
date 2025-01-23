@@ -3,7 +3,7 @@ import SavedBillMobile from '@/app/components/MObileView/SavedBill';
 const SavedBills = () => {
 
   return (
-    <div>
+    <div className="gradient-bg flex flex-col min-h-screen">
       <SavedBill />
       {/* <SavedBillMobile /> */}
     </div>

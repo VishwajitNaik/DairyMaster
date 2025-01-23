@@ -31,16 +31,19 @@ const userSchema = new mongoose.Schema({
         type: String, // Changed from Number to String
         required: true,
     },
-    aadharNo: {
-        type: String, // Changed from Number to String
-        required: true,
-        validate: {
-            validator: function (v) {
-                return /^\d{12}$/.test(v); // Adjust regex based on your requirements
-            },
-            message: props => `${props.value} is not a valid Aadhar number!`,
+aadharNo: {
+    type: String, // Keep it as a String to handle spaces
+    required: true,
+    validate: {
+        validator: function (v) {
+            const sanitizedValue = v.replace(/\s+/g, ""); // Remove all spaces
+            return /^\d{12}$/.test(sanitizedValue); // Ensure exactly 12 digits after removing spaces
         },
+        message: props => `${props.value} is not a valid Aadhar number!`,
     },
+    set: v => v.replace(/\s+/g, ""), // Automatically remove spaces before saving to the database
+},
+
     password: {
         type: String,
         required: true,

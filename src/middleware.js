@@ -1,9 +1,4 @@
-// /middleware.js or appropriate middleware file
 import { NextResponse } from 'next/server';
-
-// No need to import models or connect to the database here, as middleware runs on the Edge Runtime
-// and doesn't have access to the server-side environment.
-// Instead, token verification should be handled through secure methods like JWT verification.
 
 export function middleware(request) {
   const path = request.nextUrl.pathname;
@@ -14,8 +9,10 @@ export function middleware(request) {
   const isSanghAuthPath = path === '/home/AllDairies';
   const isResetPassword = path.startsWith('/home/reset-password');
   const isVerifyPassword = path.startsWith('/home/reset');
+  const isSanghVerifyPassword = path.startsWith('/home/AllDairies/reset');
+  const isSanghResetPassword = path.startsWith('/home/AllDairies/reset-password');
   const isUserAccess = path.startsWith('/home/milkRecords/getMilksUserSide');
-  const regNo = path.startsWith(`/api/user/getUsers/[registerNo]`)
+  const regNo = path.startsWith(`/api/user/getUsers/[registerNo]`);
   const isSignUpUser = path.startsWith('/home/CreateUser/AddUser');
   const isSignInUser = path.startsWith('/home/CreateUser/LoginUser');
   const updateOwner = path.startsWith('/home/owner/updateOwner');
@@ -25,8 +22,6 @@ export function middleware(request) {
   const userToken = request.cookies.get('userToken')?.value || '';
   const ownerToken = request.cookies.get('ownerToken')?.value || '';
   const sanghToken = request.cookies.get('sanghToken')?.value || '';
-
-  // console.log(`Middleware invoked. Path: ${path}. SanghToken: ${sanghToken}`);
 
   // Handle redirection logic
 
@@ -54,18 +49,22 @@ export function middleware(request) {
     (isOwnerAccess && !ownerToken) ||
     (isSignUpUser && !ownerToken) || // Assuming only Owners can sign up Users
     (isSignInUser && !ownerToken) || // Assuming only Owners can sign in Users
-    (!userToken && !ownerToken && !sanghToken && 
-      !isRootPath && !isSigninPath && !isResetPassword && 
-      !isVerifyPassword && !isSignUpUser && !isSignInUser)
+    (!userToken && !ownerToken && !sanghToken &&
+      !isRootPath && !isSigninPath && !isResetPassword &&
+      !isVerifyPassword && !isSignUpUser && !isSignInUser &&
+      !isSanghVerifyPassword && !isSanghResetPassword && !regNo && !updateOwner)
   ) {
     console.log('User, Owner, or Sangh not authenticated, redirecting to /');
     return NextResponse.redirect(new URL('/', request.nextUrl));
   }
 
-  // 5. Allow authenticated Sanghs to access /home/AllDairies and other protected routes
-  // 6. Allow all users to access the root path (/)
+  // 5. Allow direct access to Sangh reset and reset-password paths without login
+  if (isSanghVerifyPassword || isSanghResetPassword) {
+    console.log('Allowing access to Sangh reset and reset-password paths without login');
+    return NextResponse.next();
+  }
 
-  // If none of the above conditions are met, allow the request to proceed
+  // Allow all other authenticated users to proceed
   console.log('Allowing request to proceed');
   return NextResponse.next();
 }
@@ -85,5 +84,7 @@ export const config = {
     '/home/AllDairies/:path*', // Ensure only logged-in Sangh users can access this path
     '/home/updateDetails/OnwerUpdate/:path*',
     '/api/user/getUsers/:path*',
+    '/home/AllDairies/reset/:path*', // Allow without Sangh login
+    '/home/AllDairies/reset-password/:path*', // Allow without Sangh login
   ],
 };

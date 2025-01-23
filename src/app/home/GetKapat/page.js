@@ -77,98 +77,113 @@ const SthirkapatList = () => {
   }
 
   return (
-    <div className='bg-gray-800 p-6 rounded-lg shadow-md w-full max-w-2xl mx-auto'>
-      <h1 className='text-2xl font-semibold text-white mb-4'>Sthir Kapat Records</h1>
+    <div className="gradient-bg flex flex-col">
+    <div className='bg-gray-500 max-w-lg w-1/2 h-[80vh] mx-auto p-6 backdrop-blur-md rounded-lg shadow-md shadow-black overflow-x-auto overflow-y-auto m-2'>
+        <style jsx>{`
+  .max-w-lg::-webkit-scrollbar {
+    height: 8px; /* Adjust the height of the scrollbar */
+  }
+  .max-w-lg::-webkit-scrollbar-track {
+    background: transparent; /* Optional: Change track background */
+  }
+  .max-w-lg::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom right, #4a90e2, #9013fe); /* Set the scrollbar color to black */
+    border-radius: 10px; /* Optional: Add rounded corners */
+  }
+`}</style>
+      <h1 className='text-2xl font-semibold text-white mb-4'>कपातीचा तपशील </h1>
       {sthirkapatRecords.length === 0 ? (
-        <p className='text-white'>No records found</p>
+        <p className='text-white'>कोणतेही कपात मिळालेली नाही.</p>
       ) : (
         <>
-          <ul className='bg-gray-700 p-4 rounded-lg'>
+          <ul className='bg-blue-300 p-4 rounded-lg shadow-md shadow-black'>
             {sthirkapatRecords.map(record => (
               <li key={record._id} className='mb-4 p-4 bg-gray-600 rounded-md'>
-                <p className='text-white'>Date: {new Date(record.date).toLocaleDateString()}</p>
-                <p className='text-white'>Kapat Type: {record.KapatType}</p>
-                <p className='text-white'>Kapat Code: {record.kapatCode}</p>
-                <p className='text-white'>Kapat Name: {record.kapatName}</p>
-                {record.kapatRate && <p className='text-white'>Kapat Rate: {record.kapatRate}</p>}
+                <p className='text-white'> <span className='font-semibold'>दिनांक - </span> {new Date(record.date).toLocaleDateString()}</p>
+                <p className='text-white'><span className='font-semibold'> कपात प्रकार - </span> {record.KapatType}</p>
+                <p className='text-white'><span className='font-semibold'> कपात कोड - </span> {record.kapatCode}</p>
+                <p className='text-white'><span className='font-semibold'> कपातीचे नाव - </span> {record.kapatName}</p>
+                {record.kapatRate && <p className='text-white'><span className='font-semibold'> कपात रक्कम - </span> {record.kapatRate}</p>}
                 <div className='mt-2'>
-                  <button onClick={() => handleEdit(record)} className='bg-blue-500 text-white p-1 rounded mr-2'>
-                    Edit
+                  <button onClick={() => handleEdit(record)} className='w-1/4 py-2 mr-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105'>
+                    अपडेट 
                   </button>
-                  <button onClick={() => handleDelete(record._id)} className='bg-red-500 text-white p-1 rounded'>
-                    Delete
+                  <button onClick={() => handleDelete(record._id)} className='w-1/4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105'>
+                    डिलिट
                   </button>
                 </div>
               </li>
             ))}
           </ul>
           <div className='mt-4 p-4 bg-gray-700 rounded-lg'>
-            <p className='text-xl font-semibold text-white'>Total Kapat Rate: {totalKapatRate}</p>
+            <p className='text-xl font-semibold text-white'> <span className='font-semibold'>एकूण स्थिर कपात -</span> {totalKapatRate}</p>
           </div>
         </>
       )}
 
       {editRecord && (
         <form onSubmit={handleUpdate} className='mt-6 bg-gray-700 p-4 rounded-lg'>
-          <h2 className='text-xl text-white mb-4'>Edit Kapat Record</h2>
+          <h2 className='text-xl text-white mb-4'>कपातीचा अपडेट</h2>
           <div>
-            <label className='block text-white'>Kapat Type:</label>
+            <label className='block text-white'>कपातीचा प्रकार</label>
             <input
               type="text"
               name="KapatType"
               value={formData.KapatType}
               onChange={handleInputChange}
-              className='text-black block w-full p-2 mt-1 mb-4 rounded-md'
+              className='text-black pl-4 h-12 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm'
               required
             />
           </div>
           <div>
-            <label className='block text-white'>Kapat Code:</label>
+            <label className='block text-white'>कपातीचा कोड</label>
             <input
               type="text"
               name="kapatCode"
               value={formData.kapatCode}
               onChange={handleInputChange}
-              className='text-black block w-full p-2 mt-1 mb-4 rounded-md'
+              className='text-black h-12 mr-4 pl-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm'
               required
             />
           </div>
           <div>
-            <label className='block text-white'>Kapat Name:</label>
+            <label className='block text-white'>कपातीचे नाव </label>
             <input
               type="text"
               name="kapatName"
               value={formData.kapatName}
               onChange={handleInputChange}
-              className='text-black block w-full p-2 mt-1 mb-4 rounded-md'
+              className='text-black h-12 mr-4 pl-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm'
               required
             />
           </div>
           <div>
-            <label className='block text-white'>Kapat Rate:</label>
+            <label className='block text-white'>कपात रक्कम </label>
             <input
               type="number"
               name="kapatRate"
               value={formData.kapatRate}
               onChange={handleInputChange}
-              className='text-black block w-full p-2 mt-1 mb-4 rounded-md'
+              className='text-black h-12 mr-4 pl-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full mb-4 bg-gray-200 rounded-md shadow-sm'
             />
           </div>
           <button
             type="submit"
-            className='bg-green-500 text-white p-2 rounded-md'
+            className='w-1/4 py-2 mr-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105'
           >
-            Update Record
+            अपडेट  
           </button>
           <button
             type="button"
             onClick={() => setEditRecord(null)}
-            className='bg-gray-500 text-white p-2 rounded-md ml-2'
+            className='w-1/4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105'
           >
-            Cancel
+
+            रद्द
           </button>
         </form>
       )}
+    </div>
     </div>
   );
 };

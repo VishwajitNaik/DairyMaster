@@ -46,11 +46,11 @@ const AddAddressForm = () => {
     >
       <ToastContainer />
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-4 text-center">Add New Address</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center text-black">Add New Address</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Address Input */}
           <div>
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="address" className="block text-lg font-medium text-gray-700">
               Address
             </label>
             <textarea
@@ -58,7 +58,7 @@ const AddAddressForm = () => {
               name="address"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              className="w-full text-black p-2 border border-gray-300 rounded"
+              className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
               placeholder="Enter the address"
               required
             />
@@ -66,7 +66,7 @@ const AddAddressForm = () => {
 
           {/* Pin Code Input */}
           <div>
-            <label htmlFor="pinCode" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="pinCode" className="block text-lg font-medium text-gray-700">
               Pin Code
             </label>
             <input
@@ -75,20 +75,23 @@ const AddAddressForm = () => {
               name="pinCode"
               value={pinCode}
               onChange={(e) => setPinCode(e.target.value)}
-              className="w-full text-black p-2 border border-gray-300 rounded"
+              className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
               placeholder="Enter the pin code"
               required
             />
           </div>
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-            disabled={loading}
-          >
-            {loading ? "Submitting..." : "Submit"}
-          </button>
+          <div className="flex justify-center items-center mt-4">
+            <button
+              type="submit"
+              className="text-center w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105"
+              disabled={loading}
+            >
+              {loading ? "Submitting..." : "Submit"}
+            </button>
+          </div>
+
         </form>
       </div>
     </div>

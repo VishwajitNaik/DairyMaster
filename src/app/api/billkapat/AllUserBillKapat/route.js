@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
 import { connect } from "@/dbconfig/dbconfig";
 import BillKapat from "@/models/BillKapat";
+import { getDataFromToken } from "@/helpers/getDataFromToken";
+import User from "@/models/userModel"; 
 import mongoose from "mongoose";
+import { findOne } from "@/models/GetDocterVisit";
 
 connect();
 
 export async function GET(request) {
+  const ownerId = await getDataFromToken(request);
+
   const { searchParams } = new URL(request.url);
   const startDateStr = searchParams.get("startDate");
   const endDateStr = searchParams.get("endDate");
@@ -25,13 +30,17 @@ export async function GET(request) {
   }
 
   try {
-    // Fetch all BillKapat records within the date range
+    // Step 1: Find all users created by the owner (using ownerId)
+    const users = await User.find({ createdBy: ownerId }).select("_id name registerNo");
+
+    // Step 2: Fetch all BillKapat records created by those users within the date range
     const billKapatRecords = await BillKapat.find({
+      createdBy: { $in: users.map(user => user._id) }, // Match createdBy with userIds of the fetched users
       date: {
         $gte: startDate,
         $lte: endDate,
       },
-    }).populate("createdBy", "registerNo name");
+    }).populate("createdBy", "registerNo name"); // Populate createdBy with user fields
 
     // Group records by user
     const groupedData = billKapatRecords.reduce((acc, record) => {

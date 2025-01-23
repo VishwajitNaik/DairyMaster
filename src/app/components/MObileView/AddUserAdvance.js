@@ -21,7 +21,7 @@ const AddUserAdvance = () => {
       async function getOwnerUsers() {
         try {
           const res = await axios.get('/api/user/getUsers');
-          setUsers(res.data.data.users); 
+          setUsers(res.data.data); 
         } catch (error) {
           console.log("Failed to fetch users:", error.message);
         }

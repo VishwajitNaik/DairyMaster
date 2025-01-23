@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Loading from "@/app/components/Loading/Loading";
 
 const BillKapatTable = () => {
   const [billKapatData, setBillKapatData] = useState([]);
@@ -40,7 +41,7 @@ const BillKapatTable = () => {
           <div className="w-full sm:w-auto">
             <input
               type="date"
-              className="border rounded-md p-2 text-gray-700 text-sm w-full"
+              className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
             />
@@ -49,14 +50,14 @@ const BillKapatTable = () => {
           <div className="w-full sm:w-auto">
             <input
               type="date"
-              className="border rounded-md p-2 text-gray-700 text-sm w-full"
+              className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
             />
           </div>
           <button
             type="button"
-            className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition duration-300 w-full sm:w-auto"
+            className="w-full md:w-36 p-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105"
             onClick={fetchBillKapatData}
           >
             Fetch Data
@@ -67,7 +68,9 @@ const BillKapatTable = () => {
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         {/* Loading State */}
-        {loading && <p>Loading...</p>}
+        {loading && <p>
+          <Loading />
+        </p>}
 
         {/* Data Table */}
         {!loading && billKapatData.length > 0 && (

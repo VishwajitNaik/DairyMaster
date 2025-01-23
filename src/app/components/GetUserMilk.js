@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback } from "react";
 import axios from "axios";
+import Loading from "../components/Loading/Loading";
 
 export default function MilkRecords() {
   const [milkRecords, setMilkRecords] = useState([]);
@@ -110,7 +111,7 @@ export default function MilkRecords() {
 
   return (
     <div className="container mx-auto mt-6">
-      <h1 className="text-4xl font-bold text-center mb-6">Milk Records</h1>
+      <h1 className="text-4xl font-bold text-center mb-6">सर्व दूध </h1>
 
       {/* Date Range Filter */}
       <div className="flex justify-center gap-4 mb-6">
@@ -137,7 +138,7 @@ export default function MilkRecords() {
       </div>
 
       {/* Loading and Error Messages */}
-      {loading && <div className="text-center mt-6">Loading...</div>}
+      {loading && <div className="text-center mt-6"><Loading /></div>}
       {error && <div className="text-center text-red-500 mt-6">{error}</div>}
 
       {/* Morning and Evening Records Side by Side */}
@@ -145,38 +146,42 @@ export default function MilkRecords() {
         <div className="grid grid-cols-2 gap-8">
           {/* Morning Records Table */}
           <div>
-            <h2 className="text-2xl font-bold mb-4 text-center">Morning Records</h2>
+            <h2 className="text-2xl font-bold mb-4 text-center">सकाळ </h2>
             <div className="overflow-x-auto">
               <table className="min-w-full bg-white border border-gray-200">
                 <thead className="bg-gray-200">
                   <tr>
-                    <th className="text-black py-2 px-4 border-b">Date</th>
-                    <th className="text-black py-2 px-4 border-b">Liter</th>
-                    <th className="text-black py-2 px-4 border-b">Fat</th>
-                    <th className="text-black py-2 px-4 border-b">SNF</th>
-                    <th className="text-black py-2 px-4 border-b">Rate</th>
-                    <th className="text-black py-2 px-4 border-b">Total</th>
+                  <th className="text-black py-2 px-4 bg-gray-400">दिनांक </th>
+                    <th className="text-black py-2 px-4 bg-gray-400">रजि. नं.</th>
+                    <th className="text-black py-2 px-4 bg-gray-400">लिटर</th>
+                    <th className="text-black py-2 px-4 bg-gray-400">फॅट</th>
+                    <th className="text-black py-2 px-4 bg-gray-400">SNF</th>
+                    <th className="text-black py-2 px-4 bg-gray-400">दर </th>
+                    <th className="text-black py-2 px-4 bg-gray-400">एकूण</th>
                   </tr>
                 </thead>
                 <tbody>
                   {morningRecords.map((record, index) => (
-                    <tr key={index} className="hover:bg-gray-100">
-                      <td className="text-black py-2 px-4 border-b">
+                    <tr key={index} className="hover:bg-gray-200">
+                      <td className="text-black py-2 px-4 font-semibold bg-gray-400 border border-gray-500">
                         {new Date(record.date).toLocaleDateString()}
                       </td>
-                      <td className="text-black py-2 px-4 border-b">
+                      <td className="text-black py-2 px-4 border-b border-gray-400">
+                        {record.registerNo}
+                      </td>
+                      <td className="text-black py-2 px-4 border-b border-gray-400">
                         {record.liter}
                       </td>
-                      <td className="text-black py-2 px-4 border-b">
+                      <td className="text-black py-2 px-4 border-b border-gray-400">
                         {record.fat}
                       </td>
-                      <td className="text-black py-2 px-4 border-b">
+                      <td className="text-black py-2 px-4 border-b border-gray-400">
                         {record.snf}
                       </td>
-                      <td className="text-black py-2 px-4 border-b">
+                      <td className="text-black py-2 px-4 border-b border-gray-400">
                         {record.dar}
                       </td>
-                      <td className="text-black py-2 px-4 border-b">
+                      <td className="text-black py-2 px-4 border-b border-gray-400">
                         {record.rakkam}
                       </td>
                     </tr>
@@ -188,38 +193,42 @@ export default function MilkRecords() {
 
           {/* Evening Records Table */}
           <div>
-            <h2 className="text-2xl font-bold mb-4 text-center">Evening Records</h2>
+            <h2 className="text-2xl font-bold mb-4 text-center">संध्याकाळ </h2>
             <div className="overflow-x-auto">
               <table className="min-w-full bg-white border border-gray-200">
                 <thead className="bg-gray-200">
-                  <tr>
-                    <th className="text-black py-2 px-4 border-b">Date</th>
-                    <th className="text-black py-2 px-4 border-b">Liter</th>
-                    <th className="text-black py-2 px-4 border-b">Fat</th>
-                    <th className="text-black py-2 px-4 border-b">SNF</th>
-                    <th className="text-black py-2 px-4 border-b">Rate</th>
-                    <th className="text-black py-2 px-4 border-b">Total</th>
+                <tr>
+                  <th className="text-black py-2 px-4 bg-gray-400">दिनांक </th>
+                    <th className="text-black py-2 px-4 bg-gray-400">रजि. नं.</th>
+                    <th className="text-black py-2 px-4 bg-gray-400">लिटर</th>
+                    <th className="text-black py-2 px-4 bg-gray-400">फॅट</th>
+                    <th className="text-black py-2 px-4 bg-gray-400">SNF</th>
+                    <th className="text-black py-2 px-4 bg-gray-400">दर </th>
+                    <th className="text-black py-2 px-4 bg-gray-400">एकूण</th>
                   </tr>
                 </thead>
                 <tbody>
                   {eveningRecords.map((record, index) => (
-                    <tr key={index} className="hover:bg-gray-100">
-                      <td className="text-black py-2 px-4 border-b">
+                    <tr key={index} className="hover:bg-gray-200">
+                      <td className="text-black py-2 px-4 border- font-semibold bg-gray-400 border border-gray-500">
                         {new Date(record.date).toLocaleDateString()}
                       </td>
-                      <td className="text-black py-2 px-4 border-b">
+                      <td className="text-black py-2 px-4 border-b border-gray-400">
+                        {record.registerNo}
+                      </td>
+                      <td className="text-black py-2 px-4 border-b border-gray-400">
                         {record.liter}
                       </td>
-                      <td className="text-black py-2 px-4 border-b">
+                      <td className="text-black py-2 px-4 border-b border-gray-400">
                         {record.fat}
                       </td>
-                      <td className="text-black py-2 px-4 border-b">
+                      <td className="text-black py-2 px-4 border-b border-gray-400">
                         {record.snf}
                       </td>
-                      <td className="text-black py-2 px-4 border-b">
+                      <td className="text-black py-2 px-4 border-b border-gray-400">
                         {record.dar}
                       </td>
-                      <td className="text-black py-2 px-4 border-b">
+                      <td className="text-black py-2 px-4 border-b border-gray-400">
                         {record.rakkam}
                       </td>
                     </tr>
@@ -238,17 +247,17 @@ export default function MilkRecords() {
           className="px-4 py-2 mx-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           disabled={currentPage === 1}
         >
-          Previous
+          मागे 
         </button>
         <span className="px-4 py-2 text-lg">
-          Page {currentPage} of {totalPages}
+          पान  {currentPage} of {totalPages}
         </span>
         <button
           onClick={handleNextPage}
           className="px-4 py-2 mx-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           disabled={currentPage === totalPages}
         >
-          Next
+          पुढे 
         </button>
       </div>
     </div>

@@ -2,77 +2,37 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Drawer from '../Models/drawerMoldel';
-import axios from 'axios';
+import Drawer from '../../components/Models/drawerMoldel';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import Image from 'next/image';
+import { faBars, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 export default function Navbar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState({
-    माहिती_भरणे: false,
-    रीपोर्ट: false,
-    इतर: false,
-  });
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(null);
+  const dropdownRef = useRef(null);
 
   const router = useRouter();
-  const navbarRef = useRef(null);
-
-  // Logout
-  const logout = async () => {
-    try {
-      await axios.get('/api/owner/logout');
-      router.push('/');
-    } catch (error) {
-      console.log('Logout failed: ', error.message);
-    }
-  };
-
-  const toggleDropdown = (menu) => {
-    setDropdownOpen((prevState) => ({
-      ...Object.keys(prevState).reduce((acc, key) => {
-        acc[key] = key === menu ? !prevState[key] : false;
-        return acc;
-      }, {}),
-    }));
-  };
-
-  const handleClickOutside = (event) => {
-    if (navbarRef.current && !navbarRef.current.contains(event.target)) {
-      setDropdownOpen({
-        माहिती_भरणे: false,
-        रीपोर्ट: false,
-        इतर: false,
-      });
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
-  const handlePrevious = () => {
-    router.back();
+  const goToPreviousPage = () => {
+    router.back(); // Navigate to the previous page
   };
 
-  const handleNext = () => {
-    router.forward();
+  const goToNextPage = () => {
+    router.forward(); // Navigate to the next page
   };
 
   const dropdownItems = {
     माहिती_भरणे: [
       { href: "/home/GetKapat", label: "कपाती पाहणे " },
       { href: "/home/Rates/AddRates", label: "दरपत्रक भरणे " },
-      { href: "/home/SthirKapat", label: " कपातीचे नावे भरणे " },
+      { href: "/home/SthirKapat", label: "कपातीचे नावे भरणे " },
+      { href: "/home/DefaultSNF", label: "फिक्स SNF" },
     ],
     रीपोर्ट: [
       { href: "/home/Sabhasad_List", label: "उत्पादकाची यादी " },
@@ -86,37 +46,56 @@ export default function Navbar() {
     ],
     इतर: [
       { href: "/home/AllUserOrders", label: "सर्व उत्पादक बाकी पाहणे" },
-      { href: "/home/AllUserBillKapat", label: "सर्व उत्पादक बिल कपात पाहणे " },
       { href: "/home/milkRecords/OnwerBills", label: "संघ बिल पाहणे" },
-      { href: "/home/Docter/GetDocterVisit", label: "डॉक्टर सेवा मागणी " }
+      { href: "/home/Docter/GetDocterVisit", label: "डॉक्टर सेवा मागणी " },
     ],
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setActiveMenu(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
-      <nav className="bg-gray-800 text-white" style={{ position: 'sticky', zIndex: 100 }} ref={navbarRef}>
+      <nav
+        className="bg-gray-800 bg-opacity-70 backdrop-blur-md text-white"
+        style={{ position: 'sticky', top: 0, zIndex: 40 }}
+      >
         <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="relative flex items-center justify-between h-16">
+            {/* Drawer Toggle Button */}
             <div className="flex items-center">
-              <Drawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
-              <h1 onClick={toggleDrawer} className="text-xl font-bold cursor-pointer">MyApp</h1>
+              <button onClick={toggleDrawer} className="text-xl font-bold cursor-pointer">
+                <FontAwesomeIcon icon={faBars} size="lg" />
+              </button>
             </div>
-            <div className="hidden sm:flex space-x-4">
+
+            {/* Dropdown Menu */}
+            <div className="flex flex-row" ref={dropdownRef}>
               {Object.keys(dropdownItems).map((menu) => (
-                <div key={menu} className="relative">
+                <div key={menu} className="relative -ml-2">
                   <button
-                    onClick={() => toggleDropdown(menu)}
-                    className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium"
+                    onClick={() => setActiveMenu(activeMenu === menu ? null : menu)}
+                    className="hover:bg-blue-300 px-4 sm:px-8 py-2 sm:mr-4 rounded-md text-sm font-medium border-b border-gray-300"
                   >
-                    {menu.charAt(0).toUpperCase() + menu.slice(1)}
+                    {menu}
                   </button>
-                  {dropdownOpen[menu] && (
-                    <div className="absolute left-0 w-48 py-2 mt-2 bg-white rounded-md shadow-xl">
+                  {activeMenu === menu && (
+                    <div className="absolute left-0 w-48 py-2 mt-2 rounded-md rounded-b-md shadow-xl">
                       {dropdownItems[menu].map((item, index) => (
                         <Link
                           key={index}
                           href={item.href}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                          className="block px-4 py-2 bg-blue-500 text-white border-b border-blue-200 text-sm hover:bg-gray-200 hover:text-black z-20"
                         >
                           {item.label}
                         </Link>
@@ -126,26 +105,26 @@ export default function Navbar() {
                 </div>
               ))}
             </div>
+
+            {/* Previous and Next Page Buttons */}
             <div className="flex items-center space-x-4">
-              <button onClick={handlePrevious} className="hover:text-gray-300">
-                <FontAwesomeIcon icon={faArrowLeft} size="lg" />
-              </button>
-              <button onClick={handleNext} className="hover:text-gray-300">
-                <FontAwesomeIcon icon={faArrowRight} size="lg" />
-              </button>
-              <button onClick={logout} className="text-gray-300 hover:text-white">
-                <FontAwesomeIcon icon={faSignOutAlt} size="lg" />
-              </button>
-              <Link
-                href="/home/updateDetails/OnwerUpdate"
-                className="hover:bg-gray-700 px-3 py-2 rounded-full"
+              <button
+                onClick={goToPreviousPage}
+                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md flex items-center space-x-2"
               >
-                <Image className="rounded-full" src="/assets/avatar.jpg" alt="User" width={30} height={30} />
-              </Link>
+                <FontAwesomeIcon icon={faChevronLeft} />
+              </button>
+              <button
+                onClick={goToNextPage}
+                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md flex items-center space-x-2"
+              >
+                <FontAwesomeIcon icon={faChevronRight} />
+              </button>
             </div>
           </div>
         </div>
       </nav>
+      <Drawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
     </>
   );
 }

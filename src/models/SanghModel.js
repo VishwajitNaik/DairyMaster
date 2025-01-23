@@ -45,6 +45,8 @@ const sanghSchema = new mongoose.Schema({
     },
     verifyToken: String,
     verifyTokenExpiry: Date,
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
 });
 
 const Sangh = mongoose.models.Sangh || mongoose.model("Sangh", sanghSchema);

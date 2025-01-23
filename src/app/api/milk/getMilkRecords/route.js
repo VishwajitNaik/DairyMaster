@@ -42,7 +42,7 @@ export async function GET(request) {
           $gte: startDate,
           $lte: endDate,
         },
-      }).populate('createdBy', 'registerNo name');
+      }).populate('createdBy', 'registerNo name').sort({ date: 1 });;
     }
 
     return NextResponse.json({

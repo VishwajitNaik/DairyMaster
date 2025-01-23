@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Loading from "../components/Loading/Loading";
 
 const SavedBills = () => {
   const [bills, setBills] = useState([]); // State to hold fetched bills
@@ -43,32 +44,33 @@ const SavedBills = () => {
   };
 
   return (
+    
     <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-[1000px] mx-auto">
-      <h1 className="text-2xl font-semibold text-black mb-4">Saved Bills</h1>
+      <h1 className="text-2xl font-bold text-black bg-green-300 p-2 shadow-md w-fit rounded-md">मागील बिल सूची</h1>
       
       {/* Date Pickers for Filtering */}
-      <div className="bg-blue-300 sm:bg-gray-500 w-4/5 sm:w-7/12 mx-auto h-auto py-1 px-1 rounded-lg mt-4">
+      <div className="bg-blue-300 sm:bg-gray-500 w-4/5 sm:w-fit mx-auto h-auto py-1 px-1 rounded-lg mt-4 flex flex-row">
         <input
           type="date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
-          className="border ml-2 mb-2 rounded-md p-1 text-gray-700 text-sm w-1/1 sm:w-auto"
+          className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-1/3 bg-gray-200 rounded-md shadow-sm"
         />
         <input
           type="date"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
-          className="border rounded-md ml-2 mb-2 p-1 text-gray-700 text-sm w-1/1 sm:w-auto"
+          className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-1/3 bg-gray-200 rounded-md shadow-sm"
         />
         <button
           onClick={handleButtonClick}
-          className="border ml-2 rounded-md p-1 text-gray-700 text-sm w-1/1 sm:w-auto"
+          className="w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105"
         >
-          Add Date Range
+          बिल पहा
         </button>
       </div>
 
-      {loading && <div className="text-center text-black">Loading...</div>}
+      {loading && <div className="text-center text-black"><Loading /></div>}
       {error && <div className="text-center text-red-500">{error}</div>}
 
       {/* Buttons for each date range */}
@@ -89,34 +91,32 @@ const SavedBills = () => {
                   <table className="min-w-full divide-y divide-gray-300">
                     <thead>
                       <tr className="bg-gray-200">
-                        <th className="p-3 text-left text-black font-semibold text-xs sm:text-sm">User</th>
-                        <th className="p-3 text-left text-black font-semibold text-xs sm:text-sm">Total Liters</th>
-                        <th className="p-3 text-left text-black font-semibold text-xs sm:text-sm">Total Rakkam</th>
-                        <th className="p-3 text-left text-black font-semibold text-xs sm:text-sm">Total Kapat Rate</th>
-                        <th className="p-3 text-left text-black font-semibold text-xs sm:text-sm">Total Bill Kapat</th>
-                        <th className="p-3 text-left text-black font-semibold text-xs sm:text-sm">Net Payment</th>
-                        <th className="p-3 text-left text-black font-semibold text-xs sm:text-sm">Start Date</th>
-                        <th className="p-3 text-left text-black font-semibold text-xs sm:text-sm">End Date</th>
+                        <th className="p-3 text-left border border-gray-600 text-black font-semibold text-xs sm:text-sm">रजि. नं.</th>
+                        <th className="p-3 text-left border border-gray-600 text-black font-semibold text-xs sm:text-sm">उत्पादक </th>
+                        <th className="p-3 text-left border border-gray-600 text-black font-semibold text-xs sm:text-sm">एकूण लिटर</th>
+                        <th className="p-3 text-left border border-gray-600 text-black font-semibold text-xs sm:text-sm">एकूण रक्कम </th>
+                        <th className="p-3 text-left border border-gray-600 text-black font-semibold text-xs sm:text-sm">एकूण स्थिर कपात</th>
+                        <th className="p-3 text-left border border-gray-600 text-black font-semibold text-xs sm:text-sm">एकूण कपात</th>
+                        <th className="p-3 text-left border border-gray-600 text-black font-semibold text-xs sm:text-sm">निव्वळ अदा</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-300">
                       {filteredBills[rangeKey].map((bill) => (
                         <tr key={bill._id} className="hover:bg-gray-100">
-                          <td className="p-3 text-black text-xs sm:text-sm">{bill.user}</td>
-                          <td className="p-3 text-black text-xs sm:text-sm">{bill.totalLiters}</td>
-                          <td className="p-3 text-black text-xs sm:text-sm">{bill.totalRakkam}</td>
-                          <td className="p-3 text-black text-xs sm:text-sm">{bill.totalKapatRateMultiplybyTotalLiter}</td>
-                          <td className="p-3 text-black text-xs sm:text-sm">{bill.totalBillKapat}</td>
-                          <td className="p-3 text-black text-xs sm:text-sm">{bill.netPayment}</td>
-                          <td className="p-3 text-black text-xs sm:text-sm">{new Date(bill.startDate).toLocaleDateString()}</td>
-                          <td className="p-3 text-black text-xs sm:text-sm">{new Date(bill.endDate).toLocaleDateString()}</td>
+                          <td className="p-3 border border-gray-400 text-black text-xs sm:text-sm">{bill.registerNo}</td>
+                          <td className="p-3 border border-gray-400 text-black text-xs sm:text-sm">{bill.user}</td>
+                          <td className="p-3 border border-gray-400 text-black text-xs sm:text-sm">{bill.totalLiters}</td>
+                          <td className="p-3 border border-gray-400 text-black text-xs sm:text-sm">{bill.totalRakkam}</td>
+                          <td className="p-3 border border-gray-400 text-black text-xs sm:text-sm">{bill.totalKapatRateMultiplybyTotalLiter.toFixed(2)}</td>
+                          <td className="p-3 border border-gray-400 text-black text-xs sm:text-sm">{bill.totalBillKapat}</td>
+                          <td className="p-3 border border-gray-400 text-black text-xs sm:text-sm">{bill.netPayment}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
               ) : (
-                <div className="text-center text-black mt-4">No saved bills found for this date range.</div>
+                <div className="text-center text-black mt-4">या दिनांकाची बील समारी उपलब्ध नाही बील जतन करा .</div>
               )}
             </div>
           )}

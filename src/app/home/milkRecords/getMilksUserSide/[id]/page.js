@@ -137,124 +137,141 @@ export default function UserMilkDetails() {
   return (
 <>
   <Navbar />
-  <div className='gradient-bg flex flex-col items-center justify-center min-h-screen'>
-    <div className="w-full md:w-11/12 lg:w-10/12 xl:w-8/12 p-4">
-      <h1 className="text-lg md:text-2xl font-bold mb-4">User Details</h1>
-      
-      <div className="bg-white text-black shadow-md rounded-lg p-3 mb-4">
-        <p className="text-sm md:text-base">
-          <span className="font-semibold">Name:</span> {user.name}
-        </p>
-        <p className="text-sm md:text-base">
-          <span className="font-semibold">Register No:</span> {user.registerNo}
-        </p>
-        <p className="text-sm md:text-base">
-          <span className="font-semibold">Milk Type:</span> {user.milk}
-        </p>
-      </div>
+  <div className="gradient-bg flex flex-col items-center justify-center min-h-screen p-4">
+  <div className="w-full md:w-11/12 lg:w-10/12 xl:w-8/12">
+    <h1 className="text-lg md:text-2xl font-bold mb-4">User Details</h1>
 
-      <h2 className="text-lg md:text-xl font-semibold mb-2">Milk Records</h2>
+    {/* User Details Card */}
+    <div className="bg-white text-black shadow-md rounded-lg p-4 mb-4">
+      <p className="text-sm md:text-base">
+        <span className="font-semibold">Name:</span> {user.name}
+      </p>
+      <p className="text-sm md:text-base">
+        <span className="font-semibold">Register No:</span> {user.registerNo}
+      </p>
+      <p className="text-sm md:text-base">
+        <span className="font-semibold">Milk Type:</span> {user.milk}
+      </p>
+    </div>
 
-      <div className="mb-4 flex flex-col md:flex-row items-center">
-        <label className="text-sm md:text-base mr-2">Start Date:</label>
-        <DatePicker className='text-black' selected={startDate} onChange={(date) => setStartDate(date)} />
-        <label className="text-sm md:text-base mr-2 ml-4">End Date:</label>
-        <DatePicker className='text-black' selected={endDate} onChange={(date) => setEndDate(date)} />
-        <button className="mt-2 md:mt-0 ml-0 md:ml-4 bg-blue-500 text-white py-1 px-3 rounded text-sm md:text-base" onClick={fetchMilkRecords}>
-          Fetch Records
-        </button>
-      </div>
+    <h2 className="text-lg md:text-xl font-semibold mb-2">Milk Records</h2>
 
-      <div className="flex flex-col md:flex-row">
-        {/* Morning Records */}
-        <div className="w-full md:w-1/2 mb-4 md:mb-0 md:pr-2">
-          <h3 className="text-md md:text-lg font-semibold mb-2">Morning Records</h3>
-          <div className="overflow-x-auto">
-            {morningRecords.length > 0 ? (
-              <table className="min-w-full bg-white text-black shadow-md rounded-lg">
-                <thead>
-                  <tr>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Date</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Liter</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Fat</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">SNF</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Dar</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Rakkam</th>
+    {/* Date Picker */}
+    <div className="mb-4 flex flex-col md:flex-row items-center">
+      <label className="text-sm md:text-base mr-2">Start Date:</label>
+      <DatePicker
+        className="text-black w-full md:w-auto mb-2 md:mb-0"
+        selected={startDate}
+        onChange={(date) => setStartDate(date)}
+      />
+      <label className="text-sm md:text-base mr-2 md:ml-4">End Date:</label>
+      <DatePicker
+        className="text-black w-full md:w-auto mb-2 md:mb-0"
+        selected={endDate}
+        onChange={(date) => setEndDate(date)}
+      />
+      <button
+        className="mt-2 md:mt-0 bg-blue-500 text-white py-1 px-3 rounded text-sm md:text-base w-full md:w-auto"
+        onClick={fetchMilkRecords}
+      >
+        Fetch Records
+      </button>
+    </div>
+
+    <div className="flex flex-col md:flex-row">
+      {/* Morning Records */}
+      <div className="w-full md:w-1/2 mb-4 md:mb-0 md:pr-2">
+        <h3 className="text-md md:text-lg font-semibold mb-2">Morning Records</h3>
+        <div className="overflow-x-auto">
+          {morningRecords.length > 0 ? (
+            <table className="min-w-full bg-white text-black shadow-md rounded-lg">
+              <thead>
+                <tr>
+                  <th className="py-2 px-3 border-b text-xs md:text-sm">Date</th>
+                  <th className="py-2 px-3 border-b text-xs md:text-sm">Liter</th>
+                  <th className="py-2 px-3 border-b text-xs md:text-sm">Fat</th>
+                  <th className="py-2 px-3 border-b text-xs md:text-sm">SNF</th>
+                  <th className="py-2 px-3 border-b text-xs md:text-sm">Dar</th>
+                  <th className="py-2 px-3 border-b text-xs md:text-sm">Rakkam</th>
+                </tr>
+              </thead>
+              <tbody>
+                {morningRecords.map((record) => (
+                  <tr key={record._id}>
+                    <td className="py-1 px-3 border-b text-xs md:text-sm">
+                      {new Date(record.date).toLocaleDateString()}
+                    </td>
+                    <td className="py-1 px-3 border-b text-xs md:text-sm">{record.liter}</td>
+                    <td className="py-1 px-3 border-b text-xs md:text-sm">{record.fat}</td>
+                    <td className="py-1 px-3 border-b text-xs md:text-sm">{record.snf}</td>
+                    <td className="py-1 px-3 border-b text-xs md:text-sm">{record.dar}</td>
+                    <td className="py-1 px-3 border-b text-xs md:text-sm">{record.rakkam}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {morningRecords.map((record) => (
-                    <tr key={record._id}>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{new Date(record.date).toLocaleDateString()}</td>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{record.liter}</td>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{record.fat}</td>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{record.snf}</td>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{record.dar}</td>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{record.rakkam}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className="text-xs md:text-base">No morning records found.</p>
-            )}
-          </div>
-        </div>
-
-        {/* Evening Records */}
-        <div className="w-full md:w-1/2 md:pl-2">
-          <h3 className="text-md md:text-lg font-semibold mb-2">Evening Records</h3>
-          <div className="overflow-x-auto">
-            {eveningRecords.length > 0 ? (
-              <table className="min-w-full bg-white text-black shadow-md rounded-lg">
-                <thead>
-                  <tr>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Date</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Liter</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Fat</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">SNF</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Dar</th>
-                    <th className="py-2 px-3 border-b text-xs md:text-sm">Rakkam</th>
-                   
-                  </tr>
-                </thead>
-                <tbody>
-                  {eveningRecords.map((record) => (
-                    <tr key={record._id}>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{new Date(record.date).toLocaleDateString()}</td>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{record.liter}</td>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{record.fat}</td>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{record.snf}</td>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{record.dar}</td>
-                      <td className="py-1 px-3 border-b text-xs md:text-sm">{record.rakkam}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className="text-xs md:text-base">No evening records found.</p>
-            )}
-          </div>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-xs md:text-base">No morning records found.</p>
+          )}
         </div>
       </div>
 
-      {/* Footer Totals */}
-      <div className="bg-white text-black shadow-md rounded-lg p-3 mt-4">
-        <p className="text-sm md:text-base">
-          <span className="font-semibold">Total Liters:</span> {totalLiters.toFixed(2)}
-        </p>
-        <p className="text-sm md:text-base">
-          <span className="font-semibold">Total Rakkam:</span> {totalRakkam}
-        </p>
-        <p className="text-sm md:text-base">
-          <span className="font-semibold">कपात :</span> {literKapat}
-        </p>
-        <p className="text-sm md:text-base">
-          <span className="font-semibold">निव्वळ अदा :</span> {netPayment}
-        </p>
+      {/* Evening Records */}
+      <div className="w-full md:w-1/2 md:pl-2">
+        <h3 className="text-md md:text-lg font-semibold mb-2">Evening Records</h3>
+        <div className="overflow-x-auto">
+          {eveningRecords.length > 0 ? (
+            <table className="min-w-full bg-white text-black shadow-md rounded-lg">
+              <thead>
+                <tr>
+                  <th className="py-2 px-3 border-b text-xs md:text-sm">Date</th>
+                  <th className="py-2 px-3 border-b text-xs md:text-sm">Liter</th>
+                  <th className="py-2 px-3 border-b text-xs md:text-sm">Fat</th>
+                  <th className="py-2 px-3 border-b text-xs md:text-sm">SNF</th>
+                  <th className="py-2 px-3 border-b text-xs md:text-sm">Dar</th>
+                  <th className="py-2 px-3 border-b text-xs md:text-sm">Rakkam</th>
+                </tr>
+              </thead>
+              <tbody>
+                {eveningRecords.map((record) => (
+                  <tr key={record._id}>
+                    <td className="py-1 px-3 border-b text-xs md:text-sm">
+                      {new Date(record.date).toLocaleDateString()}
+                    </td>
+                    <td className="py-1 px-3 border-b text-xs md:text-sm">{record.liter}</td>
+                    <td className="py-1 px-3 border-b text-xs md:text-sm">{record.fat}</td>
+                    <td className="py-1 px-3 border-b text-xs md:text-sm">{record.snf}</td>
+                    <td className="py-1 px-3 border-b text-xs md:text-sm">{record.dar}</td>
+                    <td className="py-1 px-3 border-b text-xs md:text-sm">{record.rakkam}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-xs md:text-base">No evening records found.</p>
+          )}
+        </div>
       </div>
     </div>
+
+    {/* Footer Totals */}
+    <div className="bg-white text-black shadow-md rounded-lg p-4 mt-4">
+      <p className="text-sm md:text-base">
+        <span className="font-semibold">Total Liters:</span> {totalLiters.toFixed(2)}
+      </p>
+      <p className="text-sm md:text-base">
+        <span className="font-semibold">Total Rakkam:</span> {totalRakkam}
+      </p>
+      <p className="text-sm md:text-base">
+        <span className="font-semibold">कपात :</span> {literKapat}
+      </p>
+      <p className="text-sm md:text-base">
+        <span className="font-semibold">निव्वळ अदा :</span> {netPayment}
+      </p>
+    </div>
   </div>
+</div>
+
 </>
 
 

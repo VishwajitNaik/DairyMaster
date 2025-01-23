@@ -15,7 +15,7 @@ export default function Sabhasad() {
         const res = await axios.get('/api/user/getUsers');
         console.log(res.data);
         // Update the state to match the response structure
-        setUsers(res.data.data.users);  // Adjusted to match the response format: { data: owner }
+        setUsers(res.data.data);  // Adjusted to match the response format: { data: owner }
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
       }

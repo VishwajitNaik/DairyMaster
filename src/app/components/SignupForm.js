@@ -37,6 +37,13 @@ const SignupForm = () => {
     }
   };
 
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 10) {
+        setOwner({ ...owner, phone: value });
+    }
+};
+
   useEffect(() => {
     const allFieldsFilled = Object.values(owner).every(field => field.length > 0);
     setButtonDisabled(!allFieldsFilled);
@@ -57,34 +64,47 @@ const SignupForm = () => {
   }, []);
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
+    <div className="max-w-lg h-[60vh] mx-auto p-6 bg-transparent backdrop-blur-md rounded-lg shadow-md overflow-x-auto overflow-y-auto m-2">
+    <style jsx>{`
+  .max-w-lg::-webkit-scrollbar {
+    height: 8px; /* Adjust the height of the scrollbar */
+  }
+  .max-w-lg::-webkit-scrollbar-track {
+    background: transparent; /* Optional: Change track background */
+  }
+  .max-w-lg::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom right, #4a90e2, #9013fe); /* Set the scrollbar color to black */
+    border-radius: 10px; /* Optional: Add rounded corners */
+  }
+`}</style>
+      <h2 className="text-black text-2xl font-bold text-center mb-6">Sign Up</h2>
       <form className="text-black flex flex-wrap -mx-4" onSubmit={onSignup}>
       <div className="w-full md:w-1/2 px-4 mb-4">
-          <label className="text-black block mb-2">Register No.</label>
+          <label className="text-black block mb-2">राजिस्टर नं. </label>
           <input 
-            className="border border-gray-300 rounded w-full p-2"
+            className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
             type="text" 
-            placeholder="Username"
+            placeholder="Register No"
             value={owner.registerNo}
             onChange={(e) => setOwner({ ...owner, registerNo: e.target.value })}
           />
         </div>
         {/* Column 1 */}
         <div className="w-full md:w-1/2 px-4 mb-4">
-          <label className="text-black block mb-2">Owner Name</label>
+          <label className="text-black block mb-2">ओनरचे नाव </label> 
           <input 
-            className="border border-gray-300 rounded w-full p-2"
+            className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
             type="text" 
             placeholder="Username"
             value={owner.ownerName}
             onChange={(e) => setOwner({ ...owner, ownerName: e.target.value })}
           />
+
         </div>
         <div className="w-full md:w-1/2 px-4 mb-4">
           <label className="text-black block mb-2">संघाचे नाव</label>
           <select 
-            className="border text-black border-gray-300 rounded w-full p-2"
+            className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
             value={owner.sangh}
             onChange={(e) => setOwner({ ...owner, sangh: e.target.value })}
           >
@@ -101,7 +121,7 @@ const SignupForm = () => {
           <input 
             type="text" 
             placeholder="डेअरीचे नाव" 
-            className="border border-gray-300 rounded w-full p-2"
+            className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
             value={owner.dairyName}
             onChange={(e) => setOwner({ ...owner, dairyName: e.target.value })}
           />
@@ -111,9 +131,9 @@ const SignupForm = () => {
           <input 
             type="text" 
             placeholder="Phone Number" 
-            className="border border-gray-300 rounded w-full p-2"
+            className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
             value={owner.phone}
-            onChange={(e) => setOwner({ ...owner, phone: e.target.value })}
+            onChange={handlePhoneChange}
           />
         </div>
 
@@ -122,7 +142,7 @@ const SignupForm = () => {
           <input 
             type="email" 
             placeholder="abc@gmail.com" 
-            className="border border-gray-300 rounded w-full p-2"
+            className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
             value={owner.email}
             onChange={(e) => setOwner({ ...owner, email: e.target.value })}
           />
@@ -133,7 +153,7 @@ const SignupForm = () => {
           <input 
             type="password" 
             placeholder="Password" 
-            className="border border-gray-300 rounded w-full p-2"
+            className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
             value={owner.password}
             onChange={(e) => setOwner({ ...owner, password: e.target.value })}
           />
@@ -142,7 +162,7 @@ const SignupForm = () => {
         <div className="w-full px-4 mb-4">
           <button 
             type="submit" 
-            className={`w-full bg-blue-500 text-white p-2 rounded ${buttonDisabled || loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
+            className={`w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonDisabled || loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
             disabled={buttonDisabled || loading}
           >
             {loading ? 'Signing Up...' : 'Sign Up'}

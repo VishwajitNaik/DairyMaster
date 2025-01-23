@@ -43,10 +43,10 @@ const EmailForm = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
       <h1 className="text-2xl font-bold mb-4">Reset Your Password</h1>
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-full max-w-sm">
+      <form onSubmit={handleSubmit} className="bg-blue-100 p-6 rounded shadow-md w-full max-w-sm">
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-            Input Email To reset
+            
           </label>
           <input
             id="email"
@@ -54,7 +54,7 @@ const EmailForm = () => {
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded text-black"
+            className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
           />
         </div>
         <button

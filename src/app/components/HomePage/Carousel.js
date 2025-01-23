@@ -34,40 +34,39 @@ const Carousel = () => {
   };
 
   return (
-    <div className="carousel-container">
-      <Slider {...settings}>
-        <div>
-          <Image 
-            width={1200} 
-            height={700} 
-            src="/assets/image1.jpg" 
-            alt="Slide 1" 
-            className="carousel-image" 
-            layout="responsive" 
-          />
-        </div>
-        <div>
-          <Image 
-            width={1200} 
-            height={700} 
-            src="/assets/image2.jpg" 
-            alt="Slide 2" 
-            className="carousel-image" 
-            layout="responsive" 
-          />
-        </div>
-        <div>
-          <Image 
-            width={1200} 
-            height={700} 
-            src="/assets/image3.avif" 
-            alt="Slide 3" 
-            className="carousel-image" 
-            layout="responsive" 
-          />
-        </div>
-      </Slider>
-    </div>
+    <div className="carousel-container-home">
+    <Slider {...settings}>
+      <div>
+        <Image
+          width={1200}
+          height={700}
+          src="/assets/image1.jpg"
+          alt="Slide 1"
+          className="carousel-image"
+          priority // Add this for above-the-fold images
+        />
+      </div>
+      <div>
+        <Image
+          width={1200}
+          height={700}
+          src="/assets/image2.jpg"
+          alt="Slide 2"
+          className="carousel-image"
+        />
+      </div>
+      <div>
+        <Image
+          width={1200}
+          height={700}
+          src="/assets/image3.avif"
+          alt="Slide 3"
+          className="carousel-image"
+        />
+      </div>
+    </Slider>
+  </div>
+  
   );
 };
 

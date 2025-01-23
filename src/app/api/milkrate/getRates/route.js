@@ -17,7 +17,7 @@ export async function GET(request) {
         }
 
         // Fetch all rate records
-        const rates = await Rate.find();
+        const rates = await Rate.find({createdBy: ownerId});
 
         if (!rates) {
             return NextResponse.json({ error: "No rates found" }, { status: 404 });
