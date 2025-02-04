@@ -231,132 +231,123 @@ export default function UserMilkDetails() {
 
 
 <div className="flex flex-col lg:flex-row justify-between">
-  <div className="w-full lg:w-1/2 lg:pr-2 mb-4 lg:mb-0">
-    <h3 className="text-lg font-semibold mb-2 bg-transparent shadow-md rounded-lg p-4">सकाळचे दूध विवरण</h3>
-    {morningRecords.length > 0 ? (
-      <div className="overflow-x-auto max-w-lg">
+<div className="w-full lg:w-1/2 lg:pr-2 mb-4 lg:mb-0">
+  <h2 className="text-center text-xl font-semibold bg-gray-700 text-white py-3 rounded-t-lg">
+      🐃 सकाळचे दूध विवरण
+  </h2>
+  {morningRecords.length > 0 ? (
+    <div className="overflow-x-auto w-full">
       <style jsx>{`
-        .max-w-lg::-webkit-scrollbar {
+        .overflow-x-auto::-webkit-scrollbar {
           height: 8px; /* Adjust the height of the scrollbar */
         }
-        .max-w-lg::-webkit-scrollbar-track {
+        .overflow-x-auto::-webkit-scrollbar-track {
           background: black; /* Optional: Change track background */
           border-radius: 10px;
         }
-        .max-w-lg::-webkit-scrollbar-thumb {
-          background: linear-gradient(to bottom right, #4a90e2, #9013fe); /* Set the scrollbar color to black */
+        .overflow-x-auto::-webkit-scrollbar-thumb {
+          background: linear-gradient(to bottom right, #4a90e2, #9013fe); /* Set the scrollbar color */
           border-radius: 10px; /* Optional: Add rounded corners */
         }
       `}</style>
-        <table className="min-w-full bg-white text-black shadow-md rounded-lg text-xs lg:text-base">
-          <thead className='bg-gray-300 shadow-md'>
-            <tr>
-              <th className="py-2 px-4 border-b">दिनांक</th>
-              <th className="py-2 px-4 border-b">लिटर </th>
-              <th className="py-2 px-4 border-b">फॅट </th>
-              <th className="py-2 px-4 border-b">SNF</th>
-              <th className="py-2 px-4 border-b">दर </th>
-              <th className="py-2 px-4 border-b">रक्कम </th>
-              <th className="py-2 px-4 border-b">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {morningRecords.map((record) => (
-              <tr key={record._id} className='hover:bg-gray-200'>
-                <td className="py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
-                <td className="py-2 px-4 border-b">{record.liter}</td>
-                <td className="py-2 px-4 border-b">{record.fat}</td>
-                <td className="py-2 px-4 border-b">{record.snf}</td>
-                <td className="py-2 px-4 border-b">{record.dar}</td>
-                <td className="py-2 px-4 border-b">{record.rakkam}</td>
-                <td className="py-2 px-4 border-b flex space-x-2">
-                  <FontAwesomeIcon
-                    icon={faTrash}
-                    className="text-red-500 cursor-pointer py-2 px-4"
-                    onClick={() => handleDelete(record._id)}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan="4" className="py-2 px-4 border-t font-semibold">
-                Total
-              </td>
-              <td className="py-2 px-4 border-t font-semibold">{totalMorningLiters.toFixed(2)}</td>
-              <td className="py-2 px-4 border-t font-semibold">{totalMorningRakkam.toFixed(2)}</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    ) : (
-      <p>सकाळचे दूध मिळाले नाही .</p>
-    )}
-  </div>
-  <div className="w-full lg:w-1/2 lg:pr-2 mb-4 lg:mb-0">
-    <h3 className="text-lg font-semibold mb-2 bg-transparent shadow-md rounded-lg p-4">संध्याकाळचे दूध विवरण</h3>
-    {eveningRecords.length > 0 ? (
-      <div className="overflow-x-auto max-w-lg">
-      <style jsx>{`
-        .max-w-lg::-webkit-scrollbar {
-          height: 8px; /* Adjust the height of the scrollbar */
-        }
-        .max-w-lg::-webkit-scrollbar-track {
-          background: black; /* Optional: Change track background */
-          border-radius: 10px;
-        }
-        .max-w-lg::-webkit-scrollbar-thumb {
-          background: linear-gradient(to bottom right, #4a90e2, #9013fe); /* Set the scrollbar color to black */
-          border-radius: 10px; /* Optional: Add rounded corners */
-        }
-      `}</style>
-        <table className="min-w-full bg-white text-black shadow-md rounded-lg text-xs lg:text-base">
-          <thead className='bg-gray-300 shadow-md'>
-            <tr>
+      <table className="min-w-full bg-white text-black shadow-md rounded-lg text-xs lg:text-base">
+        <thead className="bg-gray-300 shadow-md">
+          <tr>
             <th className="py-2 px-4 border-b">दिनांक</th>
-              <th className="py-2 px-4 border-b">लिटर </th>
-              <th className="py-2 px-4 border-b">फॅट </th>
-              <th className="py-2 px-4 border-b">SNF</th>
-              <th className="py-2 px-4 border-b">दर </th>
-              <th className="py-2 px-4 border-b">रक्कम </th>
-              <th className="py-2 px-4 border-b">Actions</th>
+            <th className="py-2 px-4 border-b">लिटर </th>
+            <th className="py-2 px-4 border-b">फॅट </th>
+            <th className="py-2 px-4 border-b">SNF</th>
+            <th className="py-2 px-4 border-b">दर </th>
+            <th className="py-2 px-4 border-b">रक्कम </th>
+          </tr>
+        </thead>
+        <tbody>
+          {morningRecords.map((record) => (
+            <tr key={record._id} className="hover:bg-gray-200">
+              <td className="py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
+              <td className="py-2 px-4 border-b">{record.liter}</td>
+              <td className="py-2 px-4 border-b">{record.fat}</td>
+              <td className="py-2 px-4 border-b">{record.snf}</td>
+              <td className="py-2 px-4 border-b">{record.dar}</td>
+              <td className="py-2 px-4 border-b">{record.rakkam}</td>
+
             </tr>
-          </thead>
-          <tbody className='bg-gray-100'>
-            {eveningRecords.map((record) => (
-              <tr key={record._id} className='hover:bg-gray-200'>
-                <td className="py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
-                <td className="py-2 px-4 border-b">{record.liter}</td>
-                <td className="py-2 px-4 border-b">{record.fat}</td>
-                <td className="py-2 px-4 border-b">{record.snf}</td>
-                <td className="py-2 px-4 border-b">{record.dar}</td>
-                <td className="py-2 px-4 border-b">{record.rakkam}</td>
-                <td className="py-2 px-4 border-b flex space-x-2">
-                  <FontAwesomeIcon
-                    icon={faTrash}
-                    className="text-red-500 cursor-pointer py-2 px-4"
-                    onClick={() => handleDelete(record._id)}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan="4" className="py-2 px-4 border-t font-semibold">
-                Total
-              </td>
-              <td className="py-2 px-4 border-t font-semibold">{totalEveningLiters.toFixed(2)}</td>
-              <td className="py-2 px-4 border-t font-semibold">{totalEveningLiters.toFixed(2)}</td>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan="4" className="py-2 px-4 border-t font-semibold">
+              Total
+            </td>
+            <td className="py-2 px-4 border-t font-semibold">{totalMorningLiters.toFixed(2)}</td>
+            <td className="py-2 px-4 border-t font-semibold">{totalMorningRakkam.toFixed(2)}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  ) : (
+    <p>सकाळचे दूध मिळाले नाही .</p>
+  )}
+</div>
+
+<div className="w-full lg:w-1/2 lg:pr-2 mb-4 lg:mb-0">
+  <h2 className="text-center text-xl font-semibold bg-gray-700 text-white py-3 rounded-t-lg">
+    🐄 संध्याकाळचे दूध विवरण
+  </h2>
+  {eveningRecords.length > 0 ? (
+    <div className="overflow-x-auto w-full">
+      <style jsx>{`
+        .overflow-x-auto::-webkit-scrollbar {
+          height: 8px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-track {
+          background: black;
+          border-radius: 10px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-thumb {
+          background: linear-gradient(to bottom right, #4a90e2, #9013fe);
+          border-radius: 10px;
+        }
+      `}</style>
+      <table className="min-w-full bg-white text-black shadow-md rounded-lg text-xs lg:text-base">
+        <thead className="bg-gray-300 shadow-md">
+          <tr>
+            <th className="py-2 px-4 border-b">दिनांक</th>
+            <th className="py-2 px-4 border-b">लिटर </th>
+            <th className="py-2 px-4 border-b">फॅट </th>
+            <th className="py-2 px-4 border-b">SNF</th>
+            <th className="py-2 px-4 border-b">दर </th>
+            <th className="py-2 px-4 border-b">रक्कम </th>
+          </tr>
+        </thead>
+        <tbody className="bg-gray-100">
+          {eveningRecords.map((record) => (
+            <tr key={record._id} className="hover:bg-gray-200">
+              <td className="py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
+              <td className="py-2 px-4 border-b">{record.liter}</td>
+              <td className="py-2 px-4 border-b">{record.fat}</td>
+              <td className="py-2 px-4 border-b">{record.snf}</td>
+              <td className="py-2 px-4 border-b">{record.dar}</td>
+              <td className="py-2 px-4 border-b">{record.rakkam}</td>
             </tr>
-          </tfoot>
-        </table>
-      </div>
-    ) : (
-      <p>संध्याकाळचे दूध मिळाले नाही .</p>
-    )}
-  </div>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan="4" className="py-2 px-4 border-t font-semibold">
+              Total
+            </td>
+            <td className="py-2 px-4 border-t font-semibold">{totalEveningLiters.toFixed(2)}</td>
+            <td className="py-2 px-4 border-t font-semibold">{totalEveningLiters.toFixed(2)}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  ) : (
+    <p>संध्याकाळचे दूध मिळाले नाही .</p>
+  )}
+</div>
+
 
 </div>
 

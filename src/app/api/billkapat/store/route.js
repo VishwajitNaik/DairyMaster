@@ -1,7 +1,6 @@
 // Necessary imports
 import { connect } from '@/dbconfig/dbconfig';
 import StoreBill from '@/models/BillStorage';
-import Sangh from '@/models/SanghModel';
 import { getDataFromToken } from '@/helpers/getDataFromToken';
 import Owner from '@/models/ownerModel';
 
@@ -15,22 +14,32 @@ export async function POST(req) {
         const ownerId = await getDataFromToken(req);
         const { bills, startDate, endDate } = body; // Include startDate and endDate
 
-        if (!bills || bills.length === 0) {
-            return new Response(JSON.stringify({ error: 'No bills to save' }), { status: 400 });
-        }
-
         const owner = await Owner.findById(ownerId);
 
         if (!owner) {
             return new Response(JSON.stringify({ error: 'Owner not found' }), { status: 404 });
         }
 
+        // Check if bills already exist for the owner within the given date range
+        const existingBills = await StoreBill.find({
+            createdBy: ownerId,
+            startDate: { $gte: new Date(startDate) },
+            endDate: { $lte: new Date(endDate) },
+        });
+
+        if (existingBills.length > 0) {
+            return new Response(JSON.stringify({ 
+                message: 'Bills already stored for this date range', 
+                data: existingBills 
+            }), { status: 400 });
+        }
+
         // Add ownerId, startDate, and endDate to each bill
         const billsWithDetails = bills.map(bill => ({
             ...bill,
             createdBy: ownerId,
-            startDate: new Date(startDate),   // Convert startDate to Date object
-            endDate: new Date(endDate),      // Convert endDate to Date object
+            startDate: new Date(startDate),   
+            endDate: new Date(endDate),      
         }));
 
         const savedBills = await StoreBill.insertMany(billsWithDetails);
@@ -41,7 +50,11 @@ export async function POST(req) {
 
         await owner.save();
 
-        return new Response(JSON.stringify({ message: 'Bills saved successfully', data: savedBills }), { status: 200 });
+        return new Response(JSON.stringify({ 
+            message: 'Bills saved successfully', 
+            data: savedBills 
+        }), { status: 200 });
+
     } catch (error) {
         console.error('Error saving bills:', error);
         return new Response(JSON.stringify({ error: 'Failed to save bills' }), { status: 500 });

@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Loading from '@/app/components/Loading/Loading';
+import { ToastContainer, toast as Toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const BillSummary = () => {
   const [startDate, setStartDate] = useState('');
@@ -19,8 +21,7 @@ const BillSummary = () => {
       const response = await axios.post('/api/billkapat/bills', { startDate, endDate });
       setBillData(response.data.data);
     } catch (error) {
-      console.error("Failed to fetch bill data:", error.message);
-      setError('Failed to fetch bill data');
+      Toast.error("या तारखे मधील बिल सेव केले आहे ");
     } finally {
       setLoading(false);
     }
@@ -41,10 +42,9 @@ const BillSummary = () => {
     try {
       const response = await axios.post('/api/billkapat/store', { bills: billData, startDate, endDate });
       console.log('Bills saved successfully:', response.data);
-      alert('Bills saved successfully!');
+      toast.success('Bills saved successfully!');
     } catch (error) {
-      console.error("Failed to save bill data:", error.message);
-      setError('Failed to save bill data');
+      Toast.error("या तारखे मधील बिल सेव केले आहे");
     } finally {
       setLoading(false);
     }
@@ -320,7 +320,9 @@ const BillSummary = () => {
             </div>
           </div>
         )}
+        <ToastContainer />
       </div>
+      
     </>
   );
 };

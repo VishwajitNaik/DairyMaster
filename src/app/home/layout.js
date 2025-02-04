@@ -10,7 +10,8 @@ export default function RootLayout({ children }) {
   const isExcludedDynamicPath =
     pathname.startsWith('/home/milkRecords/getMilksUserSide') ||
     pathname.startsWith('/home/AllDairies/') ||
-    pathname.startsWith('/home/orders/getOrdersUserside');
+    pathname.startsWith('/home/orders/getOrdersUserside') || 
+    pathname.startsWith('/home/GetKapatUserSide');
 
   return (
     <html lang="en">

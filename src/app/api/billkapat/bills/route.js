@@ -97,6 +97,7 @@ export async function POST(request) {
       results.push({
         registerNo: user.registerNo,
         user: user.name,
+        usId: user._id,
         totalLiters,
         totalBuffLiter,
         totalCowLiter,

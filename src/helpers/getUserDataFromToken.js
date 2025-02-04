@@ -2,20 +2,20 @@ import jwt from "jsonwebtoken";
 
 export const getDataFromToken = (request) => {
     try {
-        // Retrieve token from headers
-        const token = request.headers.get('userToken')?.split(' ')[1] || '';
-        console.log("Token from headers:", token);
+        const token = request.cookies.get("userToken")?.value || '';
 
         if (!token) {
-            console.error("No token found");
+            console.error("No token found in cookies");
             return null;
         }
 
-        // Verify the token
+        console.log("Token from cookies:", token);
+
         const decodedToken = jwt.verify(token, process.env.USER_TOKEN_SECRETE);
         console.log("Decoded Token:", decodedToken);
 
-        return decodedToken.id;
+        return decodedToken.userId; // FIXED: Returning `userId` instead of `id`
+
     } catch (error) {
         console.error("Error decoding token:", error);
         return null;

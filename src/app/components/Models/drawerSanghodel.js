@@ -4,6 +4,7 @@ import VikriPopUp from "./AddVikriUser"
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
+import Image from "next/image";
 
 
 const Drawer = ({ isOpen, onClose }) => {
@@ -29,126 +30,100 @@ const Drawer = ({ isOpen, onClose }) => {
     setVikri(false);
   };
 
-    // Logout
-    const logout = async () =>{
-      try {
-        await axios.get('/api/owner/logout');
-        router.push('/')
-      } catch (error) {
-        console.log("Logout failed: ", error.message);
-      }
-    }
+ 
+
+  const handleClose = () => {
+    setIsVisible(false); // Hide button
+    setTimeout(() => onClose(), 300); // Call onClose after animation
+  };
+
 
   return (
-    <div className="fixed inset-0 flex z-50">
-      <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
-      <div className="relative bg-white w-64 h-full shadow-lg">
-        <button
-          className="absolute top-2 right-2 text-gray-600"
-          onClick={onClose}
-        >
-          ✖️
-        </button>
-        <div className="p-4">
-          <h2 className="text-2xl font-bold mb-4">Menu</h2>
-          <ul>
-            <li
-              className="mb-2 flex items-center text-black hover:bg-gray-200 p-2 rounded cursor-pointer"
-              onClick={handlePopUpOpen}
-            >
-              उत्पादक भरणे
-            </li>
-            <li 
-            className="mb-2 flex items-center text-black hover:bg-gray-200 p-2 rounded"
-            onClick={handleVikriOpen}
-            >
-              स्थानिक विक्री
-            </li>
-            <li 
-            className="mb-2 flex items-center text-black hover:bg-gray-200 p-2 rounded">
-              <Link href={"/home/Sabhasad_List"}> 
-              सभासद लिस्ट
-              </Link> 
-            </li>
-            <li 
-            className="mb-2 flex items-center text-black hover:bg-gray-200 p-2 rounded">
-              <Link href={"/home/SthirKapat"}> 
-              कपाती भरणे 
-              </Link> 
-            </li>
-            <li className="mb-2 flex items-center">
-              <Link href="/home/BillData" className="hover:underline text-black">
-                बिल वितरण 
-              </Link>
-            </li>
-            <li className="mb-2 flex items-center">
-              <Link href="/home/GetKapat" className="hover:underline text-black">
-                कपातीचा डाटा पाहणे 
-              </Link>
-            </li>
-            <li className="mb-2 flex items-center">
-              <Link href="/home/SavedBills" className="hover:underline text-black">
-                मागील बील पाहणे 
-              </Link>
-            </li>
-            <li className="mb-2 flex items-center">
-              <Link href="/home/GetAllMilks" className="hover:underline text-black">
-                सर्व दूध पाहणे  
-              </Link>
-            </li>
-            <li className="mb-2 flex items-center">
-              <Link href="/home/orders/getOwnerOrders " className="hover:underline text-black">
-                संघ ऑर्डर पाहणे  
-              </Link>
-            </li>
-            <li className="mb-2 flex items-center">
-              <Link href="/home/milkRecords/SanghMilks" className="hover:underline text-black">
-                संघ दूध पाहणे   
-              </Link>
-            </li>
-            <li className="mb-2 flex items-center">
-              <Link href="/home/Summary" className="hover:underline text-black">
-               बील समरी रीपोर्ट 
-              </Link>
-            </li>
-            <li className="mb-2 flex items-center">
-              <Link href="/home/Bonus" className="hover:underline text-black">
-               बोनस  
-              </Link>
-            </li>
+<div className="fixed inset-0 flex z-50">
+  {/* Overlay */}
+  <div
+    className="fixed inset-0 bg-black opacity-50 transition-opacity duration-300 ease-in-out"
+    onClick={onClose}
+  ></div>
 
-            <button onClick={logout} className= " text-black font-bold rounded-md">
-                    Logout
-            </button>
-          </ul>
-        </div>
-      </div>
-      <PopUp isOpen={isPopUpOpen} onClose={handlePopUpClose} />
-      <VikriPopUp isOpen={vikri} onClose={handleVikriClose} />
+  {/* Drawer Container */}
+  <div
+    className={`relative w-64 h-full shadow-md rounded-md bg-violet-300 transform transition-transform duration-300 ease-in-out ${
+      isOpen ? "translate-x-0" : "-translate-x-full"
+    }`}
+  >
+    {/* Close Button */}
+    <button
+      className="absolute top-2 right-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 ease-in-out"
+      onClick={onClose}
+    >
+      ✖️
+    </button>
+
+    {/* Drawer Content */}
+    <div className="p-4">
+      {/* Logo */}
+      <Image
+        src="/assets/milkhub-512.png"
+        alt="Logo"
+        width={100}
+        height={100}
+        className="mb-4"
+      />
+
+      {/* Menu Items */}
+      <ul className="max-w-lg h-[90vh] mx-auto p-6 bg-transparent backdrop-blur-md rounded-lg shadow-md overflow-x-auto overflow-y-auto m-2">
+        <style jsx>{`
+          .max-w-lg::-webkit-scrollbar {
+            height: 8px; /* Adjust the height of the scrollbar */
+            width: 6px;
+          }
+          .max-w-lg::-webkit-scrollbar-track {
+            background: white; /* Optional: Change track background */
+          }
+          .max-w-lg::-webkit-scrollbar-thumb {
+            background: linear-gradient(
+              to bottom right,
+              #4a90e2,
+              #9013fe
+            ); /* Set the scrollbar color to black */
+            border-radius: 10px; /* Optional: Add rounded corners */
+            width: 8px; /* Adjust the width of the scrollbar */
+          }
+        `}</style>
+
+        {/* Menu Items */}
+        {[
+          { href: "/home/AllDairies/sabhasad_List", label: "सभासद लिस्ट" },
+          { href: "/home/AllDairies/MakeMilk", label: "दूध भरणे" },
+          { href: "/home/AllDairies/Rates/AddRates", label: "दरपत्रक भरणे" },
+          { href: "/home/AllDairies/AddKapatOption", label: "कपातीचे नावे भरणे" },
+          { href: "/home/AllDairies/Kapat", label: "बिल कपात करणे" },
+          { href: "/home/AllDairies/OrdersNam", label: "ऑर्डर नावे भरणे" },
+          { href: "/home/AllDairies/ExtraRate", label: "अतिरिक्त दर भरणे" },
+          { href: "/home/AllDairies/Docter/AddTagType", label: "Tag चा प्रकार भरणे" },
+          { href: "/home/AllDairies/Docter/Decieses", label: "आजाराचा प्रकार भरणे" },
+          { href: "/home/AllDairies/getAllMilk", label: "सर्व दूध पाहणे" },
+          { href: "/home/AllDairies/GetProduct", label: "प्रॉडक्ट नावे पाहणे" },
+          { href: "/home/AllDairies/Orders/GetOwnerOrders", label: "ऑर्डर पाहणे" },
+          { href: "/home/AllDairies/OwnerBills", label: "सभासद बिल भरणे" },
+          { href: "/home/AllDairies/OwnerMilks", label: "ओनर दूध पाहणे" },
+          { href: "/home/AllDairies/SavedBills", label: "बिल पाहणे" },
+        ].map((item, index) => (
+          <li
+            key={index}
+            className="mb-2 flex items-center text-black hover:bg-gray-200 p-2 shadow-md rounded transition-all duration-200 ease-in-out hover:scale-105"
+          >
+            <Link href={item.href}>{item.label}</Link>
+          </li>
+        ))}
+      </ul>
     </div>
+  </div>
+</div>
   );
 };
 
 export default Drawer;
 
-
-//   // Links for the navbar
-//   const navbarLinks = [
-//     { href: '/', label: 'Home' },
-//     { href: '/home/AllDairies/OrdersName', label: 'Add Product Name' },
-//     { href: '/home/AllDairies/MakeMilk', label: 'Add Milk' },
-//     { href: '/home/AllDairies/Orders/GetOwnerOrders', label: 'Order History' },
-//     { href: '/logout', label: 'Logout' },
-//   ];
-
-//   // Drawer Links
-//   const drawerLinks = [
-//     { href: '/home/AllDairies/getAllMilk', label: 'All Milks' },
-//     { href: '/home/AllDairies/OwnerMilks', label: 'Owner-wise Milk' },
-//     { href: '/home/AllDairies/MakeMilk', label: 'Add Milk' },
-//     { href: '/home/AllDairies/OwnerKapat', label: 'Add Kapat' },
-//     { href: '/home/AllDairies/OwnerBills', label: 'Owner Bills' },
-//     { href: '/home/AllDairies/ExtraRate', label: 'Liter Extra Rate' },
-//     { href: '/home/AllDairies/Orders/GetOwnerOrders', label: 'Order History' },
-//     { href: '/logout', label: 'Logout' },
-//   ];
+// fixed inset-0 flex items-center justify-center z-50

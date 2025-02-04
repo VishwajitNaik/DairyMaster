@@ -76,15 +76,18 @@ export default function Navbar() {
   return (
     <>
        
-      <nav
-        className="bg-gray-800 bg-opacity-70 backdrop-blur-md text-white"
+       <nav
+        className="bg-gradient-to-r from-gray-800 to-gray-900 bg-opacity-90 backdrop-blur-md text-white shadow-lg"
         style={{ position: 'sticky', top: 0, zIndex: 40 }}
       >
         <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="relative flex items-center justify-between h-16">
             {/* Drawer Toggle Button */}
             <div className="flex items-center">
-              <button onClick={toggleDrawer} className="text-xl font-bold cursor-pointer">
+              <button 
+                onClick={toggleDrawer} 
+                className="text-xl font-bold cursor-pointer hover:bg-gray-700 p-2 rounded-full transition duration-300"
+              >
                 <FontAwesomeIcon icon={faBars} size="lg" />
               </button>
             </div>
@@ -95,17 +98,17 @@ export default function Navbar() {
                 <div key={menu} className="relative -ml-2">
                   <button
                     onClick={() => setActiveMenu(activeMenu === menu ? null : menu)}
-                    className="hover:bg-blue-300 px-4 sm:px-8 py-2 sm:mr-4 rounded-md text-sm font-medium border-b border-gray-300"
+                    className="hover:bg-blue-600 px-4 sm:px-8 py-2 sm:mr-4 rounded-md text-sm font-medium border-b border-gray-300 transition duration-300 ease-in-out transform hover:scale-105"
                   >
                     {menu}
                   </button>
                   {activeMenu === menu && (
-                    <div className="absolute left-0 w-48 py-2 mt-2 rounded-md rounded-b-md shadow-xl">
+                    <div className="absolute left-0 w-48 py-2 mt-2 rounded-md rounded-b-md shadow-xl bg-gradient-to-b from-gray-700 to-gray-800">
                       {dropdownItems[menu].map((item, index) => (
                         <Link
                           key={index}
                           href={item.href}
-                          className="block px-4 py-2 bg-blue-500 text-white border-b border-blue-200 text-sm  hover:bg-gray-200 hover:text-black z-20"
+                          className="block px-4 py-2 text-white text-sm hover:bg-gray-600 hover:text-white transition duration-200 ease-in-out"
                         >
                           {item.label}
                         </Link>
@@ -118,15 +121,18 @@ export default function Navbar() {
 
             {/* Right Side (Avatar and Logout) */}
             <div className="flex items-center space-x-8">
-              <button onClick={logout} className="text-gray-300 hover:text-white">
+              <button 
+                onClick={logout} 
+                className="text-gray-300 hover:text-white transition duration-300 ease-in-out transform hover:scale-110"
+              >
                 <FontAwesomeIcon icon={faSignOutAlt} size="lg" />
               </button>
               <Link
                 href="/home/updateDetails/OnwerUpdate"
-                className="hover:bg-gray-700 px-3 py-2 rounded-full"
+                className="hover:bg-gray-700 px-3 py-2 rounded-full transition duration-300 ease-in-out transform hover:scale-110"
               >
                 <Image
-                  className="rounded-full"
+                  className="rounded-full border-2 border-gray-300 hover:border-white transition duration-300"
                   src="/assets/avatar.png"
                   alt="User"
                   width={30}
@@ -154,3 +160,6 @@ export default function Navbar() {
     </>
   );
 }
+
+
+//C1JMMV2UHUBTGJ1MV1ACW35Q

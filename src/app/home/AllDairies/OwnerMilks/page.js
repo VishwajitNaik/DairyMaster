@@ -35,7 +35,7 @@ const OwnersPage = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex flex-col items-center justify-center min-h-screen">
             <h1 className="text-3xl font-bold mb-8 text-gray-700">Owners List</h1>
             <div className="overflow-x-auto w-full max-w-6xl bg-white shadow-md rounded-lg">
                 <table className="min-w-full">

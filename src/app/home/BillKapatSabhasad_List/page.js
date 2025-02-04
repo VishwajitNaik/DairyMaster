@@ -11,7 +11,7 @@ export default function Sabhasad() {
   useEffect(() => {
     async function getOwnerUsers() {
       try {
-        const res = await axios.get("/api/user/getUsers");
+        const res = await axios.get("/api/user/getUserList");
         setUsers(res.data.data); // Adjusted to match the response format
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
@@ -21,7 +21,8 @@ export default function Sabhasad() {
   }, []);
 
   return (
-    <div className="container mx-auto p-4 text-black">
+    <div className="gradient-bg flex flex-col min-h-screen">
+    <div className="container mx-auto p-4 text-black ">
       <div className="flex justify-center mb-6">
         <h1 className="text-2xl md:text-4xl font-bold text-center">
           सभासद लिस्ट (Sabhasad List)
@@ -77,6 +78,7 @@ export default function Sabhasad() {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 }

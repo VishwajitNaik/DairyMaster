@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { connect } from '@/dbconfig/dbconfig';
 import OwnerKapat from '@/models/OwnerKapat';
 import { getDataFromToken } from '@/helpers/getSanghFormToken';
+import Sangh from '@/models/SanghModel';
 import Owner from '@/models/ownerModel';
 
 // Establish a database connection
@@ -11,6 +12,8 @@ export async function POST(request) {
     try {
         // Get the Sangh ID from the token (this should match the logged-in user's Sangh)
         const SanghId = await getDataFromToken(request);
+
+        const sangh = await Sangh.findById(SanghId);
 
         // Parse the request body
         const reqBody = await request.json();
@@ -46,8 +49,6 @@ export async function POST(request) {
             );
         }
 
-        console.log("Owner found:", owner);
-
         // Create a new OwnerKapat document
         const ownerKapat = new OwnerKapat({
             owner: owner._id,
@@ -62,8 +63,8 @@ export async function POST(request) {
         // Save the document to the database
         const savedOrder = await ownerKapat.save();
 
-        owner.Kapat.push(ownerKapat._id);
-        await owner.save();
+        sangh.Kapat.push(ownerKapat._id);
+        await sangh.save();
 
         owner.ownerBillKapat.push(ownerKapat._id);
         await owner.save();

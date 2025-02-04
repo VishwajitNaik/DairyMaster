@@ -1,29 +1,29 @@
-// app/api/orders/[id]/route.js
+// // app/api/orders/[id]/route.js
 
-import { NextResponse } from 'next/server';
-import { connect } from '@/dbconfig/dbconfig';
-import Order from '@/models/userOrders'; // Ensure this path is correct
-import BillKapat from '@/models/BillKapat';
+// import { NextResponse } from 'next/server';
+// import { connect } from '@/dbconfig/dbconfig';
+// import Order from '@/models/userOrders'; // Ensure this path is correct
 
-connect();
+// connect();
 
-export async function GET(request, { params }) {
-  const { id } = params; // User ID from URL
+// export async function GET(request) {
+//   const { searchParams } = new URL(request.url);
+//   const userId = searchParams.get('userId');
 
-  try {
-    const orders = await Order.find({ userId: id }).populate('createdBy', 'registerNo name'); // Adjust fields as needed
+// try {
+//   const OrderData = await Order.find({ createdBy: userId }).populate('createdBy', 'registerNo name'); // Ensure this matches the field in the Order schema
 
-    if (!orders.length) {
-      return NextResponse.json({ message: 'No orders found for this user' });
-    }
-    
+//   const totalAmount = await Order.aggregate([
+//     { $match: { createdBy: new mongoose.Types.ObjectId(userId) } },
+//     { $group: { _id: null, total: { $sum: '$rakkam' } } },
+//   ]);
 
-    return NextResponse.json({
-      message: 'Orders fetched successfully',
-      data: orders,
-    });
-  } catch (error) {
-    console.error('Error fetching orders:', error);
-    return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 });
-  }
-}
+//   return NextResponse.json({
+//     message: "Orders records fetched successfully",
+//     data: OrderData,
+//     totalAmount: totalAmount
+//   })
+// } catch (error) {
+  
+// }
+// }

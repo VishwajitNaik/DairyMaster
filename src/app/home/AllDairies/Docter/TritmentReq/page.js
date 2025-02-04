@@ -56,7 +56,11 @@ const OwnersPage = () => {
                                 <td className="text-black px-6 py-4">{owner.email}</td>
                                 <td className="text-black px-6 py-4">{owner.phone}</td>
                                 <td className="text-black px-6 py-4">
-
+                                    <button>
+                                        <Link href={`/home/AllDairies/Docter/TritmentReq/${owner._id}`}>
+                                            <span className="text-black">Details</span>
+                                        </Link>
+                                    </button>
                                 </td>
                             </tr>
                         ))}

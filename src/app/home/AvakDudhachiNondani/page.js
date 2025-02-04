@@ -11,6 +11,7 @@ import KapatNetpay from "../../components/KapatNetpay.js";
 import HeroBanner from "@/app/components/HeroBannerHome.js";
 import { getDataFromToken } from "@/helpers/getDataFromToken"; // Ensure this is set up correctly to decode the token.
 import LatestMilkRecords from "@/app/components/LatestMilkRecords.js";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import Image from "next/image.js";
 import { ToastContainer, toast as Toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -227,7 +228,7 @@ export default function AvakDudhNond({ params }) {
   useEffect(() => {
     async function getOwnerUsers() {
       try {
-        const res = await axios.get("/api/user/getUsers");
+        const res = await axios.get("/api/user/getUserList");
         setUsers(res.data.data);
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
@@ -608,6 +609,10 @@ export default function AvakDudhNond({ params }) {
   const handleFatChange = (event) => setFat(event.target.value);
   const handleSnfChange = (event) => setSnf(event.target.value);
 
+  const handlePageRefresh = () => {
+    window.location.reload();
+  };
+
   return (
     <>
       <div className="banner relative min-h-screen -mb-12">
@@ -639,7 +644,12 @@ export default function AvakDudhNond({ params }) {
                 {ownerName || "Guest"}
               </span>
             </h1>
-
+            <button
+              className="text-white py-1 px-3 rounded text-sm hover:bg-gray-800 hover:text-white transition duration-300 border-b-2 hover:border-b-2 hover:border-blue-500 border-gray-300"
+              onClick={handlePageRefresh}
+            >
+              <i className="fas fa-sync-alt"></i> {/* Font Awesome Refresh Icon */}
+            </button>
             </div>
             <div className="flex flex-row">
               <div

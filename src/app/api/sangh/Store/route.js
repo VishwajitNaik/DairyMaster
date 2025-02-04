@@ -77,6 +77,23 @@ export async function POST(request) {
             totalRakkam: bill.totalRakkam,
         }));
 
+        const existBillRange = await StoreBill.findOne({
+            ownerId: SanghId,
+            $or: [
+                {
+                    "dateRange.startDate": { $lte: new Date(endDate) },
+                    "dateRange.endDate": { $gte: new Date(startDate) },
+                },
+            ],
+        });
+        
+        if (existBillRange) {
+            return new Response(
+                JSON.stringify({ error: "Bill Range already exists", existingBill: existBillRange }),
+                { status: 400 }
+            );
+        }
+
         // Save bills to database
         const savedBills = await StoreBill.insertMany(billsWithDetails);
         console.log("Bills saved successfully:", savedBills);

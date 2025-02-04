@@ -4,7 +4,9 @@ import Orders from '@/models/userOrders';
 import { getDataFromToken } from '@/helpers/getDataFromToken';
 import User from '@/models/userModel';
 
+
 connect();
+
 
 export async function POST(request) {
   try {
@@ -48,6 +50,7 @@ export async function POST(request) {
 
     user.userOrders.push(newOrder._id);
     await user.save();
+
 
     return NextResponse.json({ message: "Order stored successfully", data: savedOrder }, { status: 200 });
   } catch (error) {

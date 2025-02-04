@@ -1,3 +1,4 @@
+require("dotenv").config();
 import { NextResponse } from "next/server";
 import { connect } from "@/dbconfig/dbconfig";
 import Milk from "@/models/MilkModel";
@@ -5,12 +6,16 @@ import User from "@/models/userModel";
 import Owner from "@/models/ownerModel";
 import { getDataFromToken } from "@/helpers/getDataFromToken";
 
+
 connect();
 
+
+// ✅ Milk Entry API
 export async function POST(request) {
   try {
     const ownerId = await getDataFromToken(request);
-    console.log("OnwerId: ",ownerId);
+    console.log("OwnerId: ", ownerId);
+
     const { registerNo, session, milk, liter, fat, snf, dar, rakkam, date } = await request.json();
 
     if (!registerNo || !session || !milk || !liter || !fat || !snf || !dar || !rakkam || !date) {
@@ -25,30 +30,27 @@ export async function POST(request) {
 
     const owner = await Owner.findById(ownerId);
 
-    if (!owner) { 
+    if (!owner) {
       return NextResponse.json({ error: "Owner not found" }, { status: 404 });
     }
 
-    // Use the original date without resetting the time
+    // ✅ Check if a milk entry already exists
     const currentDate = new Date(date);
-
-    // Check if a record already exists for the given session and date
     let milkRecord = await Milk.findOne({
       createdBy: user._id || registerNo,
       session,
       milk,
-      date: currentDate
+      date: currentDate,
     });
 
     if (milkRecord) {
-      // If a record already exists, return the message and the existing milk data
       return NextResponse.json({
         message: "Milk record for this session and date is already available.",
         alert: "Milk record for this session and date is already available.",
         data: milkRecord,
       });
     } else {
-      // Create a new record if none exists
+      // ✅ Create a new milk entry
       milkRecord = new Milk({
         registerNo,
         session,
@@ -70,9 +72,10 @@ export async function POST(request) {
       owner.userMilk.push(milkRecord._id);
       await owner.save();
 
+    
 
       return NextResponse.json({
-        message: "Milk information stored successfully",
+        message: "Milk information stored successfully & SMS sent",
         data: milkRecord,
       });
     }

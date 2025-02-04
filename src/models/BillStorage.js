@@ -9,6 +9,11 @@ const StoreBillSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  usId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   totalLiters: {
     type: Number,
     required: true,
