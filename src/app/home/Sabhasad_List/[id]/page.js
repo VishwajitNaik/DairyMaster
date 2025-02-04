@@ -259,6 +259,7 @@ export default function UserMilkDetails() {
             <th className="py-2 px-4 border-b">SNF</th>
             <th className="py-2 px-4 border-b">दर </th>
             <th className="py-2 px-4 border-b">रक्कम </th>
+            <th className="py-2 px-4 border-b">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -270,7 +271,13 @@ export default function UserMilkDetails() {
               <td className="py-2 px-4 border-b">{record.snf}</td>
               <td className="py-2 px-4 border-b">{record.dar}</td>
               <td className="py-2 px-4 border-b">{record.rakkam}</td>
-
+              <td className="py-2 px-4 border-b flex space-x-2">
+                  <FontAwesomeIcon
+                    icon={faTrash}
+                    className="text-red-500 cursor-pointer py-2 px-4"
+                    onClick={() => handleDelete(record._id)}
+                  />
+                </td>
             </tr>
           ))}
         </tbody>
@@ -318,6 +325,7 @@ export default function UserMilkDetails() {
             <th className="py-2 px-4 border-b">SNF</th>
             <th className="py-2 px-4 border-b">दर </th>
             <th className="py-2 px-4 border-b">रक्कम </th>
+            <th className='py-2 px-4 border-b'>Action</th>
           </tr>
         </thead>
         <tbody className="bg-gray-100">
@@ -329,6 +337,13 @@ export default function UserMilkDetails() {
               <td className="py-2 px-4 border-b">{record.snf}</td>
               <td className="py-2 px-4 border-b">{record.dar}</td>
               <td className="py-2 px-4 border-b">{record.rakkam}</td>
+              <td className="py-2 px-4 border-b flex space-x-2">
+                  <FontAwesomeIcon
+                    icon={faTrash}
+                    className="text-red-500 cursor-pointer py-2 px-4"
+                    onClick={() => handleDelete(record._id)}
+                  />
+                </td>
             </tr>
           ))}
         </tbody>

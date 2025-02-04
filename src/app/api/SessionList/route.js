@@ -11,49 +11,47 @@ export async function GET(request) {
     try {
         // Get the owner ID from the token
         const ownerId = await getDataFromToken(request);
-
         if (!ownerId) {
             return NextResponse.json({ error: "Owner ID not found in token" }, { status: 400 });
         }
 
         // Find the owner by ID and populate the 'users' field
         const owner = await Owner.findById(ownerId).populate('users');
-
         if (!owner) {
             return NextResponse.json({ error: "Owner not found" }, { status: 404 });
         }
 
-        // Determine today's date
-        const today = new Date();
-        const startOfDay = new Date(today.setHours(0, 0, 0, 0));
-        const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+        // Adjust to UTC to fix AWS timezone issues
+        const isProduction = process.env.NODE_ENV === "production";
 
-        // Determine the current session based on the time of day
-        const currentHour = new Date().getHours();
+        const today = new Date();
+        const startOfDay = isProduction 
+            ? new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0)) 
+            : new Date(today.setHours(0, 0, 0, 0));
+        
+        const endOfDay = isProduction 
+            ? new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59)) 
+            : new Date(today.setHours(23, 59, 59, 999));
+        
+
+        // Determine session based on AWS UTC time
+        const currentHour = today.getUTCHours(); // Use UTC hours to avoid AWS issues
         const currentSession = currentHour < 12 ? "morning" : "evening";
 
-        // Filter users based on milk records
-        const usersWithoutMilkRecords = await Promise.all(
-            owner.users.map(async (user) => {
-                // Find the milk records for the user for today's date and session
-                const milkRecords = await Milk.find({
-                    createdBy: user._id,
-                    date: { $gte: startOfDay, $lte: endOfDay },
-                    session: currentSession
-                });
+        // Sequential fetching to avoid overload
+        const filteredUsers = [];
+        for (const user of owner.users) {
+            const milkRecords = await Milk.find({
+                createdBy: user._id,
+                date: { $gte: startOfDay, $lte: endOfDay },
+                session: currentSession
+            }).read('primary'); // Ensures fresh data from primary DB node
 
-                // If no milk records exist for the current date and session, include the user
-                if (milkRecords.length === 0) {
-                    return user;
-                }
-                return null;
-            })
-        );
+            if (milkRecords.length === 0) {
+                filteredUsers.push(user);
+            }
+        }
 
-        // Filter out any null values (users with milk records for the current session)
-        const filteredUsers = usersWithoutMilkRecords.filter((user) => user !== null);
-
-        // Return the users who don't have milk records for the current session
         return NextResponse.json({ data: filteredUsers }, { status: 200 });
 
     } catch (error) {
