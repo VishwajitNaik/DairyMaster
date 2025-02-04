@@ -31,7 +31,7 @@ export default function Navbar() {
     try {
       await fetchUserDetails();
       if (user) {
-        router.push(`/home/orders/getOrdersUserside/${id}`);
+        router.push(`/user/getOrdersUserside/${id}`);
       } else {
         console.error("User ID is not available.");
       }
@@ -44,12 +44,25 @@ export default function Navbar() {
     try {
       await fetchUserDetails();
       if (user) {
-        router.push(`/home/getAdvanceUserSide/${id}`);
+        router.push(`/user/getAdvanceUserSide/${id}`);
       } else {
         console.error("User ID is not available.");
       }            
     } catch (error) {
       console.error("Error handling advance click:", error.message);
+    }
+  };
+
+  const handleBillsClick = async () => {
+    try {
+      await fetchUserDetails();
+      if (user) {
+        router.push(`/user/GetKapatUserSide/${id}`);
+      } else {
+        console.error("User ID is not available.");
+      }            
+    } catch (error) {
+      console.error("Error handling bills click:", error.message);
     }
   };
 
@@ -103,10 +116,10 @@ export default function Navbar() {
             </li>
             <li>
               <Link
-                href="/services"
+                href="/home/GetKapatUserSide"
                 className="text-white hover:bg-blue-700 p-2 rounded block"
               >
-                Services
+                बिल 
               </Link>
             </li>
             <li>
@@ -134,12 +147,12 @@ export default function Navbar() {
           >
             Advance
           </button>
-          <Link
-            href="/services"
+          <button
+            onClick={handleBillsClick}
             className="text-white hover:bg-blue-700 p-2 rounded"
           >
-            Services
-          </Link>
+            बिल 
+          </button>
           <Link
             href="/contact"
             className="text-white hover:bg-blue-700 p-2 rounded"

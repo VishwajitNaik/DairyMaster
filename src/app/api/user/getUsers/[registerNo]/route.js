@@ -24,6 +24,7 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: "User ID is required" }, { status: 400 });
     }
 
+    console.time("findUser");
     // Conditionally fetch user based on authentication
     let user;
     if (ownerId) {
@@ -37,6 +38,8 @@ export async function GET(request, { params }) {
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
+
+    console.timeEnd("findUser");
 
     return NextResponse.json({
       message: "User fetched successfully",

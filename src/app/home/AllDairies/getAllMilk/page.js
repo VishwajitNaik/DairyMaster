@@ -16,6 +16,9 @@ const MilkRecords = () => {
   const [buffaloEveningMilkRecords, setBuffaloEveningMilkRecords] = useState(
     []
   ); // for buffalo evening milk records
+  const [tatalMilkRakkam, setTotalMilkRakkam] = useState(0);
+  const [totalBuffMilkRakkam, setTotalBuffMilkRakkam] = useState(0);
+  const [totalCowMilkRakkam, setTotalCowMilkRakkam] = useState(0);
 
   const fetchMilkRecords = async () => {
     setLoading(true);
@@ -57,12 +60,38 @@ const MilkRecords = () => {
         (record) => record.milkType === "buff" && record.session === "evening"
       );
 
-      console.log("Bufferalo Evening Milk Records:", buffaloEveningMilkRecords);
+      const totalMilkRakkam = milkRecords.reduce(
+        (total, record) => total + record.amount,
+        0
+      );
+
+      const totalBuffMilkRakkam =
+        buffaloMorningMilkRecords.reduce(
+          (total, record) => total + record.amount,
+          0
+        ) +
+        buffaloEveningMilkRecords.reduce(
+          (total, record) => total + record.amount,
+          0
+        );
+
+      const totalCowMilkRakkam =
+        cowMorningMilkRecords.reduce(
+          (total, record) => total + record.amount,
+          0
+        ) +
+        cowEveningMilkRecords.reduce(
+          (total, record) => total + record.amount,
+          0
+        );
 
       setCowMorningMilkRecords(cowMorningMilkRecords);
       setBuffaloMorningMilkRecords(buffaloMorningMilkRecords);
       setCowEveningMilkRecords(cowEveningMilkRecords);
       setBuffaloEveningMilkRecords(buffaloEveningMilkRecords);
+      setTotalMilkRakkam(totalMilkRakkam.toFixed(2));
+      setTotalBuffMilkRakkam(totalBuffMilkRakkam.toFixed(2));
+      setTotalCowMilkRakkam(totalCowMilkRakkam.toFixed(2));
     }
   }, [milkRecords]);
   const handleFilter = () => {
@@ -77,40 +106,41 @@ const MilkRecords = () => {
   };
 
   return (
-    <div className=" m-10">
-      <h1 className="text-2xl font-bold mb-5">Milk Records</h1>
+    <div className="ml-5 mt-5">
+<h1 className="text-3xl text-center text-gray-800 mb-6 font-bold">
+  Milk Records
+</h1>
 
-      {/* Date Range Filters */}
-      <div className="flex items-center space-x-4 mb-5">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Start Date
-          </label>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="text-black p-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            End Date
-          </label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="text-black p-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
-        </div>
-        <button
-          onClick={handleFilter}
-          className="mt-6 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-        >
-          Filter
-        </button>
-      </div>
+{/* Date Range Filters */}
+<div className="flex flex-col sm:flex-row sm:space-x-6 mx-[20%] p-6 bg-white rounded-lg shadow-lg border border-gray-200 mb-2">
+  <div className="flex-1">
+    <label className="block text-sm font-medium text-gray-700">Start Date</label>
+    <input
+      type="date"
+      value={startDate}
+      onChange={(e) => setStartDate(e.target.value)}
+      className="text-black p-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-base"
+    />
+  </div>
+  
+  <div className="flex-1 mt-4 sm:mt-0">
+    <label className="block text-sm font-medium text-gray-700">End Date</label>
+    <input
+      type="date"
+      value={endDate}
+      onChange={(e) => setEndDate(e.target.value)}
+      className="text-black p-3 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-base"
+    />
+  </div>
+  
+  <button
+    onClick={handleFilter}
+    className="mt-6 sm:mt-0 bg-blue-600 text-white px-6 py-3 rounded-md shadow-md hover:bg-blue-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400"
+  >
+    Apply Filters
+  </button>
+</div>
+
 
       {/* Loading, Error, and Records Display */}
       {loading && <p>Loading...</p>}
@@ -119,62 +149,55 @@ const MilkRecords = () => {
         <p>No milk records found. Please select a date range to filter.</p>
       )}
       {/* Milk Records Table: Morning Section */}
-      <div className="flex flex-wrap mb-8">
+      <div className="flex flex-row flex-wrap gap-4 mb-8">
         {/* Cow Morning Milk Records Table */}
-        <div className="w-full md:w-1/2 p-2">
-          <h2 className="text-lg sm:text-xl font-semibold mb-2">
-            Cow Morning Milk Records
+        <div className="w-full md:w-[48%] p-4 bg-white shadow-md rounded-lg overflow-hidden">
+          <h2 className="text-center text-xl font-semibold bg-gray-700 text-white py-3 rounded-t-lg">
+            🐄 Cow Morning Milk Records
           </h2>
           <div className="overflow-x-auto">
-            <table className="min-w-full table-auto border-collapse border border-gray-200 text-sm sm:text-base">
+            <table className="w-full border-collapse border border-gray-300 text-sm sm:text-base text-black">
               <thead>
-                <tr className="bg-gray-100 text-black">
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    तारीख
-                  </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
+                <tr className="bg-gray-200 text-black">
+                  <th className="border border-gray-300 px-4 py-2">तारीख</th>
+                  <th className="border border-gray-300 px-4 py-2">
                     स्याम्पल नं
                   </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    मिल्क प्रकार
-                  </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2">
                     मिल्क लिटर
                   </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">फॅट</th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    एसएनफ
-                  </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">रेट</th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    रक्कम
-                  </th>
+                  <th className="border border-gray-300 px-4 py-2">फॅट</th>
+                  <th className="border border-gray-300 px-4 py-2">एसएनफ</th>
+                  <th className="border border-gray-300 px-4 py-2">रेट</th>
+                  <th className="border border-gray-300 px-4 py-2">रक्कम</th>
                 </tr>
               </thead>
               <tbody>
                 {cowMorningMilkRecords.map((record) => (
-                  <tr key={record._id} className="border-b bg-gray-200">
-                    <td className="text-black px-2 sm:px-4 py-2">
+                  <tr
+                    key={record._id}
+                    className="border-b bg-white hover:bg-gray-100 transition-all text-black"
+                  >
+                    <td className="border border-gray-300 px-4 py-2">
                       {new Date(record.date).toLocaleDateString()}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2">
                       {record.sampleNo}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">गाय</td>
-                    <td className="text-black px-2 sm:px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2">
                       {record.milkLiter}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      {record.fat}
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.fat}{" "}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      {record.snf}
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.snf}{" "}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      ₹{record.rate}
+                    <td className="border border-gray-300 px-4 py-2 font-bold text-black">
+                      {record.rate}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      ₹{record.amount}
+                    <td className="border border-gray-300 px-4 py-2 font-bold text-black">
+                      {record.amount}
                     </td>
                   </tr>
                 ))}
@@ -184,60 +207,53 @@ const MilkRecords = () => {
         </div>
 
         {/* Buffalo Morning Milk Records Table */}
-        <div className="w-full md:w-1/2 p-2">
-          <h2 className="text-lg sm:text-xl font-semibold mb-2">
-            Buffalo Morning Milk Records
+        <div className="w-full md:w-[48%] p-4 bg-white shadow-md rounded-lg overflow-hidden">
+          <h2 className="text-center text-xl font-semibold bg-gray-700 text-white py-3 rounded-t-lg">
+            🐃 Buffalo Morning Milk Records
           </h2>
           <div className="overflow-x-auto">
-            <table className="min-w-full table-auto border-collapse border border-gray-200 text-sm sm:text-base">
+            <table className="w-full border-collapse border border-gray-300 text-sm sm:text-base text-black">
               <thead>
-                <tr className="bg-gray-100 text-black">
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    तारीख
-                  </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
+                <tr className="bg-gray-200 text-black">
+                  <th className="border border-gray-300 px-4 py-2 text-black">तारीख</th>
+                  <th className="border border-gray-300 px-4 py-2 text-black">
                     स्याम्पल नं
                   </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    मिल्क प्रकार
-                  </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2 text-black">
                     मिल्क लिटर
                   </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">फॅट</th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    एसएनफ
-                  </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">रेट</th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    रक्कम
-                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-black">फॅट</th>
+                  <th className="border border-gray-300 px-4 py-2 text-black">एसएनफ</th>
+                  <th className="border border-gray-300 px-4 py-2 text-black">रेट</th>
+                  <th className="border border-gray-300 px-4 py-2 text-black">रक्कम</th>
                 </tr>
               </thead>
               <tbody>
                 {buffaloMorningMilkRecords.map((record) => (
-                  <tr key={record._id} className="border-b bg-gray-200">
-                    <td className="text-black px-2 sm:px-4 py-2">
+                  <tr
+                    key={record._id}
+                    className="border-b bg-white hover:bg-gray-100 transition-all text-black"
+                  >
+                    <td className="border border-gray-300 px-4 py-2">
                       {new Date(record.date).toLocaleDateString()}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2">
                       {record.sampleNo}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">भैंस</td>
-                    <td className="text-black px-2 sm:px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2">
                       {record.milkLiter}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2">
                       {record.fat}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2">
                       {record.snf}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      ₹{record.rate}
+                    <td className="border border-gray-300 px-4 py-2 font-bold text-black">
+                      {record.rate}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      ₹{record.amount}
+                    <td className="border border-gray-300 px-4 py-2 font-bold text-black">
+                      {record.amount}
                     </td>
                   </tr>
                 ))}
@@ -246,63 +262,57 @@ const MilkRecords = () => {
           </div>
         </div>
       </div>
+
       {/* Milk Records Table: Evening Section */}
-      <div className="flex flex-wrap mb-8">
+      <div className="flex flex-row flex-wrap gap-4 mb-8">
         {/* Cow Evening Milk Records Table */}
-        <div className="w-full md:w-1/2 p-2">
-          <h2 className="text-lg sm:text-xl font-semibold mb-2">
-            Cow Evening Milk Records
+        <div className="w-full md:w-[48%] p-4 bg-white shadow-md rounded-lg overflow-hidden">
+          <h2 className="text-center text-xl font-semibold bg-gray-700 text-white py-3 rounded-t-lg">
+            🐄 Cow Evening Milk Records
           </h2>
           <div className="overflow-x-auto">
-            <table className="min-w-full table-auto border-collapse border border-gray-200 text-sm sm:text-base">
+            <table className="w-full border-collapse border border-gray-300 text-sm sm:text-base">
               <thead>
-                <tr className="bg-gray-100 text-black">
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    तारीख
-                  </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
+                <tr className="bg-gray-200 text-gray-700">
+                  <th className="border border-gray-300 px-4 py-2">तारीख</th>
+                  <th className="border border-gray-300 px-4 py-2">
                     स्याम्पल नं
                   </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    मिल्क प्रकार
-                  </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2">
                     मिल्क लिटर
                   </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">फॅट</th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    एसएनफ
-                  </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">रेट</th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    रक्कम
-                  </th>
+                  <th className="border border-gray-300 px-4 py-2">फॅट</th>
+                  <th className="border border-gray-300 px-4 py-2">एसएनफ</th>
+                  <th className="border border-gray-300 px-4 py-2">रेट</th>
+                  <th className="border border-gray-300 px-4 py-2">रक्कम</th>
                 </tr>
               </thead>
               <tbody>
                 {cowEveningMilkRecords.map((record) => (
-                  <tr key={record._id} className="border-b bg-gray-200">
-                    <td className="text-black px-2 sm:px-4 py-2">
+                  <tr
+                    key={record._id}
+                    className="border-b text-center bg-white hover:bg-gray-100 transition-all"
+                  >
+                    <td className="border border-gray-300 px-4 py-2 text-black">
                       {new Date(record.date).toLocaleDateString()}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2 text-black">
                       {record.sampleNo}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">गाय</td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      {record.milkLiter}
+                    <td className="border border-gray-300 px-4 py-2 text-black">
+                      {record.milkLiter} 
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      {record.fat}
+                    <td className="border border-gray-300 px-4 py-2 text-black">
+                      {record.fat} 
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      {record.snf}
+                    <td className="border border-gray-300 px-4 py-2 text-black">
+                      {record.snf} 
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      ₹{record.rate}
+                    <td className="border border-gray-300 px-4 py-2 text-black font-bold">
+                      {record.rate}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      ₹{record.amount}
+                    <td className="border border-gray-300 px-4 py-2 text-black font-bold">
+                      {record.amount}
                     </td>
                   </tr>
                 ))}
@@ -312,66 +322,101 @@ const MilkRecords = () => {
         </div>
 
         {/* Buffalo Evening Milk Records Table */}
-        <div className="w-full md:w-1/2 p-2">
-          <h2 className="text-lg sm:text-xl font-semibold mb-2">
-            Buffalo Evening Milk Records
+        <div className="w-full md:w-[48%] p-4 bg-white shadow-md rounded-lg overflow-hidden">
+          <h2 className="text-center text-xl font-semibold bg-gray-700 text-white py-3 rounded-t-lg">
+            🐃 Buffalo Evening Milk Records
           </h2>
           <div className="overflow-x-auto">
-            <table className="min-w-full table-auto border-collapse border border-gray-200 text-sm sm:text-base">
+            <table className="w-full border-collapse border border-gray-300 text-sm sm:text-base">
               <thead>
-                <tr className="bg-gray-100 text-black">
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    तारीख
-                  </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
+                <tr className="bg-gray-200 text-gray-700">
+                  <th className="border border-gray-300 px-4 py-2">तारीख</th>
+                  <th className="border border-gray-300 px-4 py-2">
                     स्याम्पल नं
                   </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    मिल्क प्रकार
-                  </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
+                  <th className="border border-gray-300 px-4 py-2">
                     मिल्क लिटर
                   </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">फॅट</th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    एसएनफ
-                  </th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">रेट</th>
-                  <th className="border-b px-2 sm:px-4 py-2 text-left">
-                    रक्कम
-                  </th>
+                  <th className="border border-gray-300 px-4 py-2">फॅट</th>
+                  <th className="border border-gray-300 px-4 py-2">एसएनफ</th>
+                  <th className="border border-gray-300 px-4 py-2">रेट</th>
+                  <th className="border border-gray-300 px-4 py-2">रक्कम</th>
                 </tr>
               </thead>
               <tbody>
                 {buffaloEveningMilkRecords.map((record) => (
-                  <tr key={record._id} className="border-b bg-gray-200">
-                    <td className="text-black px-2 sm:px-4 py-2">
+                  <tr
+                    key={record._id}
+                    className="border-b text-center bg-white hover:bg-gray-100 transition-all"
+                  >
+                    <td className="border border-gray-300 px-4 py-2 text-black">
                       {new Date(record.date).toLocaleDateString()}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2 text-black">
                       {record.sampleNo}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">भैंस</td>
-                    <td className="text-black px-2 sm:px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2 text-black">
                       {record.milkLiter}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2 text-black">
                       {record.fat}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      {record.snf}
+                    <td className="border border-gray-300 px-4 py-2 text-black">
+                      {record.snf} 
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      ₹{record.rate}
+                    <td className="border border-gray-300 px-4 py-2 text-black font-bold">
+                      {record.rate}
                     </td>
-                    <td className="text-black px-2 sm:px-4 py-2">
-                      ₹{record.amount}
+                    <td className="border border-gray-300 px-4 py-2 text-black font-bold">
+                      {record.amount}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+        </div>
+
+        <div className="w-full max-w-2xl mx-auto mt-6 bg-white shadow-md rounded-lg overflow-hidden">
+          <h2 className="text-center text-2xl font-semibold bg-gray-700 text-white py-3">
+            Milk Summary
+          </h2>
+          <table className="w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-200 text-gray-700">
+                <th className="border border-gray-300 px-4 py-2">Milk Type</th>
+                <th className="border border-gray-300 px-4 py-2">
+                  Total Amount (₹)
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="text-center text-lg">
+                <td className="border border-gray-300 px-4 py-2 font-medium text-black">
+                  म्हैस दूध 
+                </td>
+                <td className="border border-gray-300 px-4 py-2 font-bold text-blue-600">
+                  {totalBuffMilkRakkam}
+                </td>
+              </tr>
+              <tr className="text-center text-lg bg-gray-50">
+                <td className="border border-gray-300 px-4 py-2 font-medium text-black">
+                  गाय दूध 
+                </td>
+                <td className="border border-gray-300 px-4 py-2 font-bold text-green-600">
+                  {totalCowMilkRakkam}
+                </td>
+              </tr>
+              <tr className="text-center text-lg font-semibold bg-gray-300">
+                <td className="border border-gray-300 px-4 py-2 text-black">
+                  एकूण रक्कम (Total)
+                </td>
+                <td className="border border-gray-300 px-4 py-2 text-red-600">
+                  {tatalMilkRakkam}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

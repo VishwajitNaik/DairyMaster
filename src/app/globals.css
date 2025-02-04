@@ -16,6 +16,20 @@
   }
 }
 
+@keyframes zoomInOut {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.animate-zoom {
+  animation: zoomInOut 3s infinite ease-in-out;
+}
+
+
 @font-face {
   font-family: 'CustomFont';
   src: url('/fonts/Anton-Regular.ttf') format('woff2'),

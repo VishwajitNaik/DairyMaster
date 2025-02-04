@@ -36,8 +36,8 @@ const ProductForm = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <h1 className="text-3xl font-bold mb-8 text-gray-700">Add Product</h1>
+        <div className="flex flex-col items-center justify-center min-h-screen">
+            <h1 className="text-3xl font-bold mb-8 text-gray-300">Add Product</h1>
 
             <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
                 <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">Product Information</h2>

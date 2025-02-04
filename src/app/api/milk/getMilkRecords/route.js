@@ -25,6 +25,8 @@ export async function GET(request) {
 
     let milkRecords;
 
+    console.time('Milk records fetch time');
+
     if (userId || tokenUserId) {
       // Fetch records for the specific user (either from query or token) within the date range
       milkRecords = await Milk.find({
@@ -42,8 +44,10 @@ export async function GET(request) {
           $gte: startDate,
           $lte: endDate,
         },
-      }).populate('createdBy', 'registerNo name').sort({ date: 1 });;
+      }).populate('createdBy', 'registerNo name').sort({ date: 1 });
     }
+
+    console.timeEnd('Milk records fetch time');
 
     return NextResponse.json({
       message: 'Milk records fetched successfully',

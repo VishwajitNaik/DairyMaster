@@ -32,7 +32,7 @@ const SigninForm = () => {
         console.log("Stored token:", storedToken);
 
         const userId = response.data.user._id; // Get the user ID from the response
-        router.push(`/home/milkRecords/getMilksUserSide/${userId}`);
+        router.push(`/user/getMilksUserSide/${userId}`);
       }
     } catch (error) {
       console.error("Login failed:", error.response?.data?.error || error.message);

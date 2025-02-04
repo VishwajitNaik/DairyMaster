@@ -2,7 +2,6 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import AddOrders from "../AddOrders/page"
 
 const OwnerMilk = () => {
   const { id } = useParams();
@@ -14,8 +13,12 @@ const OwnerMilk = () => {
   const [owners, setOwners] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [buffaloConstants, setBuffaloConstants] = useState({});
+  const [cowConstants, setCowConstants] = useState({});
   const [selectedDairyName, setSelectedDairyName] = useState("");
   const [calculatedMilkLiter, setCalculatedMilkLiter] = useState(null);
+  const [rates, setRates] = useState([]);
+
 
   const initialMilkDetails = {
     quality: "",
@@ -59,6 +62,31 @@ const OwnerMilk = () => {
       }
     };
     getOwners();
+  }, []);
+
+  useEffect(() =>{
+    const fetchRates = async () =>{
+      try {
+        const res = await axios.get("/api/sangh/GetRates");
+
+        if(
+          Array.isArray(res.data.data) && 
+          res.data.data.length > 0
+        ) {
+          setRates(res.data.data[0]);
+        }else{
+          console.log("No rates Found");
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching rates:", error.message);
+        setError("Error fetching rates");
+        setLoading(false);
+      }
+    };
+    fetchRates();
+
   }, []);
 
   // Set current date
@@ -117,30 +145,36 @@ const OwnerMilk = () => {
     );
   };
 
-  // Constants for calculating rates
-  const buffaloConstants = {
-    HF: 15,
-    R1: 78.40,
-    LF: 5.5,
-    R2: 48.90,
-    SNF_RANGES: [
-      { start: 8.7, end: 9.0, rate: 0.3 },
-      { start: 9.0, end: 9.1, rate: 0.1 },
-      { start: 9.1, end: 10.0, rate: 0.05 },
-    ],
-  };
 
-  const cowConstants = {
-    HF: 5,
-    R1: 33.90,
-    LF: 3,
-    R2: 29.40,
-    SNF_RANGES: [
-      { start: 8.2, end: 8.5, rate: 0.3 },
-      { start: 8.5, end: 8.6, rate: 0.10 },
-      { start: 8.6, end: 9.0, rate: 0.05 },
-    ],
-  };
+  useEffect(() =>{
+    if(rates && Object.keys(rates).length > 0){
+      setBuffaloConstants({
+          HF: rates.HighFatB,
+          R1: rates.HighRateB,
+          LF: rates.LowFatB,
+          R2: rates.LowRateB,
+          SNF_RANGES: [
+            { start: 8.7, end: 9.0, rate: 0.3 },
+            { start: 9.0, end: 9.1, rate: 0.1 },
+            { start: 9.1, end: 10.0, rate: 0.05 },
+          ],
+      })
+    
+    setCowConstants({
+      HF: rates.HighFatC,
+      R1: rates.HighRateC,
+      LF: rates.LowFatC,
+      R2: rates.LowRateC,
+      SNF_RANGES: [
+        { start: 8.2, end: 8.5, rate: 0.3 },
+        { start: 8.5, end: 8.6, rate: 0.10 },
+        { start: 8.6, end: 9.0, rate: 0.05 },
+      ],
+    })
+    } else{
+      console.log("Rates not Yet loaded or empty");
+    }
+  }, [rates])
 
   // Calculation functions
   const calculateValues = (X, constants) => {
@@ -239,336 +273,350 @@ const OwnerMilk = () => {
 
   return (
     <>
-    <div className="text-8xl text-white text-center" >Owner Milk</div>
-      <div className="flex justify-center min-h-screen items-center bg-gray-900">
-        <div className="bg-gray-800 w-[80%] h-[40%] p-4">
-          <form onSubmit={handleSubmit} className="flex flex-row">
-            {/* Col 1 with three rows */}
-            <div className="bg-gray-300 w-[70%] p-4 text-black">
-              <div className="bg-gray-200 p-2 mb-2">
-                <div className="flex flex-row items-center">
-                  <label htmlFor="currentDate" className="text-xl mr-2">
-                    दिनांक:
-                  </label>
-                  <input
-                    type="date"
-                    id="currentDate"
-                    className="ml-2 p-1 rounded-md shadow-md text-black"
-                    value={currentDate}
-                    onChange={(e) => setCurrentDate(e.target.value)}
-                    max={new Date().toISOString().split("T")[0]} // Restrict future dates
-                    required
-                  />
-                  <label htmlFor="currentTime" className="text-xl ml-4 mr-2">
-                    समय:
-                  </label>
-                  <select
-                    id="currentTime"
-                    className="ml-2 p-1 rounded-md shadow-md text-black"
-                    value={currentTime}
-                    onChange={(e) => setCurrentTime(e.target.value)}
-                    required
-                  >
-                    <option value="morning">Morning</option>
-                    <option value="evening">Evening</option>
-                  </select>
-                  <label htmlFor="sampleNo" className="ml-5">
-                    Sample No
-                  </label>
-                  <input
-                    type="text"
-                    id="sampleNo"
-                    className="w-12 ml-3 mr-4 text-black rounded-md shadow-lg"
-                    value={sampleNo}
-                    onChange={(e) => setSampleNo(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="bg-gray-200 p-2 mb-2">
-                <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
-                  <div className="flex items-center">
-                    <label htmlFor="code" className="ml-12 mr-2">
-                      U. code:
-                    </label>
-                    <input
-                      type="text"
-                      id="code"
-                      step="0.1"
-                      className="w-24 mr-4 text-black rounded-md shadow-lg p-1"
-                      value={registerNo}
-                      onChange={handleRegisterNoChange}
-                      required
-                    />
-                    <select
-                      className="block text-black w-48 rounded-md shadow-lg p-1"
-                      id="ownerDropdown"
-                      value={selectedDairyName}
-                      onChange={(e) => setSelectedDairyName(e.target.value)}
-                      required
-                    >
-                      <option value="">Choose...</option>
-                      {owners.map((user) => (
-                        <option key={user.registerNo} value={user.dairyName}>
-                          {user.dairyName}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <select
-                      className="block text-black w-32 rounded-md shadow-lg p-1"
-                      id="milkTypeDropdown"
-                      name="milkType"
-                      value={milkDetails.milkType || ""}
-                      onChange={handleInputChange}
-                      required
-                    >
-                      <option value="">Milk Type</option>
-                      <option value="buff">Buff</option>
-                      <option value="cow">Cow</option>
-                    </select>
-                  </div>
-                  <div className="block text-black w-32 rounded-md shadow-lg p-1">
-                    <select
-                      className="block text-black w-24 rounded-md shadow-lg p-1"
-                      id="qualityPercentage"
-                      name="quality"
-                      value={milkDetails.quality || ""}
-                      onChange={handleInputChange}
-                      required
-                    >
-                      <option value="">गुणप्रत </option>
-                      <option value="G">G</option>
-                      <option value="B">B</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-gray-200 p-2">
-  <div className="flex flex-col md:flex-row mt-4 space-y-4 md:space-y-0 md:space-x-4">
-    {/* Milk KG Input */}
-    <div className="flex flex-col items-start">
-  <label htmlFor="milkKG" className="mb-1">Milk KG:</label>
-  <input
-    type="number"
-    id="milkKG"
-    name="milkKG"
-    step="0.1"
-    className="w-20 text-black rounded-md shadow-lg p-1"
-    value={milkDetails.milkKG || ""}
-    onChange={handleInputChange} // This will automatically calculate milkLiter
-    required
-  />
-</div>
-
-
-    {/* Milk Liter Input */}
-    <div className="flex flex-col items-start">
-  <label htmlFor="milkLiter" className="mb-1">Milk Liter:</label>
-  <input
-    type="number"
-    id="milkLiter"
-    name="milkLiter"
-    step="0.1"
-    className="w-20 text-black rounded-md shadow-lg p-1"
-    value={milkDetails.milkLiter || ""}
-    onChange={handleInputChange} // Optional, but user can still manually change it
-    required
-  />
-</div>
-
-
-    {/* Smel Liter Input */}
-    <div className="flex flex-col items-start">
-  <label htmlFor="smelLiter" className="mb-1">Smel Liter:</label>
-  <input
-    type="number"
-    step="0.1"
-    id="smelLiter"
-    name="smelLiter"
-    className="w-20 text-black rounded-md shadow-lg p-1"
-    value={milkDetails.smelLiter || ""}
-    onChange={handleSmelLiterChange} // Use the new handler
-    
-  />
-</div>
-
-
-
-    {/* Fat Input */}
-    <div className="flex flex-col items-start">
-      <label htmlFor="fat" className="mb-1">Fat:</label>
-      <input
-        type="number"
-        id="fat"
-        step="0.1"
-        name="fat"
-        className="w-20 text-black rounded-md shadow-lg p-1"
-        value={milkDetails.fat || ""}
-        onChange={handleInputChange}
-        required
-      />
-    </div>
-
-    {/* SNF Input */}
-    <div className="flex flex-col items-start">
-      <label htmlFor="snf" className="mb-1">SNF:</label>
-      <input
-        type="number"
-        id="snf"
-        step="0.1"
-        name="snf"
-        className="w-20 text-black rounded-md shadow-lg p-1"
-        value={milkDetails.snf || ""}
-        onChange={handleInputChange}
-        required
-      />
-    </div>
-
-    {/* Rate Input */}
-    <div className="flex flex-col items-start">
-      <label htmlFor="rate" className="mb-1">Rate:</label>
-      <input
-        type="number"
-        id="rate"
-        name="rate"
-        step="0.1"
-        className="w-20 text-black rounded-md shadow-lg p-1"
-        value={milkDetails.rate || ""}
-        onChange={handleInputChange}
-        readOnly
-      />
-    </div>
-
-    {/* Amount Input */}
-    <div className="flex flex-col items-start">
-      <label htmlFor="amount" className="mb-1">Amount:</label>
-      <input
-        type="number"
-        id="amount"
-        name="amount"
-        step="0.1"
-        className="w-20 text-black rounded-md shadow-lg p-1"
-        value={milkDetails.amount || ""}
-        onChange={handleInputChange}
-        readOnly
-      />
-    </div>
+<div className="min-h-screen  flex flex-col items-center justify-center p-4 -mt-8">
+  {/* Heading */}
+  <div className="text-8xl text-white text-center mb-8 font-bold">
+    Owner Milk
   </div>
-</div>
 
-
-
-<div className="bg-gray-200 p-2 flex flex-col">
-  <div className="flex space-x-4 mb-4">
-    <button type="button" onClick={handleSmelLiterChange} className="bg-green-500 text-white p-2 rounded-md shadow-md hover:bg-green-700 transition duration-300">
-      Calculate Milk Liter
-    </button>
-    <button type="button" onClick={handleCalculateRate} className="bg-yellow-500 text-white p-2 rounded-md shadow-md hover:bg-yellow-700 transition duration-300">
-      Calculate Rate and Amount
-    </button>
-    <button
-      type="submit"
-      className="bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
-    >
-      Submit
-    </button>
-  </div>
-  <label>
-    Calculated Milk Liter: {milkDetails.milkLiter}
-  </label>
-  {error && <p className="text-red-500 mt-4">{error}</p>}
-</div>
-
+  {/* Form Container */}
+  <div className="bg-gray-800 w-full max-w-6xl rounded-lg shadow-2xl p-6">
+    <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">
+      {/* Column 1 */}
+      <div className="bg-gray-700 p-6 rounded-lg flex-1">
+        {/* Date, Time, and Sample No */}
+        <div className="bg-gray-600 p-4 rounded-lg mb-4">
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <div className="flex items-center">
+              <label htmlFor="currentDate" className="text-white text-lg mr-2">
+                दिनांक:
+              </label>
+              <input
+                type="date"
+                id="currentDate"
+                className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={currentDate}
+                onChange={(e) => setCurrentDate(e.target.value)}
+                max={new Date().toISOString().split("T")[0]}
+                required
+              />
             </div>
-            
-
-            {/* Col 2 */}
-            <div className="flex flex-col space-y-4 md:space-y-0 md:space-x-4">
-                <div className="flex flex-row ml-4 hover:bg-gray-700 rounded-md items-center">
-                  <label htmlFor="senedCen" className="m-4">
-                    पाठवलेले केण
-                  </label>
-                  <input
-                    type="number"
-                    id="senedCen"
-                    name="senedCen"
-                    className="w-20 text-black rounded-md shadow-lg p-1 ml-12"
-                    value={milkDetails.senedCen || ""}
-                    onChange={handleInputChange} 
-                    required
-                  />
-                </div>
-                <div className="flex flex-row hover:bg-gray-700 items-center">
-                  <label htmlFor="senedCen" className="m-4">
-                    स्वीकारलेले केण 
-                  </label>
-                  <input
-                    type="number"
-                    id="acceptedCen"
-                    name="acceptedCen"
-                    className="w-20 text-black rounded-md shadow-lg p-1 ml-8"
-                    value={milkDetails.acceptedCen || ""}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="flex flex-row hover:bg-gray-700 items-center">
-                  <label htmlFor="senedCen" className="m-4">
-                    वासाचे केण 
-                  </label>
-                  <input
-                    type="number"
-                    id="smeledCen"
-                    name="smeledCen"
-                    className="w-20 text-black rounded-md shadow-lg p-1 ml-16"
-                    value={milkDetails.smeledCen || ""}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="flex flex-row hover:bg-gray-700 items-center">
-                  <label htmlFor="senedCen" className="m-4">
-                    भेसळ प्रकार
-                  </label>
-                  <select
-                    id="bhesalType"
-                    name="bhesalType"
-                    className="w-24 text-black rounded-md shadow-lg p-1 ml-10"
-                    value={milkDetails.bhesalType || ""}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Select Type</option>
-                    <option value="chemical">Chemical</option>
-                    <option value="water">Water</option>
-                    <option value="NA">NA</option>
-                  </select>
-                </div>
-                <div className="flex flex-row hover:bg-gray-700 items-center">
-                  <label htmlFor="senedCen" className="m-4">
-                    जबाबदारी
-                  </label>
-                  <input
-                    type="text"
-                    id="precotion"
-                    name="precotion"
-                    className="w-24 text-black rounded-md shadow-lg p-1 ml-12"
-                    value={milkDetails.precotion || ""}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+            <div className="flex items-center">
+              <label htmlFor="currentTime" className="text-white text-lg ml-4 mr-2">
+                समय:
+              </label>
+              <select
+                id="currentTime"
+                className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={currentTime}
+                onChange={(e) => setCurrentTime(e.target.value)}
+                required
+              >
+                <option value="morning">Morning</option>
+                <option value="evening">Evening</option>
+              </select>
             </div>
-          </form>
+            <div className="flex items-center">
+              <label htmlFor="sampleNo" className="text-white text-lg ml-4">
+                Sample No:
+              </label>
+              <input
+                type="text"
+                id="sampleNo"
+                className="w-20 ml-2 p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={sampleNo}
+                onChange={(e) => setSampleNo(e.target.value)}
+                required
+              />
+            </div>
+          </div>
         </div>
+
+        {/* U. Code, Dairy Name, Milk Type, and Quality */}
+        <div className="bg-gray-600 p-4 rounded-lg mb-4">
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <div className="flex items-center">
+              <label htmlFor="code" className="text-white text-lg mr-2">
+                U. code:
+              </label>
+              <input
+                type="text"
+                id="code"
+                className="w-24 p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={registerNo}
+                onChange={handleRegisterNoChange}
+                required
+              />
+            </div>
+            <div className="flex items-center">
+              <select
+                id="ownerDropdown"
+                className="w-48 p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={selectedDairyName}
+                onChange={(e) => setSelectedDairyName(e.target.value)}
+                required
+              >
+                <option value="">Choose Dairy...</option>
+                {owners.map((user) => (
+                  <option key={user.registerNo} value={user.dairyName}>
+                    {user.dairyName}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-center">
+              <select
+                id="milkTypeDropdown"
+                name="milkType"
+                className="w-32 p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={milkDetails.milkType || ""}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Milk Type</option>
+                <option value="buff">Buff</option>
+                <option value="cow">Cow</option>
+              </select>
+            </div>
+            <div className="flex items-center">
+              <select
+                id="qualityPercentage"
+                name="quality"
+                className="w-24 p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={milkDetails.quality || ""}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">गुणप्रत</option>
+                <option value="G">G</option>
+                <option value="B">B</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Milk KG, Liter, Smel Liter, Fat, SNF, Rate, and Amount */}
+        <div className="bg-gray-600 p-4 rounded-lg">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="flex flex-col">
+              <label htmlFor="milkKG" className="text-white text-lg mb-1">
+                Milk KG:
+              </label>
+              <input
+                type="number"
+                id="milkKG"
+                name="milkKG"
+                step="0.1"
+                className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={milkDetails.milkKG || ""}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="milkLiter" className="text-white text-lg mb-1">
+                Milk Liter:
+              </label>
+              <input
+                type="number"
+                id="milkLiter"
+                name="milkLiter"
+                step="0.1"
+                className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={milkDetails.milkLiter || ""}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="smelLiter" className="text-white text-lg mb-1">
+                Smel Liter:
+              </label>
+              <input
+                type="number"
+                id="smelLiter"
+                name="smelLiter"
+                step="0.1"
+                className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={milkDetails.smelLiter || ""}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="fat" className="text-white text-lg mb-1">
+                Fat:
+              </label>
+              <input
+                type="number"
+                id="fat"
+                name="fat"
+                step="0.1"
+                className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={milkDetails.fat || ""}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="snf" className="text-white text-lg mb-1">
+                SNF:
+              </label>
+              <input
+                type="number"
+                id="snf"
+                name="snf"
+                step="0.1"
+                className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={milkDetails.snf || ""}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="rate" className="text-white text-lg mb-1">
+                Rate:
+              </label>
+              <input
+                type="number"
+                id="rate"
+                name="rate"
+                step="0.1"
+                className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={milkDetails.rate || ""}
+                onChange={handleInputChange}
+                readOnly
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="amount" className="text-white text-lg mb-1">
+                Amount:
+              </label>
+              <input
+                type="number"
+                id="amount"
+                name="amount"
+                step="0.1"
+                className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+                value={milkDetails.amount || ""}
+                onChange={handleInputChange}
+                readOnly
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="mt-6 flex flex-col md:flex-row gap-4">
+          <button
+            type="button"
+            onClick={handleSmelLiterChange}
+            className="bg-green-500 text-white p-2 rounded-md shadow-md hover:bg-green-700 transition duration-300"
+          >
+            Calculate Milk Liter
+          </button>
+          <button
+            type="button"
+            onClick={handleCalculateRate}
+            className="bg-yellow-500 text-white p-2 rounded-md shadow-md hover:bg-yellow-700 transition duration-300"
+          >
+            Calculate Rate and Amount
+          </button>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
+          >
+            Submit
+          </button>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <p className="text-red-500 mt-4 text-center">{error}</p>
+        )}
       </div>
 
-      <AddOrders />
-
-    
+      {/* Column 2 */}
+      <div className="bg-gray-700 p-6 rounded-lg w-full md:w-1/3">
+        <div className="space-y-4">
+          <div className="flex flex-col">
+            <label htmlFor="senedCen" className="text-white text-lg mb-1">
+              पाठवलेले केण:
+            </label>
+            <input
+              type="number"
+              id="senedCen"
+              name="senedCen"
+              className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+              value={milkDetails.senedCen || ""}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="acceptedCen" className="text-white text-lg mb-1">
+              स्वीकारलेले केण:
+            </label>
+            <input
+              type="number"
+              id="acceptedCen"
+              name="acceptedCen"
+              className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+              value={milkDetails.acceptedCen || ""}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="smeledCen" className="text-white text-lg mb-1">
+              वासाचे केण:
+            </label>
+            <input
+              type="number"
+              id="smeledCen"
+              name="smeledCen"
+              className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+              value={milkDetails.smeledCen || ""}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="bhesalType" className="text-white text-lg mb-1">
+              भेसळ प्रकार:
+            </label>
+            <select
+              id="bhesalType"
+              name="bhesalType"
+              className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+              value={milkDetails.bhesalType || ""}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="">Select Type</option>
+              <option value="chemical">Chemical</option>
+              <option value="water">Water</option>
+              <option value="NA">NA</option>
+            </select>
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="precotion" className="text-white text-lg mb-1">
+              जबाबदारी:
+            </label>
+            <input
+              type="text"
+              id="precotion"
+              name="precotion"
+              className="p-2 rounded-md shadow-md bg-gray-500 text-white"
+              value={milkDetails.precotion || ""}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
     </>
   );
 };

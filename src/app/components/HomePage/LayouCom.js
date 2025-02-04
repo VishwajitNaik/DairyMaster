@@ -85,17 +85,17 @@ export default function Navbar() {
                 <div key={menu} className="relative -ml-2">
                   <button
                     onClick={() => setActiveMenu(activeMenu === menu ? null : menu)}
-                    className="hover:bg-blue-300 px-4 sm:px-8 py-2 sm:mr-4 rounded-md text-sm font-medium border-b border-gray-300"
+                    className="hover:bg-blue-600 px-4 sm:px-8 py-2 sm:mr-4 rounded-md text-sm font-medium border-b border-gray-300 transition duration-300 ease-in-out transform hover:scale-105"
                   >
                     {menu}
                   </button>
                   {activeMenu === menu && (
-                    <div className="absolute left-0 w-48 py-2 mt-2 rounded-md rounded-b-md shadow-xl">
+                    <div className="absolute left-0 w-48 py-2 mt-2 rounded-md rounded-b-md shadow-xl bg-gradient-to-b from-gray-700 to-gray-800">
                       {dropdownItems[menu].map((item, index) => (
                         <Link
                           key={index}
                           href={item.href}
-                          className="block px-4 py-2 bg-blue-500 text-white border-b border-blue-200 text-sm hover:bg-gray-200 hover:text-black z-20"
+                          className="block px-4 py-2 text-white text-sm hover:bg-gray-600 hover:text-white transition duration-200 ease-in-out"
                         >
                           {item.label}
                         </Link>

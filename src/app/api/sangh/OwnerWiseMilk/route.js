@@ -39,9 +39,14 @@ export async function GET(request, { params }) {
             }).populate('createdBy', 'registerNo ownerName');
         }
 
+        // get the total amount of all the milk records for perticular owner in the given date range
+        const totalAmount = milkRecords.reduce((acc, record) => acc + record.amount, 0);
+        console.log('Total amount', totalAmount);
+
         return NextResponse.json({ 
             message: 'Milk records fetched successfully',
-            data: milkRecords
+            data: milkRecords,
+            totalAmount,
         });
        
     } catch (error) {

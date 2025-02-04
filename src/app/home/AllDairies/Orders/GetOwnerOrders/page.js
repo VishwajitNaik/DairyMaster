@@ -1,7 +1,8 @@
 "use client";
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import OrderDetailsModal from '@/app/components/Models/OrderDetailsModal';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import OrderDetailsModal from "@/app/components/Models/OrderDetailsModal";
+import Link from "next/link";
 
 const DisplayDairiesWithOrders = () => {
     const [dairies, setDairies] = useState([]);
@@ -14,7 +15,7 @@ const DisplayDairiesWithOrders = () => {
     useEffect(() => {
         const fetchDairies = async () => {
             try {
-                const response = await axios.get('/api/sangh/AllOrders');
+                const response = await axios.get("/api/sangh/AllOrders");
                 setDairies(response.data.data);
                 setLoading(false);
             } catch (error) {
@@ -33,46 +34,48 @@ const DisplayDairiesWithOrders = () => {
 
     const handleModalSubmit = async ({ truckNo, driverMobNo }) => {
         try {
-            await axios.post('/api/sangh/orderAcptStatus', {
+            // Update order details and status
+            await axios.post("/api/sangh/orderAcptStatus", {
                 orderId: selectedOrderId,
                 truckNo,
-                driverMobNo
+                driverMobNo,
             });
-            alert("Order details sent successfully!");
+            await handleOrderAccept(selectedOrderId); // Call accept logic
+            alert("Order details sent and accepted successfully!");
             setIsModalOpen(false);
         } catch (error) {
-            console.error("Error sending order details:", error.message);
-            alert("Failed to send order details");
+            console.error("Error processing order:", error.message);
+            alert("Failed to process order");
         }
     };
 
     const handleOrderAccept = async (orderId) => {
         try {
-            await axios.patch('/api/sangh/patchOrders', { orderId });
-            setDairies(prevDairies =>
-                prevDairies.map(dairy => ({
+            await axios.patch("/api/sangh/patchOrders", { orderId });
+            setDairies((prevDairies) =>
+                prevDairies.map((dairy) => ({
                     ...dairy,
-                    orders: Array.isArray(dairy.orders) ?
-                        dairy.orders.map(order =>
-                            order._id === orderId ? { ...order, status: "Accepted" } : order
-                        ) : []
+                    orders: Array.isArray(dairy.orders)
+                        ? dairy.orders.map((order) =>
+                              order._id === orderId ? { ...order, status: "Accepted" } : order
+                          )
+                        : [],
                 }))
             );
-            alert("Order accepted successfully!");
         } catch (error) {
             console.error("Error accepting order:", error.message);
-            alert("Failed to accept order");
+            throw new Error("Failed to accept order");
         }
     };
 
     const calculateProgress = (status) => {
         switch (status) {
-            case 'Completed':
+            case "Completed":
                 return 100;
-            case 'Accepted':
+            case "Accepted":
                 return 50;
-            case 'Order Placed':
-            case 'Pending':
+            case "Order Placed":
+            case "Pending":
             default:
                 return 0;
         }
@@ -81,7 +84,7 @@ const DisplayDairiesWithOrders = () => {
     const groupedOrders = dairies.reduce((acc, order) => {
         const { dairyName, orderType, quantity, _id, status } = order;
         if (!acc[dairyName]) acc[dairyName] = { orders: [], dairyName };
-        
+
         // Group orders by status for easy categorization
         acc[dairyName].orders.push({ orderType, quantity, _id, status });
         return acc;
@@ -91,35 +94,49 @@ const DisplayDairiesWithOrders = () => {
     if (error) return <div className="text-center text-red-500">{error}</div>;
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex flex-col w-full items-center min-h-screen bg-gray-300 p-4">
             <h1 className="text-3xl font-bold mb-8 text-gray-700">Dairies and Their Orders</h1>
-
+            <div className="flex flex-row w-full justify-center space-x-4">
+            <Link href="/home/AllDairies/Orders/AcceptedOrders">
+            <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mb-4">
+                check accepted orders
+            </button>
+            </Link>
+            <Link href="/home/AllDairies/Orders/CompletedOrders">
+            <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mb-4">
+                check Completed orders
+            </button>
+            </Link>
+            </div>
             {Object.values(groupedOrders).map((dairy) => (
                 <div
                     key={dairy.dairyName}
-                    className="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg mb-4 cursor-pointer"
-                    onClick={() => setExpandedDairy(expandedDairy === dairy.dairyName ? null : dairy.dairyName)}
+                    className={`bg-white shadow-lg rounded-lg p-6 w-full mb-4 cursor-pointer ${
+                        expandedDairy === dairy.dairyName ? "border-2 border-green-500" : ""
+                    }`}
+                    onClick={() => setExpandedDairy(dairy.dairyName)}
                 >
                     <h2 className="text-xl font-semibold text-gray-800">{dairy.dairyName}</h2>
-
-                    {expandedDairy === dairy.dairyName && (
-                        <div className="mt-4">
-                            <h3 className="font-bold text-green-600">Pending Orders</h3>
-                            {dairy.orders.filter(order => order.status === 'Pending').map(order => (
-                                <OrderComponent key={order._id} order={order} onAccept={handleOrderAccept} onSend={handleSendButtonClick} calculateProgress={calculateProgress} />
-                            ))}
-
-                            <h3 className="font-bold text-blue-600 mt-4">Accepted Orders</h3>
-                            {dairy.orders.filter(order => order.status === 'Accepted').map(order => (
-                                <OrderComponent key={order._id} order={order} onAccept={handleOrderAccept} onSend={handleSendButtonClick} calculateProgress={calculateProgress} />
-                            ))}
-
-                            <h3 className="font-bold text-gray-500 mt-4">Completed Orders</h3>
-                            {dairy.orders.filter(order => order.status === 'Completed').map(order => (
-                                <OrderComponent key={order._id} order={order} calculateProgress={calculateProgress} />
-                            ))}
-                        </div>
-                    )}
+                    <div className="flex flex-col w-full">
+                        {expandedDairy === dairy.dairyName && (
+                            <div className="mt-4">
+                                <h3 className="font-bold text-green-600">Pending Orders</h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+                                    {dairy.orders
+                                        .filter((order) => order.status === "Pending")
+                                        .map((order) => (
+                                            <OrderComponent
+                                                key={order._id}
+                                                order={order}
+                                                onAccept={handleOrderAccept}
+                                                onSend={handleSendButtonClick}
+                                                calculateProgress={calculateProgress}
+                                            />
+                                        ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             ))}
 
@@ -133,7 +150,7 @@ const DisplayDairiesWithOrders = () => {
 };
 
 const OrderComponent = ({ order, onAccept, onSend, calculateProgress }) => (
-    <div className="p-4 bg-gray-50 rounded-lg mb-4">
+    <div className="p-4 bg-blue-300 rounded-lg mb-4">
         <p className="text-black font-bold">Order Type: {order.orderType}</p>
         <p className="text-black">Quantity: {order.quantity}</p>
 
@@ -141,19 +158,13 @@ const OrderComponent = ({ order, onAccept, onSend, calculateProgress }) => (
             <>
                 <button
                     className={`${
-                        order.status === "Accepted" ? "bg-gray-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
+                        order.status === "Accepted"
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-green-500 hover:bg-green-600"
                     } text-white font-bold py-2 px-4 rounded mt-2`}
-                    onClick={() => onAccept(order._id)}
-                    disabled={order.status === "Accepted"}
-                >
-                    {order.status === "Accepted" ? "Order Accepted" : "Accept Order"}
-                </button>
-
-                <button
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-2 ml-2"
                     onClick={() => onSend(order._id)}
                 >
-                    Send
+                    Accept Order
                 </button>
             </>
         )}

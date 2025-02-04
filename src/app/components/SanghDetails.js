@@ -1,176 +1,168 @@
-'use client'
+'use client';
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
-import Navbar from '@/app/components/Navebars/SanghNavBar';
 
 const Page = () => {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
+  const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
   const [billData, setBillData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [owner, setOwner] = useState([]);
-  const [milkInfo, setMilkInfo] = useState(null); // State for storing milk information
+  const [selectedOwnerId, setSelectedOwnerId] = useState(null); // Track selected owner for Milk Info
+  const [milkInfo, setMilkInfo] = useState(null);
 
   // Fetch owner data
   useEffect(() => {
     async function getOwners() {
       try {
-        const res = await axios.get("/api/sangh/getOwners");
-        console.log("sangh Data", res.data.data);
+        const res = await axios.get('/api/sangh/getOwners');
+        console.log('Sangh Data', res.data.data);
         setOwner(res.data.data);
       } catch (error) {
-        console.log("Failed to fetch users:", error.message);
+        console.log('Failed to fetch users:', error.message);
       }
     }
     getOwners();
   }, []);
 
-  // Fetch bill data
-  const handleFetchBills = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const res = await axios.post('/api/sangh/getBills', { startDate, endDate });
-      setBillData(res.data.data);
-      console.log(res.data.data);
-    } catch (error) {
-      console.error("Failed to fetch bill data:", error.message);
-      setError('Failed to fetch bill data');
-    } finally {
-      setLoading(false);
-    }
-  };
 
+  
   const handleMilkInfo = async (ownerId) => {
     setLoading(true);
     setError('');
     try {
-      // Log the dates for debugging
-      console.log("Fetching milk info for owner:", ownerId);
-      console.log("Start Date:", startDate);
-      console.log("End Date:", endDate);
-  
-      // Construct query parameters
-      const params = {};
-      if (startDate) {
-        params.startDate = startDate; // Add startDate if provided
-      }
-      if (endDate) {
-        params.endDate = endDate; // Add endDate if provided
-      }
-  
-      // Make the GET request to the API with date range and ownerId
-      const res = await axios.get(`/api/sangh/getMilkInfo/${ownerId}`, { params });
-  
-      // Destructure the response data properly
-      const { totalLiters, avgFat, avgSNF, userData } = res.data.data;
-  
-      // Set the state with the fetched data
+      const res = await axios.get(`/api/sangh/getMilkInfo/${ownerId}`, {
+        params: { startDate, endDate },
+      });
+
+      const { totalLiters, avgFat, avgSNF, totalRakkam } = res.data.data;
       setMilkInfo({
         totalMilk: totalLiters,
-        avgFat: avgFat,
-        avgSNF: avgSNF,
-        userData: userData // If you want to use this for rendering user-specific data
+        avgFat,
+        avgSNF,
+        totalRakkam,
       });
-  
-      console.log(res.data); // For debugging purposes
+      setSelectedOwnerId(ownerId); // Set the selected owner for displaying milk info
+      console.log(res.data);
     } catch (error) {
-      console.error("Failed to fetch milk info:", error.message);
+      console.error('Failed to fetch milk info:', error.message);
       setError('Failed to fetch milk info');
     } finally {
       setLoading(false);
     }
   };
-  
 
   return (
     <>
-      <Navbar /> {/* Pass the fetched Sangh name to the Navbar */}
-      <div className="container text-black mx-auto mt-6">
-        <div className="flex justify-center mb-6">
-          <h1 className="text-4xl font-bold">सभासद लिस्ट</h1>
-        </div>
-        
-        {/* Date Range Filter */}
-        <div className="mb-6">
-          <label className="mr-4">Start Date:</label>
-          <input 
-            type="date" 
-            value={startDate} 
-            onChange={(e) => setStartDate(e.target.value)} 
-            className="border p-2 rounded-md" 
-          />
-          <label className="ml-4 mr-4">End Date:</label>
-          <input 
-            type="date" 
-            value={endDate} 
-            onChange={(e) => setEndDate(e.target.value)} 
-            className="border p-2 rounded-md" 
-          />
-        </div>
+      <div className="gradient-bg flex flex-col min-h-screen p-4">
+        <div className="container text-black mx-auto mt-6">
+          <div className="flex justify-center mb-6">
+            <h1 className="text-2xl md:text-4xl font-bold shadow-md shadow-gray-700 p-4">ओनर लिस्ट</h1>
+          </div>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-200">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="py-2 px-4 border-b">Reg No.</th>
-                <th className="py-2 px-4 border-b">Owner Name</th>
-                <th className="py-2 px-4 border-b">Dairy Name</th>
-                <th className="py-2 px-4 border-b">Phone</th>
-                <th className="py-2 px-4 border-b">Email</th>
-                <th className="py-2 px-4 border-b">Owner Details</th>
-                <th className="py-2 px-4 border-b">Milk Info</th> {/* New column for Milk Info button */}
-              </tr>
-            </thead>
-            <tbody>
-              {owner.length === 0 ? (
+          {/* Date Range Filter */}
+          <div className="mb-6 flex flex-col md:flex-row items-center">
+          <p className='text-xl font-bold text-white mr-4'>Milk Info Date</p>
+            <label className="mr-2 mb-2 md:mb-0 text-xl font-semibold">Start Date:</label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-1/5 bg-gray-200 rounded-md shadow-sm"
+            />
+            <label className="mr-2 ml-0 md:ml-4 mb-2 md:mb-0 text-xl font-semibold">End Date:</label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-1/5 bg-gray-200 rounded-md shadow-sm"
+            />
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-200">
+              <thead className="bg-gray-200">
                 <tr>
-                  <td colSpan="8" className="py-2 px-4 border-b text-center">
-                    No user created yet
-                  </td>
+                  <th className="py-2 px-2 md:px-4 border-b">Reg No.</th>
+                  <th className="py-2 px-2 md:px-4 border-b">Owner Name</th>
+                  <th className="py-2 px-2 md:px-4 border-b">Dairy Name</th>
+                  <th className="py-2 px-2 md:px-4 border-b">Phone</th>
+                  <th className="py-2 px-2 md:px-4 border-b">Email</th>
+                  <th className="py-2 px-2 md:px-4 border-b">Owner Details</th>
+                  <th className="py-2 px-2 md:px-4 border-b">Milk Info</th>
                 </tr>
-              ) : (
-                owner.map((ownerList, index) => (
-                  <tr key={index} className="hover:bg-gray-100">
-                    <td className="py-2 border-b pl-12">{ownerList.registerNo}</td>
-                    <td className="py-2 border-b pl-12">{ownerList.ownerName}</td>
-                    <td className="py-2 border-b pl-12">{ownerList.dairyName}</td>
-                    <td className="py-2 border-b pl-12">{ownerList.phone}</td>
-                    <td className="py-2 border-b pl-12">{ownerList.email}</td>
-                    <td className="py-2 border-b pl-12">
-                      <Link href={`/home/AllDairies/${ownerList._id}`}>
-                        <button className='bg-blue-400 hover:bg-blue-700 text-white rounded-md p-2 flex items-center'>
-                          <span>User Details</span>
-                        </button>
-                      </Link>
-                    </td>
-                    <td className="py-2 border-b">
-                      {/* Milk Info Button */}
-                      <button
-                        className="bg-green-400 hover:bg-green-700 text-white rounded-md p-2"
-                        onClick={() => handleMilkInfo(ownerList._id)} // Pass the ownerId
-                      >
-                        Milk Info
-                      </button>
+              </thead>
+              <tbody>
+                {owner.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" className="py-2 px-4 border-b text-center">
+                      No user created yet
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                ) : (
+                  owner.map((ownerList, index) => (
+                    <React.Fragment key={index}>
+                      <tr className="hover:bg-gray-100">
+                        <td className="py-2 border-b px-2 md:px-4 text-left">{ownerList.registerNo}</td>
+                        <td className="py-2 border-b px-2 md:px-4 text-left">{ownerList.ownerName}</td>
+                        <td className="py-2 border-b px-2 md:px-4 text-left">{ownerList.dairyName}</td>
+                        <td className="py-2 border-b px-2 md:px-4 text-left">{ownerList.phone}</td>
+                        <td className="py-2 border-b px-2 md:px-4 text-left">{ownerList.email}</td>
+                        <td className="py-2 border-b px-2 md:px-4 text-left">
+                          <Link href={`/home/AllDairies/${ownerList._id}`}>
+                            <button className="bg-blue-400 hover:bg-blue-700 text-white rounded-md p-2 flex items-center justify-center">
+                              <span>User Details</span>
+                            </button>
+                          </Link>
+                        </td>
+                        <td className="py-2 border-b px-2 md:px-4 text-center">
+                          <button
+                            className="bg-green-400 hover:bg-green-700 text-white rounded-md p-2"
+                            onClick={() => handleMilkInfo(ownerList._id)}
+                          >
+                            Milk Info
+                          </button>
+                        </td>
+                      </tr>
+                      {selectedOwnerId === ownerList._id && milkInfo && (
+  <tr>
+    <td colSpan="7" className="bg-gray-100 p-4 border-b">
+      <div className="text-left">
+        <h2 className="text-lg font-bold mb-2">
+          Milk Info for {ownerList.ownerName}
+        </h2>
+        <table className="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="border border-gray-400 px-4 py-2 text-left">Total Milk (L)</th>
+              <th className="border border-gray-400 px-4 py-2 text-left">Average Fat (%)</th>
+              <th className="border border-gray-400 px-4 py-2 text-left">Average SNF (%)</th>
+              <th className="border border-gray-400 px-4 py-2 text-left">Total Rakkam</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="bg-white">
+              <td className="border border-gray-400 px-4 py-2">{milkInfo.totalMilk}</td>
+              <td className="border border-gray-400 px-4 py-2">{milkInfo.avgFat}</td>
+              <td className="border border-gray-400 px-4 py-2">{milkInfo.avgSNF}</td>
+              <td className="border border-gray-400 px-4 py-2">{milkInfo.totalRakkam}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </td>
+  </tr>
+)}
 
-        {/* Display Milk Info if available */}
-        {milkInfo && (
-          <div className="mt-4 p-4 bg-white shadow-md rounded-lg">
-            <h2 className="text-xl font-bold">Milk Info for Owner</h2>
-            <p>Total Milk: {milkInfo.totalMilk} L</p>
-            <p>Average Fat: {milkInfo.avgFat}%</p>
-            <p>Average SNF: {milkInfo.avgSNF}%</p>
+                    </React.Fragment>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-        )}
+        </div>
       </div>
     </>
   );

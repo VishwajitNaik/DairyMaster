@@ -55,7 +55,7 @@ const DisplayOrders = () => {
 
     return (
         <div className="banner flex flex-col items-center justify-center min-h-screen bg-gray-100">
-                    <video autoPlay loop muted>
+                    <video autoPlay loop muted className="opacity-50">
                 <source src="/assets/milk.mp4" type="video/mp4" /> 
             </video>
             <h1 className="text-3xl font-bold mb-8 text-white shadow-md z-10 shadow-black bg-slate-600 p-2 rounded-lg">Order List</h1>
@@ -83,7 +83,7 @@ const DisplayOrders = () => {
             </div>
 
             {/* Orders Display */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl z-50">
                 {filteredOrders.length > 0 ? (
                     filteredOrders.map((order, index) => {
                         const progress = calculateProgress(order);

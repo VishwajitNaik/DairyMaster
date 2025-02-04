@@ -16,14 +16,8 @@ export async function GET(request) {
             return NextResponse.json({ error: "Sangh not found" }, { status: 404 });
         }
 
-        console.log("Authenticated Sangh Name:", sangh.Kapat);
-        
-
         const ownerkapatRecords = await OwnerKapat.find({ createdBy: sanghId });
         
-        console.log("Owner kapat records:", ownerkapatRecords);
-        
-
         if(ownerkapatRecords.length === 0) {
             return NextResponse.json({ message: "No records found" }, { status: 404 });
         }

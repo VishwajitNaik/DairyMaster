@@ -61,6 +61,20 @@ export async function GET(request) {
         const CowEveningMilkRecords = EveningMilkRecords.filter(record => record.milkType === "cow");
         const BuffaloEveningMilkRecords = EveningMilkRecords.filter(record => record.milkType === "buff");
 
+        // calculate total Buffelow rakkam
+
+        const TotalBuffMilkRakkam = BuffaloMorningMilkRecords.reduce((total, record) => total + record.amount, 0) 
+        + BuffaloEveningMilkRecords.reduce((total, record) => total + record.amount, 0);
+    
+    const TotalCowMilkRakkam = CowMorningMilkRecords.reduce((total, record) => total + record.amount, 0) 
+        + CowEveningMilkRecords.reduce((total, record) => total + record.amount, 0);
+    
+        
+        
+
+        // Calculate total milk rakkam
+        const totalMilkRakkam = milkRecords.reduce((total, record) => total + record.amount, 0);
+
         // Return response with milk records
         return NextResponse.json({
             message: milkRecords.length
@@ -70,6 +84,9 @@ export async function GET(request) {
             CowMorningMilkRecords,
             BuffaloMorningMilkRecords,
             CowEveningMilkRecords,
+            TotalBuffMilkRakkam,
+            TotalCowMilkRakkam,
+            totalMilkRakkam,
             BuffaloEveningMilkRecords,
         }, { status: 200 });
 

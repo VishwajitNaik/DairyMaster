@@ -32,7 +32,7 @@ const Page = () => {
     useEffect(() => {
       async function getOwnerUsers() {
         try {
-          const res = await axios.get('/api/user/getUsers');
+          const res = await axios.get('/api/user/getUserList');
           setUsers(res.data.data); 
           
         } catch (error) {

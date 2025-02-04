@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const OrderDetailsModal = ({ isOpen, onClose, onSubmit }) => {
+const OrderDetailsModal = ({ isOpen, onClose, onSubmit, onAccept, orderId }) => {
     const [truckNo, setTruckNo] = useState('');
     const [driverMobNo, setDriverMobNo] = useState('');
     const [error, setError] = useState(null);
@@ -15,10 +15,16 @@ const OrderDetailsModal = ({ isOpen, onClose, onSubmit }) => {
         // Call the onSubmit callback passed as a prop with truckNo and driverMobNo
         onSubmit({ truckNo, driverMobNo });
 
+        // Trigger the Accept Order function
+        if (onAccept) {
+            onAccept(orderId);
+        }
+
         // Reset form fields and close the modal
         setTruckNo('');
         setDriverMobNo('');
         setError(null);
+        onClose();
     };
 
     if (!isOpen) return null;

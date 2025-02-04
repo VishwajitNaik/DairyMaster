@@ -20,7 +20,7 @@ const GetDocterVisit = () => {
         async function fetchUsers() {
             try {
                 setLoading(true);
-                const res = await axios.get("/api/user/getUsers");
+                const res = await axios.get("/api/user/getUserList");
                 setDoctors(res.data.data);
                 setLoading(false);
             } catch (error) {

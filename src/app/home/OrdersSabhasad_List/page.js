@@ -12,7 +12,7 @@ export default function Sabhasad() {
   useEffect(() => {
     async function getOwnerUsers() {
       try {
-        const res = await axios.get('/api/user/getUsers');
+        const res = await axios.get('/api/user/getUserList');
         console.log(res.data);
         // Update the state to match the response structure
         setUsers(res.data.data);  // Adjusted to match the response format: { data: owner }
