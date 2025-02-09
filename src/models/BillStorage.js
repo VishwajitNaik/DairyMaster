@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Owner from './ownerModel.js';
 
 const StoreBillSchema = new mongoose.Schema({
   registerNo: {
@@ -48,6 +49,20 @@ const StoreBillSchema = new mongoose.Schema({
     required: true,
 },
 }, { timestamps: true });
+
+StoreBillSchema.pre("remove", async function (next) {
+  try {
+    // Find the Owner document linked to this StoreBill
+    await Owner.updateMany(
+      { storedBills: this._id }, // Find owners who have this StoreBill reference
+      { $pull: { storedBills: this._id } } // Remove the StoreBill reference from `storedBills`
+    );
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 // Check if the model already exists before creating it
 const StoreBill = mongoose.models.StoreBill || mongoose.model('StoreBill', StoreBillSchema);

@@ -24,6 +24,10 @@ const sanghSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    milkRecords: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Milkowner'
+    }],
     storedBills: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'StoreBill'

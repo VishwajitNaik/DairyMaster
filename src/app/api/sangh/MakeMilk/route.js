@@ -2,6 +2,7 @@ import { getDataFromToken } from "@/helpers/getSanghFormToken";
 import { NextResponse } from "next/server";
 import { connect } from "@/dbconfig/dbconfig";
 import MakeMilk from "@/models/MakeMilk";
+import Sangh from "@/models/SanghModel";
 import Owner from "@/models/ownerModel";
 
 export async function POST(request) {
@@ -20,9 +21,12 @@ export async function POST(request) {
             );
         }
 
+        const sangh = await Sangh.findById(sanghId);
+        console.log("Sangh:", sangh);
+        
+
         // Parse the request body
         const reqBody = await request.json();
-        console.log("Request Body:", reqBody);
 
         const {
             registerNo,
@@ -107,9 +111,6 @@ export async function POST(request) {
             );
         }
 
-        console.log("Existing Milk Record:", existingMilkRecord);
-        
-
         // Create a new milk record
         const newMilkRecord = new MakeMilk({
             registerNo,
@@ -140,6 +141,9 @@ export async function POST(request) {
         // Update the owner's milk records
         owner.OwnerMilkRecords.push(newMilkRecord._id);
         await owner.save();
+
+        sangh.milkRecords.push(newMilkRecord._id);
+        await sangh.save();
 
         console.log("New Milk Record Created:", newMilkRecord);
         return NextResponse.json(

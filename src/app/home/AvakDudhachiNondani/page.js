@@ -371,33 +371,74 @@ export default function AvakDudhNond({ params }) {
     }
   }, [rates]);
 
-  const calculateValues = (X, constants) => {
-    const { HF, R1, LF, R2 } = constants;
+  const calculateValuesCow = (X, cowConstants) => {
+    const { HF, R1, LF, R2 } = cowConstants;
     const R = (R1 - R2) / (HF - LF); // Calculate R
-    const FR = R1 - (HF - X) * R; // Calculate FR
+    console.log("R", R);
+    let FR = 0;
+    if(X < HF){
+       FR = (R1 - (HF - X) * R); // 30.90
+    } else {
+       FR = (R1 - (HF - HF) * R); // 30.90
+    }
+     // Calculate FR
     return FR; // Return the calculated fat rate
   };
 
-  const calculateTotalRate = (X, Y) => {
-    // Determine whether it's buffalo or cow milk
-    const constants = X >= 5.5 ? buffaloConstants : cowConstants;
-
-    if (!constants || !constants.SNF_RANGES) {
-      Toast.error("दरपत्रक तयार करा ");
-      return 0; // Return 0 as a fallback
+  const calculateValuesBuff = (X, BuffaloConstants) => {
+    const { HF, R1, LF, R2 } = BuffaloConstants;
+    const R = (R1 - R2) / (HF - LF); // Calculate R
+    console.log("R", R);
+    let FR = 0;
+    if(X < HF){
+       FR = (R1 - (HF - X) * R); // 30.90
+    } else {
+       FR = (R1 - (HF - HF) * R); // 30.90
     }
+     // Calculate FR
+    return FR; // Return the calculated fat rate
+  };
 
-    const FR = calculateValues(X, constants); // Calculate the fat rate based on selected constants
+
+
+  const calculateTotalRateCow = (X, Y) => {
+ 
+    const FR = calculateValuesCow(X, cowConstants); // Calculate the fat rate based on selected constants
     let TFR = FR; // Initialize total rate to Fat Rate (FR)
 
     // Loop through the SNF ranges to calculate the total rate
-    constants.SNF_RANGES.forEach((range) => {
+    cowConstants.SNF_RANGES.forEach((range) => {
       if (Y >= range.start && Y <= range.end) {
         const SNFRate = 10 * (Y - range.start) * range.rate; // Calculate SNF rate for the range
         TFR += SNFRate; // Add SNF rate to total rate
+        
       } else if (Y > range.end) {
-        const SNFRate = 10 * (range.end - range.start) * range.rate; // Calculate full SNF rate for the range
+        const SNFRate = 10 * (range.end - range.start) * range.rate; // Calculate full SNF rate for the range        
         TFR += SNFRate; // Add SNF rate to total rate
+        console.log("TFR",TFR);
+        
+      }
+    });
+
+    return TFR; // Return the calculated total rate
+  };
+
+  const calculateTotalRateBuff = (X, Y) => {
+ 
+    const FR = calculateValuesBuff(X, buffaloConstants); // Calculate the fat rate based on selected constants
+    let TFR = FR; // Initialize total rate to Fat Rate (FR)
+
+    // Loop through the SNF ranges to calculate the total rate
+    buffaloConstants.SNF_RANGES.forEach((range) => {
+      if (Y >= range.start && Y <= range.end) {
+        const SNFRate = 10 * (Y - range.start) * range.rate; // Calculate SNF rate for the range
+        TFR += SNFRate; // Add SNF rate to total rate
+        
+      } else if (Y > range.end) {
+        const SNFRate = 10 * (range.end - range.start) * range.rate; // Calculate full SNF rate for the range        
+        TFR += SNFRate; // Add SNF rate to total rate
+        console.log("TFR",TFR);
+        
       }
     });
 
@@ -414,12 +455,27 @@ export default function AvakDudhNond({ params }) {
       return;
     }
 
-    const rate = calculateTotalRate(fatInput, snfInput);
+    console.log("fat",fatInput);
+    
+
+    let rate = 0; // Default to 0 to avoid undefined errors
+
+    // let HFHSRate = HF
+
+    if (selectedMilk === "गाय ") {
+      rate = parseFloat(calculateTotalRateCow(fatInput, snfInput)) || 0;
+    } else {
+      rate = parseFloat(calculateTotalRateBuff(fatInput, snfInput)) || 0;
+    }
+
+   
+
     const amount = liter * rate;
 
     inputRefs.current[4].value = rate.toFixed(2); // Set calculated rate
     inputRefs.current[5].value = amount.toFixed(2); // Set calculated amount
-  };
+};
+
 
   const clearForm = () => {
     setselectedMilk(""); // Reset the selected milk

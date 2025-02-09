@@ -11,6 +11,8 @@ export async function GET(request) {
 
         // Extract token and validate it
         const sanghId = await getDataFromToken(request);
+        console.log("Sangh ID:", sanghId);
+        
         if (!sanghId) {
             console.error("Invalid or missing token:", request.headers.get("Authorization"));
             return NextResponse.json(

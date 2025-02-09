@@ -155,8 +155,8 @@ const OwnerMilk = () => {
           R2: rates.LowRateB,
           SNF_RANGES: [
             { start: 8.7, end: 9.0, rate: 0.3 },
-            { start: 9.0, end: 9.1, rate: 0.1 },
-            { start: 9.1, end: 10.0, rate: 0.05 },
+            { start: 9.0, end: 9.1, rate: 0.15 },
+            { start: 9.1, end: 10.0, rate: 0.1 },
           ],
       })
     
@@ -167,8 +167,8 @@ const OwnerMilk = () => {
       R2: rates.LowRateC,
       SNF_RANGES: [
         { start: 8.2, end: 8.5, rate: 0.3 },
-        { start: 8.5, end: 8.6, rate: 0.10 },
-        { start: 8.6, end: 9.0, rate: 0.05 },
+        { start: 8.5, end: 8.6, rate: 0.15 },
+        { start: 8.6, end: 9.0, rate: 0.1 },
       ],
     })
     } else{
@@ -180,7 +180,7 @@ const OwnerMilk = () => {
   const calculateValues = (X, constants) => {
     const { HF, R1, LF, R2 } = constants;
     const R = (R1 - R2) / (HF - LF);
-    const FR = R1 - (HF - X) * R;
+    const FR = (R1 - (HF - X) * R) - 1;
     return FR;
   };
 
@@ -208,6 +208,7 @@ const OwnerMilk = () => {
     const snfInput = parseFloat(milkDetails.snf || "0");
     const liter = parseFloat(calculatedMilkLiter || milkDetails.milkLiter || "0");
 
+    
     const rate = calculateTotalRate(fatInput, snfInput);
     const amount = liter * rate;
 

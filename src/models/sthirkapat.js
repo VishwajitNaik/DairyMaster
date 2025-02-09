@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Owner from './ownerModel';
 
 const SthirKapatSchema = new mongoose.Schema({
   date: {
@@ -50,5 +51,25 @@ const SthirKapatSchema = new mongoose.Schema({
 // Add compound unique indexes for scoped uniqueness
 SthirKapatSchema.index({ kapatCode: 1, createdBy: 1 }, { unique: true });
 SthirKapatSchema.index({ kapatName: 1, createdBy: 1 }, { unique: true });
+
+SthirKapatSchema.pre("remove", async function (next) {
+  console.log("Removing Milk:", this._id); // Log the Milk ID being removed
+  try {
+    const owners = await Owner.find({ Kapat: this._id });
+    console.log("Found owners with Milk reference:", owners.length);
+
+    for (let owner of owners) {
+      console.log("Removing Milk reference from Owner:", owner._id);
+      await Owner.updateOne(
+        { _id: owner._id },
+        { $pull: { Kapat: this._id } }
+      );
+    }
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default mongoose.models.Sthirkapat || mongoose.model('Sthirkapat', SthirKapatSchema);

@@ -47,23 +47,23 @@ const OrdersPage = () => {
 
   const totalRate = orders.reduce((total, order) => total + parseFloat(order.rakkam || 0), 0);
 
-  // Function to delete an order
-  const deleteOrder = async (orderId) => {
-    try {
-      setLoading(true);
-      const response = await axios.delete(`/api/billkapat/deleteBillkapat?id=${orderId}`);
-      if (response.data.error) {
-        setError(response.data.error);
-      } else {
-        setOrders((prevOrders) => prevOrders.filter((order) => order._id !== orderId));
-        setError(null);
-      }
-    } catch (error) {
-      setError('Failed to delete order');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // // Function to delete an order
+  // const deleteOrder = async (orderId) => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await axios.delete(`/api/billkapat/deleteBillkapat?id=${orderId}`);
+  //     if (response.data.error) {
+  //       setError(response.data.error);
+  //     } else {
+  //       setOrders((prevOrders) => prevOrders.filter((order) => order._id !== orderId));
+  //       setError(null);
+  //     }
+  //   } catch (error) {
+  //     setError('Failed to delete order');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   
 
@@ -116,7 +116,6 @@ const OrdersPage = () => {
                     <td className="py-2 px-4 border-b text-center">{order.rakkam}</td>
                     <td className="py-2 px-4 border-b text-center">
                       <button
-                        onClick={() => deleteOrder(order._id)}
                         className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition"
                       >
                         Delete

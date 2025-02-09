@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { connect } from '@/dbconfig/dbconfig';
 import Milk from '@/models/MilkModel';
+import Owner from '@/models/ownerModel'; // Import Owner model
+import User from '@/models/userModel';
 
 // Ensure the database is connected
 connect();
@@ -30,9 +32,20 @@ export async function DELETE(req) {
       );
     }
 
+    // Remove the reference to the deleted milk record from the Owner model
+    await Owner.updateMany(
+      { userMilk: id }, // Find owners who have this milk record in their userMilk array
+      { $pull: { userMilk: id } } // Remove the milk record from the userMilk array
+    );
+
+    await User.updateMany(
+      { milkRecords: id }, // Find users who have this milk record in their milkRecords array
+      { $pull: { milkRecords: id } } // Remove the milk record from the milkRecords array
+    );
+
     // Return a success response
     return NextResponse.json(
-      { success: true, message: 'Milk record deleted successfully' },
+      { success: true, message: 'Milk record deleted and owner updated successfully' },
       { status: 200 }
     );
   } catch (error) {
