@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { connect } from "@/dbconfig/dbconfig";
-import Milk from "@/models/Milk";
+import Milk from "@/models/MilkModel";
 import * as d3 from "d3";
 
 connect();
