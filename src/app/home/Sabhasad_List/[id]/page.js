@@ -353,7 +353,7 @@ export default function UserMilkDetails() {
               Total
             </td>
             <td className="py-2 px-4 border-t font-semibold">{totalEveningLiters.toFixed(2)}</td>
-            <td className="py-2 px-4 border-t font-semibold">{totalEveningLiters.toFixed(2)}</td>
+            <td className="py-2 px-4 border-t font-semibold">{totalEveningRakkam.toFixed(2)}</td>
           </tr>
         </tfoot>
       </table>

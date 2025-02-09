@@ -2,6 +2,7 @@ import { getDataFromToken } from "@/helpers/getDataFromToken";
 import { NextResponse, NextRequest } from "next/server";
 import { connect } from "../../../../dbconfig/dbconfig";
 import User from "@/models/userModel";
+import Owner from "@/models/ownerModel";
 
 connect();
 
@@ -32,6 +33,12 @@ export async function DELETE(request) {
 
         // Delete the user
         await User.findByIdAndDelete(userId);
+
+        // Remove the reference to the deleted user from the Owner model
+        await Owner.updateMany(
+            { users: userId }, // Find owners who have this user in their user array
+            { $pull: { users: userId } } // Remove the user from the user array
+        );
 
         return NextResponse.json({ success: true, message: 'User deleted successfully' }, { status: 200 });
 

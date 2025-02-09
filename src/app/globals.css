@@ -186,6 +186,7 @@ body {
 }
 
 
+
 @media print {
   /* Set the page size to A4 and orientation to landscape */
   @page {

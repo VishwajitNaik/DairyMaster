@@ -56,7 +56,9 @@ export default function Navbar() {
     इतर: [
       { href: "/home/AllUserOrders", label: "सर्व उत्पादक बाकी पाहणे" },
       { href: "/home/milkRecords/OnwerBills", label: "संघ बिल पाहणे" },
-      { href: "/home/Docter/GetDocterVisit", label: "डॉक्टर सेवा मागणी " }
+      { href: "/home/Docter/GetDocterVisit", label: "डॉक्टर सेवा मागणी " },
+      { href: "/home/Analysis/Milk", label: "दूध विश्लेषण" },
+      { href: "/home/Analysis/Orders", label: "ऑर्डर विश्लेषण" }
     ],
   };
 
