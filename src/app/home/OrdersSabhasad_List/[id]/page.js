@@ -110,21 +110,22 @@ const OrdersPage = () => {
         {loading && <p className="mt-4 text-blue-500">Loading...</p>}
         {error && <p className="mt-4 text-red-500">{error}</p>}
         {!loading && orderData.userOrders?.length > 0 ? (
-          <div className="mt-6 overflow-x-auto">
-            <table className="min-w-full bg-white text-black shadow-md rounded-lg">
+          
+          <div className="mt-6 overflow-x-auto flex justify-center items-center">
+            <table className="min-w-[40rem] bg-white text-black shadow-md rounded-lg">
               <thead className="bg-gray-200">
                 <tr>
-                  <th className="py-2 px-4 border-b text-left">दिनांक </th>
-                  <th className="py-2 px-4 border-b text-left">रक्कम </th>
-                  <th className="py-2 px-4 border-b text-left">Actions</th>
+                  <th className="py-2 px-4 border border-gray-400 text-left">दिनांक </th>
+                  <th className="py-2 px-4 border border-gray-400 text-left">रक्कम </th>
+                  <th className="py-2 px-4 border border-gray-400 text-left">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {orderData.userOrders.map((order) => (
                   <tr key={order._id}>
-                    <td className="py-2 px-4 border-b">{new Date(order.date).toLocaleDateString()}</td>
-                    <td className="py-2 px-4 border-b">{order.rakkam}</td>
-                    <td className="py-2 px-4 border-b">
+                    <td className="py-2 px-4 border border-gray-400">{new Date(order.date).toLocaleDateString()}</td>
+                    <td className="py-2 px-4 border border-gray-400">{order.rakkam}</td>
+                    <td className="py-2 px-4 border  ">
                       <button
                         onClick={() => deleteOrder(order._id)}
                         className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
@@ -135,9 +136,9 @@ const OrdersPage = () => {
                   </tr>
                 ))}
                 <tr className="bg-gray-100 font-bold">
-                  <td className="py-2 px-4 border-t">Total</td>
-                  <td className="py-2 px-4 border-t">{orderData.totalRakkam?.toFixed(2)}</td>
-                  <td className="py-2 px-4 border-t"></td>
+                  <td className="py-2 px-4 border border-gray-400">Total</td>
+                  <td className="py-2 px-4 border border-gray-400">{orderData.totalRakkam?.toFixed(2)}</td>
+                  <td className="py-2 px-4 border border-gray-400"></td>
                 </tr>
               </tbody>
             </table>
@@ -150,8 +151,8 @@ const OrdersPage = () => {
         {loading && <p className="mt-4 text-blue-500">Loading...</p>}
         {error && <p className="mt-4 text-red-500">{error}</p>}
         {!loading && orderData.userOrders?.length > 0 ? (
-          <div className="mt-6 overflow-x-auto">
-            <table className="min-w-full bg-white text-black shadow-md rounded-lg">
+          <div className="mt-6 overflow-x-auto flex justify-center items-center">
+            <table className="min-w-[40rem] bg-white text-black shadow-md rounded-lg">
               <thead className="bg-gray-200">
                 <tr>
                   <th className="py-2 px-4 border-b text-left">दिनांक </th>
@@ -159,12 +160,6 @@ const OrdersPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {orderData.userOrders.map((order) => (
-                  <tr key={order._id}>
-                    <td className="py-2 px-4 border-b">{new Date(order.date).toLocaleDateString()}</td>
-                    <td className="py-2 px-4 border-b">{order.rakkam}</td>
-                  </tr>
-                ))}
                 <tr className="bg-gray-100 font-bold">
                   <td className="py-2 px-4 border-t">टोटल </td>
                   <td className="py-2 px-4 border-t">{orderData.totalRakkam?.toFixed(2)}</td>

@@ -12,11 +12,12 @@ export async function GET(request) {
   const ownerId = await getDataFromToken(request);
 
   try {
-    const users = await User.find({ createdBy: ownerId });
+    const users = await User.find({ createdBy: ownerId }).sort({ registerNo: 1 });
 
     // Fetch all orders for the users
     const orders = await Order.find({
       createdBy: { $in: users.map(user => user._id) },
+
     }).populate({
       path: "createdBy",
       select: "registerNo name",
@@ -98,7 +99,9 @@ export async function GET(request) {
       userData.remainingAmount = userData.totalOrders - userData.totalBillKapat - userData.totalAdvances;
     });
 
-    return NextResponse.json({ data: Object.values(groupedData) }, { status: 200 });
+    const sortedData = Object.values(groupedData).sort((a, b) => a.registerNo - b.registerNo);
+
+    return NextResponse.json({ data: Object.values(sortedData) }, { status: 200 });
   } catch (error) {
     console.error("Error fetching data:", error);
     return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 });

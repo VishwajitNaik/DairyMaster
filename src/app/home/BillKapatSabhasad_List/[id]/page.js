@@ -108,23 +108,23 @@ const OrdersPage = () => {
         ) : error ? (
           <p className="text-red-500 text-center">{error}</p>
         ) : orders.length > 0 ? (
-          <div className="overflow-x-auto rounded-md shadow-md shadow-black">
-            <table className="w-full bg-white text-black shadow-md rounded-lg text-sm">
+          <div className="overflow-x-auto w-[60rem] rounded-md shadow-md shadow-black">
+            <table className="w-[60rem] bg-white text-black shadow-md rounded-lg text-sm">
               <thead>
                 <tr className="bg-gray-200 font-bold text-xs md:text-sm">
-                  <th className="py-3 px-2 border-b text-center">तारीख (Date)</th>
-                  <th className="py-3 px-2 border-b text-center">रक्कम (Amount)</th>
-                  <th className="py-3 px-2 border-b text-center">कृती (Actions)</th>
+                  <th className="py-3 px-2 border border-gray-400 text-center">तारीख (Date)</th>
+                  <th className="py-3 px-2 border border-gray-400 text-center">रक्कम (Amount)</th>
+                  <th className="py-3 px-2 border border-gray-400 text-center">कृती (Actions)</th>
                 </tr>
               </thead>
               <tbody>
                 {orders.map((order) => (
                   <tr key={order._id} className="hover:bg-gray-100 text-xs md:text-sm">
-                    <td className="py-2 px-4 border-b text-center font-bold">
+                    <td className="py-2 px-4 border border-gray-400 text-center font-bold">
                       {new Date(order.date).toLocaleDateString()}
                     </td>
-                    <td className="py-2 px-2 border-b text-center">{order.rate}</td>
-                    <td className="py-2 px-2 border-b text-center">
+                    <td className="py-2 px-2 border border-gray-400 text-center">{order.rate}</td>
+                    <td className="py-2 px-2 border border-gray-400 text-center">
                       <button
                         onClick={() => deleteOrder(order._id)}
                         className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700 transition text-xs md:text-sm"
@@ -135,9 +135,9 @@ const OrdersPage = () => {
                   </tr>
                 ))}
                 <tr className="bg-gray-100 font-bold text-xs md:text-sm">
-                  <td className="py-3 px-2 border-t text-center">एकूण (Total)</td>
-                  <td className="py-3 px-2 border-t text-center">{totalRate.toFixed(2)}</td>
-                  <td className="py-3 px-2 border-t text-center"></td>
+                  <td className="py-3 px-2 border border-gray-400 text-center">एकूण (Total)</td>
+                  <td className="py-3 px-2 border border-gray-400 text-center">{totalRate.toFixed(2)}</td>
+                  <td className="py-3 px-2 border border-gray-400 text-center"></td>
                 </tr>
               </tbody>
             </table>

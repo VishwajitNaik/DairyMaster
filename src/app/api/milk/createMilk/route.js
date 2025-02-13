@@ -14,7 +14,6 @@ connect();
 export async function POST(request) {
   try {
     const ownerId = await getDataFromToken(request);
-    console.log("OwnerId: ", ownerId);
 
     const { registerNo, session, milk, liter, fat, snf, dar, rakkam, date } = await request.json();
 
@@ -45,8 +44,7 @@ export async function POST(request) {
 
     if (milkRecord) {
       return NextResponse.json({
-        message: "Milk record for this session and date is already available.",
-        alert: "Milk record for this session and date is already available.",
+        alert: `दूध डाटा इस सेशन और दिन में पहले से ही उपलब्ध है. लिटर ${milkRecord.liter} \n फॅट ${milkRecord.fat} \n  SNF ${milkRecord.snf} \n दर ${milkRecord.dar} \n रक्कम ${milkRecord.rakkam}`,
         data: milkRecord,
       });
     } else {
@@ -75,7 +73,7 @@ export async function POST(request) {
     
 
       return NextResponse.json({
-        message: "Milk information stored successfully & SMS sent",
+        message: "दूध डाटा सेव झाला..",
         data: milkRecord,
       });
     }

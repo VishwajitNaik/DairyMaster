@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddUserOrder = () => {
   const { id } = useParams();
@@ -14,6 +16,7 @@ const AddUserOrder = () => {
   const [rakkam, setRakkam] = useState('');
   const [users, setUsers] = useState([]);
   const inputRefs = useRef([]);
+  const registerNoRef = useRef(null); // Create a ref for registerNo input field
   const [kapat, setKapat] = useState([]);
 
   useEffect(() => {
@@ -22,7 +25,6 @@ const AddUserOrder = () => {
         const res = await axios.get('/api/kapat/getKapat');
         const kapat = res.data.data.filter(item => item.KapatType === 'Kapat');
         setKapat(kapat);
-        console.log(res.data.data);
       } catch (error) {
         console.log("Failed to fetch kapat options:", error.message);
       }
@@ -49,7 +51,7 @@ const AddUserOrder = () => {
     setCurrentDate(formattedDate);
   }, []);
 
-  const handleUserChange = async (event) => {
+  const handleUserChange = (event) => {
     const selectedRegisterNo = event.target.value;
     setSelectedOption(selectedRegisterNo);
 
@@ -57,7 +59,7 @@ const AddUserOrder = () => {
     setSelectedUser(user);
   };
 
-  const handleRegisterNoBlur = async (event) => {
+  const handleRegisterNoBlur = (event) => {
     const registerNo = event.target.value;
     const user = users.find(user => user.registerNo === parseInt(registerNo, 10));
     setSelectedUser(user);
@@ -93,13 +95,22 @@ const AddUserOrder = () => {
 
     try {
       const res = await axios.post('/api/orders/addOrders', payload);
-      console.log(res.data.message);
+      toast.success("Order added successfully!", { position: "top-right" });
+
+      // Reset form fields
       setSelectedOption('');
       setSelectedUser(null);
+      setSelectedOptionOrder('');
       setRakkam('');
+
       inputRefs.current.forEach(ref => {
         if (ref) ref.value = '';
       });
+
+      // Set focus back to Register No input field
+      if (registerNoRef.current) {
+        registerNoRef.current.focus();
+      }
 
     } catch (error) {
       console.error("Error storing order information:", error.message);
@@ -108,6 +119,7 @@ const AddUserOrder = () => {
 
   return (
     <div className="relative bg-cover bg-center">
+    <ToastContainer />
     <div className="bg-blue-100 p-6 rounded-lg mt-20 shadow-lg w-full max-w-2xl mx-auto">
       <div className="relative">
         <Image
@@ -166,6 +178,7 @@ const AddUserOrder = () => {
             <input
               type="text"
               id="code"
+              ref={registerNoRef}  // Add this line
               placeholder="रजि. नं."
               className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-16 bg-gray-200 rounded-md"
               value={selectedOption}

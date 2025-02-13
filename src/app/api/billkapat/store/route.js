@@ -29,7 +29,7 @@ export async function POST(req) {
 
         if (existingBills.length > 0) {
             return new Response(JSON.stringify({ 
-                message: 'Bills already stored for this date range', 
+                message: 'या तारखे मधील बिल सेव केले आहे', 
                 data: existingBills 
             }), { status: 400 });
         }
@@ -51,7 +51,7 @@ export async function POST(req) {
         await owner.save();
 
         return new Response(JSON.stringify({ 
-            message: 'Bills saved successfully', 
+            message: 'successfully! बील जतन केले  आहे', 
             data: savedBills 
         }), { status: 200 });
 

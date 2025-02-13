@@ -13,26 +13,27 @@ export async function POST(request) {
 
         const { registerNo, date, username, milktype, orderData, rate } = reqBody;
 
-        // Validate all required fields except orderNo
+        // ✅ Validate required fields
         if (!registerNo || !date || !username || !milktype || !orderData || !rate) {
             return NextResponse.json({ error: "All fields are required" }, { status: 400 });
         }
 
-        // Validate rate data type
+        // ✅ Validate rate data type
         if (isNaN(rate)) {
             return NextResponse.json({ error: "Rate must be a valid number" }, { status: 400 });
         }
 
-        // Convert rate to float
+        // ✅ Convert rate to float
         const rateParsed = parseFloat(rate);
 
-        // Fetch user and save order
+        // ✅ Fetch user
         const user = await User.findOne({ registerNo, createdBy: ownerId });
         if (!user) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
-        const newBillKapat = new BillKapat({
+        // ✅ Insert new BillKapat record with insertOne
+        const newBillKapat = {
             registerNo,
             date,
             username,
@@ -40,20 +41,20 @@ export async function POST(request) {
             orderData,
             rate: rateParsed,
             createdBy: user._id,
-        });
+        };
 
-        const savedBillKapat = await newBillKapat.save();
+        const result = await BillKapat.collection.insertOne(newBillKapat);
 
-        user.userBillKapat.push(newBillKapat._id);
-        await user.save();
+        // ✅ Update user's BillKapat array
+        await User.updateOne({ _id: user._id }, { $push: { userBillKapat: result.insertedId } });
 
         return NextResponse.json({
-            message: "Order record added successfully",
-            data: savedBillKapat,
+            message: "कपात विवरण सफलतापूर्वक केले..",
+            data: { ...newBillKapat, _id: result.insertedId },
         });
 
     } catch (error) {
-        console.error("Error adding Order record:", error);
-        return NextResponse.json({ error: "Failed to add Order record" }, { status: 500 });
+        console.error("Error adding Order record:", error.message);
+        return NextResponse.json({ error: "Failed to add Order record", details: error.message }, { status: 500 });
     }
 }

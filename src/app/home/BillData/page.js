@@ -41,10 +41,13 @@ const BillSummary = () => {
     setError('');
     try {
       const response = await axios.post('/api/billkapat/store', { bills: billData, startDate, endDate });
-      console.log('Bills saved successfully:', response.data);
-      toast.success('Bills saved successfully!');
+      alert(response.data.message);
     } catch (error) {
-      Toast.error("या तारखे मधील बिल सेव केले आहे");
+      if (error.response && error.response.status === 400) {
+        alert(error.response.data.message); // Show alert on frontend
+    } else {
+        Toast.error("सर्वर डाउन आहे कृपया थोड्या वेळाने पुन्हा प्रयत्न करा");
+    }
     } finally {
       setLoading(false);
     }
@@ -76,147 +79,152 @@ const BillSummary = () => {
   {`
     @media print {
       @page {
-        size: A4 landscape; /* Ensures horizontal print layout */
-        margin: 10mm; /* Adjust margins for better fitting */
-      }
-      
-      /* Apply scaling for better fit in landscape */
-      .gradient-bg {
-        transform: scale(0.9); /* Adjust the scaling for print */
-        transform-origin: top left;
-        padding: 0; /* Remove any padding for compact layout */
+        size: A4 landscape;
+        margin: 10mm;
       }
 
-      /* Optimize table for print */
+      .gradient-bg {
+        transform: scale(0.95);
+        transform-origin: top left;
+        padding: 0;
+      }
+
       table {
-        width: 100%; /* Full width for tables */
-        table-layout: auto; /* Let columns adjust automatically */
-        border-collapse: collapse; /* Remove gaps between cells */
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
       }
 
       th, td {
-        border: 1px solid #000; /* Add clear borders for readability */
-        padding: 5px !important; /* Uniform padding for cells */
-        text-align: center; /* Center align content for consistency */
+        border: 1px solid #000;
+        padding: 15px !important;
+        text-align: center;
+        font-size: 16px !important;
+        height: 40px !important;
+        word-wrap: break-word;
       }
 
-      /* Reduce padding for elements */
       .p-3, .py-2, .px-4 {
-        padding: 3px !important; /* Minimize padding for print */
+        padding: 5px !important;
       }
 
-      /* Hide buttons and forms in print view */
       .gradient-bg button, 
       .gradient-bg form {
         display: none;
       }
 
-      /* General adjustments */
       body {
-        font-size: 12px; /* Adjust font size for better print readability */
-        color: #000; /* Ensure consistent text color */
+        font-size: 16px;
+        color: #000;
+      }
+
+      /* Ensure summary report starts on a new page */
+      .summary-report {
+        margin-top: -20px;
+        page-break-before: always; /* For older browsers */
+        break-before: page; /* Modern browsers */
       }
     }
   `}
 </style>
 
-      <div className="gradient-bg flex flex-col min-h-screen">
-        {!billsGenerated ? (
-          <div className='bg-gray-300 p-6 rounded-lg shadow-md w-full max-w-4xl mx-auto'>
-            <h1 className='text-2xl font-semibold text-blue-900 shadow-md text-shadow-lg mb-4'>बिल तयार करणे </h1>
-            <form onSubmit={(e) => { e.preventDefault(); handleFetchBills(); }} className='bg-gray-100 p-4 rounded-lg shadow-md'>
-              <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
-                <div className='flex flex-col mb-4 md:mb-0'>
-                  <label htmlFor="startDate" className='text-black font-semibold'>पासून</label>
-                  <input
-                    type="date"
-                    id="startDate"
-                    className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className='flex flex-col mb-4 md:mb-0'>
-                  <label htmlFor="endDate" className='text-black font-semibold'>पर्यंत</label>
-                  <input
-                    type="date"
-                    id="endDate"
-                    className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              <div className='flex justify-center'>
-              <button
-                type="submit"
-                className='w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105'
-                disabled={loading}
-              >
-                {loading ? "Fetching..." : "Generate Bills"}
-              </button>
-              </div>
-            </form>
-
-            {error && <div className='mt-4 text-red-500'>{error}</div>}
+<div className="gradient-bg flex flex-col min-h-screen">
+  {!billsGenerated ? (
+    <div className='bg-gray-300 p-6 rounded-lg shadow-md w-full max-w-4xl mx-auto mt-20 '>
+      <h1 className='text-2xl font-semibold text-blue-900 shadow-md text-shadow-lg mb-4'>बिल तयार करणे </h1>
+      <form onSubmit={(e) => { e.preventDefault(); handleFetchBills(); }} className='bg-gray-100 p-4 rounded-lg shadow-md'>
+        <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
+          <div className='flex flex-col mb-4 md:mb-0'>
+            <label htmlFor="startDate" className='text-black font-semibold'>पासून</label>
+            <input
+              type="date"
+              id="startDate"
+              className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              required
+            />
           </div>
-        ) : (
-          <div className='mt-6 bg-gray-300 p-6 rounded-lg w-full max-w-6xl mx-auto shadow-black shadow-md mb-4'>
-            <h2 className='text-xl font-semibold text-black mb-4 mt-6 shadow-md w-fit p-2 rounded-md'>बिल तपशील </h2>
-            <div className='flex justify-between flax-row'>
-            <h2 className='text-xl font-semibold text-black mb-4'>पासून  {new Date(startDate).toLocaleDateString('en-GB')}</h2>
-            <h2 className='text-xl font-semibold text-black mb-4'>पर्यंत  {new Date(endDate).toLocaleDateString('en-GB')}</h2>
-            </div>
-            <div className='overflow-x-auto'>
-              <table className='w-full min-w-full border border-gray-300 shadow-md shadow-black'>
-                <thead>
-                  <tr className='bg-gray-400'>
-                    <th className='p-3 text-black font-semibold border text-center border-gray-700'>रजि नं. </th>
-                    <th className='p-3 text-black font-semibold border text-center border-gray-700'>उत्पादकाचे नाव </th>
-                    <th className='p-3 text-black font-semibold border text-center border-gray-700'>एकूण लिटर </th>
-                    <th className='p-3 text-black font-semibold border text-center border-gray-700'>एकूण रक्कम </th>
-                    <th className='p-3 text-black font-semibold border text-center border-gray-700'>एकूण कपात </th>
-                    <th className='p-3 text-black font-semibold border text-center border-gray-700'>बील कपात </th>
-                    <th className='p-3 text-black font-semibold border text-center border-gray-700'>निव्वळ अदा </th>
-                    <th className='p-3 text-black font-semibold border text-center border-gray-700'>सही</th>
-                  </tr>
-                </thead>
-                <tbody className='divide-y divide-gray-300'>
-                  {billData.filter((item) => parseFloat(item.totalLiters) > 0)
-                  .map((item, index) => (
-                    <tr key={index} className='hover:bg-gray-100'>
-                      <td className='p-3 text-center  border border-gray-500 text-black'>{item.registerNo}</td>
-                      <td className='p-3 text-center  border-gray-500 text-black border '>{item.user}</td>
-                      <td className='p-3 text-center  border-gray-500 text-black border '>{Math.floor(item.totalLiters)}</td>
-                      <td className='p-3 text-center  border-gray-500 text-black border '>{item.totalRakkam}</td>
-                      <td className='p-3 text-center  border-gray-500 text-black border '>{Math.floor(item.totalKapatRateMultiplybyTotalLiter)}</td>
-                      <td className='p-3 text-center  border-gray-500 text-black border '>{item.totalBillKapat}</td>
-                      <td className='p-3 text-center  border-gray-500 text-black border '>{item.netPayment}</td>
-                      <td className='p-3 text-center  border-gray-500 text-black border '>{item.sahi}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className='mt-4'>
-              <button
-                onClick={handlePrint}
-                className='w-full md:w-36 py-2 bg-green-500 hover:bg-green-700 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105 mr-4'>
-                प्रिंट बिल  
-              </button>
-              <button
-                onClick={handleSaveBills}
-                className='w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105'>
-                बिल  जतन करा 
-              </button>
-              <div className='mt-24 bg-gray-100 p-4 rounded-lg'>
-              <h3 className='text-lg font-semibold text-black bg-green-300 p-2 shadow-md w-fit rounded-md'>समरी रीपोर्ट</h3>
-              <div className='mt-2'>
+          <div className='flex flex-col mb-4 md:mb-0'>
+            <label htmlFor="endDate" className='text-black font-semibold'>पर्यंत</label>
+            <input
+              type="date"
+              id="endDate"
+              className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+        <div className='flex justify-center'>
+          <button
+            type="submit"
+            className='w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105'
+            disabled={loading}
+          >
+            {loading ? "Fetching..." : "Generate Bills"}
+          </button>
+        </div>
+      </form>
 
-              {/* Buffalo Table */}
-              <div className='flex flex-row justify-between space-x-4'>
+      {error && <div className='mt-4 text-red-500'>{error}</div>}
+    </div>
+  ) : (
+    <div className='mt-6 bg-gray-300 p-6 rounded-lg w-full max-w-6xl mx-auto shadow-black shadow-md mb-4'>
+      <h2 className='text-xl font-semibold text-black mb-4 mt-6 shadow-md w-fit p-2 rounded-md'>बिल तपशील </h2>
+      <div className='flex gap-12 flax-row'>
+        <h2 className='text-xl font-semibold text-black mb-4 border border-gray-400 p-2'>पासून  {new Date(startDate).toLocaleDateString('en-GB')}</h2>
+        <h2 className='text-xl font-semibold text-black mb-4 border border-gray-400 p-2'>पर्यंत  {new Date(endDate).toLocaleDateString('en-GB')}</h2>
+      </div>
+      <div className='overflow-x-auto'>
+        <table className='w-full min-w-full border border-gray-300 shadow-md shadow-black'>
+          <thead>
+            <tr className='bg-gray-400'>
+              <th className='p-3 text-black font-semibold border text-center border-gray-700'>रजि नं. </th>
+              <th className='p-3 text-black font-semibold border text-center border-gray-700'>उत्पादकाचे नाव </th>
+              <th className='p-3 text-black font-semibold border text-center border-gray-700'>एकूण लिटर </th>
+              <th className='p-3 text-black font-semibold border text-center border-gray-700'>एकूण रक्कम </th>
+              <th className='p-3 text-black font-semibold border text-center border-gray-700'>एकूण कपात </th>
+              <th className='p-3 text-black font-semibold border text-center border-gray-700'>बील कपात </th>
+              <th className='p-3 text-black font-semibold border text-center border-gray-700'>निव्वळ अदा </th>
+              <th className='p-3 text-black font-semibold border text-center border-gray-700'>सही</th>
+            </tr>
+          </thead>
+          <tbody className='divide-y divide-gray-300'>
+            {billData.filter((item) => parseFloat(item.totalLiters) > 0)
+              .map((item, index) => (
+                <tr key={index} className='hover:bg-gray-100'>
+                  <td className='p-3 text-center  border border-gray-500 text-black'>{item.registerNo}</td>
+                  <td className='p-3 text-center  border-gray-500 text-black border '>{item.user}</td>
+                  <td className='p-3 text-center  border-gray-500 text-black border '>{Math.floor(item.totalLiters)}</td>
+                  <td className='p-3 text-center  border-gray-500 text-black border '>{item.totalRakkam}</td>
+                  <td className='p-3 text-center  border-gray-500 text-black border '>{Math.floor(item.totalKapatRateMultiplybyTotalLiter)}</td>
+                  <td className='p-3 text-center  border-gray-500 text-black border '>{item.totalBillKapat}</td>
+                  <td className='p-3 text-center  border-gray-500 text-black border '>{item.netPayment}</td>
+                  <td className='p-3 text-center  border-gray-500 text-black border '>{item.sahi}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+      <div className='mt-4'>
+        <button
+          onClick={handlePrint}
+          className='w-full md:w-36 py-2 bg-green-500 hover:bg-green-700 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105 mr-4'>
+          प्रिंट बिल  
+        </button>
+        <button
+          onClick={handleSaveBills}
+          className='w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105'>
+          बिल  जतन करा 
+        </button>
+        {/* Add the summary-report class here */}
+        <div className='mt-24 bg-gray-100 p-4 rounded-lg summary-report'>
+          <h3 className='text-lg font-semibold text-black bg-green-300 p-2 shadow-md w-fit rounded-md'>समरी रीपोर्ट</h3>
+          <div className='mt-2'>
+            {/* Buffalo Table */}
+            <div className='flex flex-row justify-between space-x-4'>
               {/* Buffalo Table */}
               <div className='w-1/2 bg-blue-100'>
                 <h2 className='text-blue-600 text-lg font-bold m-4 shadow-lg sm:p-2 w-fit'>म्हैस तपशील</h2>
@@ -244,85 +252,73 @@ const BillSummary = () => {
                 </table>
               </div>
 
-                {/* Cow Table */}
-                <div className='w-1/2 bg-blue-100'>
-                  <h2 className='text-blue-600 text-lg font-bold m-4 shadow-lg sm:p-2 w-fit'>गाय तपशील </h2>
-                  <table className='min-w-full table-auto border-collapse border border-gray-200'>
-                    <thead>
-                      <tr>
-                        <th className='text-black px-4 py-2 text-left font-semibold'>प्रकार </th>
-                        <th className='text-black px-4 py-2 text-left font-semibold'>रक्कम </th>
-                      </tr>
-                    </thead>
-                    <tbody className='border border-gray-500'>
-                      <tr>
-                        <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>लिटर </strong></td>
-                        <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{totalCowLiter}</td>
-                      </tr>
-                      <tr>
-                        <td className='text-black px-4 py-2 border border-gray-500'><strong>रक्कम </strong></td>
-                        <td className='text-black px-4 py-2 border border-gray-500'>{totalCowRakkam}</td>
-                      </tr>
-                      <tr>
-                        <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>बिल कपात </strong></td>
-                        <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{totalCowBillKapat}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-
-                {/* Final Total Table */}
-                <h2 className='text-lg font-bold mt-4 text-black bg-green-300 p-2 shadow-md w-fit rounded-md'>टोटल </h2>
-                <table className='min-w-full table-auto border-collapse border border-gray-200 mt-2'>
+              {/* Cow Table */}
+              <div className='w-1/2 bg-blue-100'>
+                <h2 className='text-blue-600 text-lg font-bold m-4 shadow-lg sm:p-2 w-fit'>गाय तपशील </h2>
+                <table className='min-w-full table-auto border-collapse border border-gray-200'>
                   <thead>
                     <tr>
-                      <th className='border border-gray-500 bg-gray-300 text-black px-4 py-2 font-semibold text-center'>प्रकार </th>
-                      <th className='border border-gray-500 bg-gray-300 text-black px-4 py-2 font-semibold text-center'>रक्कम </th>
+                      <th className='text-black px-4 py-2 text-left font-semibold'>प्रकार </th>
+                      <th className='text-black px-4 py-2 text-left font-semibold'>रक्कम </th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className='border border-gray-500'>
                     <tr>
-                      <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण लिटर </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalLiters}</td>
+                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>लिटर </strong></td>
+                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{totalCowLiter}</td>
                     </tr>
                     <tr>
-                      <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण रक्कम </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalRakkam}</td>
+                      <td className='text-black px-4 py-2 border border-gray-500'><strong>रक्कम </strong></td>
+                      <td className='text-black px-4 py-2 border border-gray-500'>{totalCowRakkam}</td>
                     </tr>
                     <tr>
-                      <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण कपात </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalKapatRate}</td>
-                    </tr>
-                    <tr>
-                      <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण बिल कपात </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalBillKapat}</td>
-                    </tr>
-                    <tr>
-                      <td className='bg-gray-200 text-black px-4 py-2 border border-gray-500 text-center'><strong>निव्वळ रक्कम </strong></td>
-                      <td className='bg-gray-200 text-black px-4 py-2 border border-gray-500 text-center'>{totalNetPayment}</td>
+                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>बिल कपात </strong></td>
+                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{totalCowBillKapat}</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-
-
-              <div className="flex justify-center mt-6">
-                <button
-                  onClick={handlePrint}
-                  className='w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105'
-                >
-                  Print बील 
-                </button>
-              </div>
-              </div>
             </div>
+
+            {/* Final Total Table */}
+            <h2 className='text-lg font-bold mt-4 text-black bg-green-300 p-2 shadow-md w-fit rounded-md'>टोटल </h2>
+            <table className='min-w-full table-auto border-collapse border border-gray-200 mt-2'>
+              <thead>
+                <tr>
+                  <th className='border border-gray-500 bg-gray-300 text-black px-4 py-2 font-semibold text-center'>प्रकार </th>
+                  <th className='border border-gray-500 bg-gray-300 text-black px-4 py-2 font-semibold text-center'>रक्कम </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण लिटर </strong></td>
+                  <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalLiters}</td>
+                </tr>
+                <tr>
+                  <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण रक्कम </strong></td>
+                  <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalRakkam}</td>
+                </tr>
+                <tr>
+                  <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण कपात </strong></td>
+                  <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalKapatRate}</td>
+                </tr>
+                <tr>
+                  <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण बिल कपात </strong></td>
+                  <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalBillKapat}</td>
+                </tr>
+                <tr>
+                  <td className='bg-gray-200 text-black px-4 py-2 border border-gray-500 text-center'><strong>निव्वळ रक्कम </strong></td>
+                  <td className='bg-gray-200 text-black px-4 py-2 border border-gray-500 text-center'>{totalNetPayment}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        )}
-        <ToastContainer />
+        </div>
       </div>
-      
+      <ToastContainer />
+    </div>
+  )}
+</div>
     </>
   );
 };

@@ -30,6 +30,7 @@
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "gsap": "^3.12.7",
+    "ioredis": "^5.5.0",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^2.5.2",

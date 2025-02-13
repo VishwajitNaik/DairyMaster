@@ -59,7 +59,6 @@ const UserOrdersBillKapat = () => {
           <table className="table-auto border-collapse w-full bg-gray-200 text-sm sm:text-base rounded-md">
             <thead>
               <tr className="bg-gray-400">
-                <th className="text-black border px-4 py-2">तारीख</th>
                 <th className="text-black border px-4 py-2">उत्पादक नं</th>
                 <th className="text-black border px-4 py-2">उत्पादक</th>
                 <th className="text-black border px-4 py-2">रक्कम</th>
@@ -68,9 +67,6 @@ const UserOrdersBillKapat = () => {
             <tbody>
               {currentData.map((user) => (
                 <tr key={user.userId} className="text-center">
-                  <td className="text-black border border-gray-700 px-4 py-2">
-                    {new Date().toLocaleDateString()}
-                  </td>
                   <td className="text-black border border-gray-700 px-4 py-2">{user.registerNo}</td>
                   <td className="text-black border border-gray-700 px-4 py-2">{user.username}</td>
                   <td className="text-black border border-gray-700 px-4 py-2">{user.remainingAmount}</td>
@@ -78,10 +74,10 @@ const UserOrdersBillKapat = () => {
               ))}
               {/* Footer row for total */}
               <tr className="bg-gray-100 font-bold text-center">
-                <td className="text-black border border-gray-700 px-4 py-2" colSpan="3">
-                  एकूण बाकी
+                <td className="border border-gray-700 px-4 py-2 text-blue-950" colSpan="2">एकूण बाकी</td>
+                <td className="text-blue-950 border border-gray-700 px-4 py-2">
+                   {totalRemainingAmount}
                 </td>
-                <td className="text-black border px-4 py-2">{totalRemainingAmount}</td>
               </tr>
             </tbody>
           </table>
@@ -97,7 +93,7 @@ const UserOrdersBillKapat = () => {
             onClick={handlePreviousPage}
             disabled={currentPage === 1}
             className={`px-4 py-2 border rounded ${
-              currentPage === 1 ? "bg-gray-300" : "bg-blue-500 text-white"
+              currentPage === 1 ? "bg-gray-500" : "bg-blue-500 text-white"
             }`}
           >
             मागील पृष्ठ
@@ -109,7 +105,7 @@ const UserOrdersBillKapat = () => {
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
             className={`px-4 py-2 border rounded ${
-              currentPage === totalPages ? "bg-gray-300" : "bg-blue-500 text-white"
+              currentPage === totalPages ? "bg-gray-500" : "bg-blue-500 text-white"
             }`}
           >
             पुढील पृष्ठ
