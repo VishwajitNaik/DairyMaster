@@ -10,14 +10,16 @@ export default function MilkGrowthChart() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await axios.get(`/api/analysis/milk/?filter=${filter}`);
+                const response = await axios.get(`/api/analysis/milk/?filter=${filter}&ownerId=67a2fc4984ac9d1796e9b656`);
+                console.log("Milk Growth Data:", response.data);  // Debugging line
                 setChartData(response.data.trendData);
             } catch (error) {
                 console.error("Error fetching milk growth data:", error);
             }
         }
         fetchData();
-    }, [filter]); // Runs when filter changes
+    }, [filter]);
+    
 
     return (
         <div className="gradient-bg">
@@ -26,7 +28,7 @@ export default function MilkGrowthChart() {
 
                 {/* Filter Buttons */}
                 <div className="flex justify-center gap-4 mb-6">
-                    {["daily", "weekly", "monthly", "yearly"].map((type) => (
+                    {["daily", "10days", "monthly", "yearly"].map((type) => (
                         <button
                             key={type}
                             onClick={() => setFilter(type)}
@@ -34,7 +36,7 @@ export default function MilkGrowthChart() {
                                 filter === type ? "bg-blue-600 text-white shadow-md" : "bg-gray-300 text-gray-700 hover:bg-gray-400"
                             }`}
                         >
-                            {type.charAt(0).toUpperCase() + type.slice(1)}
+                            {type === "10days" ? "10 Days" : type.charAt(0).toUpperCase() + type.slice(1)}
                         </button>
                     ))}
                 </div>

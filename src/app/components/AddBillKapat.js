@@ -3,6 +3,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddBillKapat = () => {
   const [totalAmount, setTotalAmount] = useState(0);
@@ -24,6 +27,7 @@ const AddBillKapat = () => {
   const [endDate, setEndDate] = useState('');
   const [milkRecords, setMilkRecords] = useState([]);
   const [kapat, setKapat] = useState([]);
+   const registerNoRef = useRef(null); // Create a ref for registerNo input field
 
   // Fetch Kapat options
   useEffect(() => {
@@ -102,15 +106,27 @@ const AddBillKapat = () => {
       orderData: selectedOptionOrder,
       rate: parseFloat(rakkam),
     };
-
     try {
       const res = await axios.post('/api/billkapat/addBillkapat', payload);
+      toast.success("कपात विवरण सफलतापूर्वक केले..!", { position: "top-right" });
+      
       console.log('Response:', res.data);
       setSelectedOption('');
       setSelectedUser(null);
       setRakkam('');
       setMilkRecords([]); // Clear milk records if needed
       setUserDetails(null); // Reset user details
+
+      inputRefs.current.forEach(ref => {
+        if (ref) ref.value = '';
+      });
+
+            // Set focus back to Register No input field
+            if (registerNoRef.current) {
+              registerNoRef.current.focus();
+            }
+      
+  
     } catch (error) {
       console.error('Failed to add bill kapat:', error.message);
     }
@@ -193,6 +209,7 @@ const AddBillKapat = () => {
       backgroundPosition: 'center',
     }}
 >
+<ToastContainer />
  <div className="relative">
  <Image
   src="/assets/monycut.png" 
@@ -234,6 +251,7 @@ const AddBillKapat = () => {
    <input
   type="text"
   id="code"
+  ref={registerNoRef}  // Add this line
   placeholder="रजि. नं."
   className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-24 bg-gray-200 rounded-md"
   value={selectedOption}

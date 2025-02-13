@@ -477,81 +477,83 @@ export default function AvakDudhNond({ params }) {
 };
 
 
-  const clearForm = () => {
-    setselectedMilk(""); // Reset the selected milk
-    setSelectedUser(""); // Reset the selected user
-    setSelectedOption(""); // Reset the user selection
-    setFat(""); // Reset the fat input
-  
-    // Check if useDefault is true
-    if (useDefault === true) {
-      setSnf(defaultSNF.snf); // Set SNF to default value if useDefault is true
-    } else {
-      setSnf(""); // Clear the SNF input if useDefault is false
-    }
-  
-    // Clear all the input fields
-    inputRefs.current.forEach((input) => {
-      if (input) {
-        input.value = ""; // Clear each input field
+const clearForm = (shouldClear = true, hasPreviousData = false) => {
+  if (!shouldClear) return; // Prevent clearing if shouldClear is false
+
+  // ✅ Don't clear fields if previous data exists
+  if (!hasPreviousData) {
+    inputRefs.current.forEach((input, index) => {
+      if (input && index >= 1) {
+        input.value = ""; // Clear only the relevant fields
       }
     });
-  };
+
+    setFat(""); // Reset fat input
+    if (useDefault === true) {
+      setSnf(defaultSNF.snf); // Set SNF to default if useDefault is true
+    } else {
+      setSnf(""); // Otherwise, clear SNF input
+    }
+  }
+};
+
   
 
-  const handleSubmit = async () => {
-    try {
-      if (!selectedMilk) {
-        alert("Please select a milk type before submitting");
-        return;
+const handleSubmit = async () => {
+  try {
+    if (!selectedMilk) {
+      alert("Please select a milk type before submitting");
+      return;
+    }
+
+    const liter = parseFloat(inputRefs.current[1]?.value || "0");
+    const fat = parseFloat(inputRefs.current[2]?.value || "0");
+    const snf = parseFloat(inputRefs.current[3]?.value || "0");
+    const dar = parseFloat(inputRefs.current[4]?.value || "0");
+    const rakkam = parseFloat(inputRefs.current[5]?.value || "0");
+
+    if (isNaN(liter) || isNaN(fat) || isNaN(snf) || isNaN(dar) || isNaN(rakkam)) {
+      alert("Please enter valid numbers before submitting");
+      return;
+    }
+
+    const payload = {
+      registerNo: selectedOption,
+      session: currentTime,
+      milk: selectedMilk,
+      liter,
+      fat,
+      snf,
+      dar,
+      rakkam,
+      date: currentDate,
+    };
+
+    const res = await axios.post("/api/milk/createMilk", payload);
+    Toast.success(res.data.message);
+
+    if (res.data.alert) {
+      // ✅ If milk record exists, update input fields and prevent clearing
+      Toast.success(res.data.alert);
+      if (res.data.data) {
+        const milkRecord = res.data.data;
+        inputRefs.current[1].value = milkRecord.liter;
+        inputRefs.current[2].value = milkRecord.fat;
+        inputRefs.current[3].value = milkRecord.snf;
+        inputRefs.current[4].value = milkRecord.dar;
+        inputRefs.current[5].value = milkRecord.rakkam;
       }
-
-      const liter = parseFloat(inputRefs.current[1]?.value || "0");
-      const fat = parseFloat(inputRefs.current[2]?.value || "0");
-      const snf = parseFloat(inputRefs.current[3]?.value || "0");
-      const dar = parseFloat(inputRefs.current[4]?.value || "0");
-      const rakkam = parseFloat(inputRefs.current[5]?.value || "0");
-
-      if (
-        isNaN(liter) ||
-        isNaN(fat) ||
-        isNaN(snf) ||
-        isNaN(dar) ||
-        isNaN(rakkam)
-      ) {
-        alert("Please enter valid numbers before submitting");
-        return;
-      }
-
-      const payload = {
-        registerNo: selectedOption, // User register number
-        session: currentTime, // Session (morning/evening)
-        milk: selectedMilk, // Use selectedMilk for the milk type
-        liter, // Amount in liters
-        fat, // Fat percentage
-        snf, // SNF percentage
-        dar, // Rate per liter
-        rakkam, // Total amount (rakkam)
-        date: currentDate, // Date of the milk entry
-      };
-      const res = await axios.post("/api/milk/createMilk", payload);
-
-      if (res.data.alert) {
-        alert(res.data.alert); // Display the alert message if record exists
-      } else {
-        console.log(res.data.message);
-      }
-
-      // clear form information after successful submission
-
+    } else {
+      // ✅ Only clear form if no previous record exists
       setTimeout(() => {
-        clearForm();
+        clearForm(true, res.data.alert); // Pass hasPreviousData flag
         input1Ref.current.focus();
       }, 1000);
-    } catch (error) {
-      console.error("Error storing milk information:", error.message);
     }
-  };
+  } catch (error) {
+    Toast.error("Error storing milk information:", error.message);
+  }
+};
 
   const handleUpdate = async () => {
     try {
