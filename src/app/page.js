@@ -34,22 +34,30 @@ const Home = () => {
 
   useEffect(() => {
     const fetchOwnerName = async () => {
-      try {
-        const response = await fetch("/api/owner/OwnerName"); // Call your API route
-        const data = await response.json();
-
-        if (response.ok) {
-          setName(data.ownerName); // Set owner name in state
-        } else {
-          console.error(data.error); // Log error if any
+      // Check if the user is authenticated (e.g., check if a token exists)
+      const isAuthenticated = localStorage.getItem("token") || sessionStorage.getItem("token");
+  
+      if (isAuthenticated) {
+        try {
+          const response = await fetch("/api/owner/OwnerName");
+          const data = await response.json();
+  
+          if (response.ok) {
+            setName(data.ownerName); // Set owner name in state
+          } else {
+            console.error(data.error); // Log error if any
+          }
+        } catch (error) {
+          console.error("Error fetching owner name:", error);
         }
-      } catch (error) {
-        console.error("Error fetching owner name:", error);
+      } else {
+        console.log("Owner is not logged in");
       }
     };
-
+  
     fetchOwnerName();
   }, []);
+  
 
 useGSAP(() => {
 
@@ -135,12 +143,17 @@ useGSAP(() => {
 
 </h1>
 <h1>
-{ name && (
-  <h2 className="absolute top-2/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl sm:text-4xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500">
-  {name || "Login to get started"}
-  </h2>
-) }
+  {name ? (
+    <h2 className="absolute top-2/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl sm:text-4xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500">
+      {name}
+    </h2>
+  ) : (
+    <h2 className="absolute top-2/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl sm:text-4xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500">
+      Login to get started
+    </h2>
+  )}
 </h1>
+
 
       </div>
 
