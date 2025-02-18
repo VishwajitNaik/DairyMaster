@@ -8,6 +8,9 @@ import SessionMilk from "../components/SessionMilk.js";
 import KapatNetpay from "../components/KapatNetpay.js";
 import Image from "next/image.js";
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const renderDetailsTable = (details) => (
     <table className="min-w-full">
@@ -118,6 +121,7 @@ const Page = () => {
         }
       } catch (error) {
         console.error("Error fetching users:", error);
+                toast.error("सर्वर डाउन आहे ");
         setSUsers([]); // Fallback to an empty array in case of error
       } finally {
         setIsLoading(false); // Loading complete
@@ -146,6 +150,7 @@ const Page = () => {
         }
       } catch (error) {
         console.error("Error fetching owner name:", error);
+        toast.error("सर्वर डाउन आहे ");
       }
     };
 
@@ -224,6 +229,7 @@ const Page = () => {
         }
       } catch (err) {
         setError("Failed to fetch today's milk records.");
+        toast.error("सर्वर डाउन आहे ");
         console.error("Error fetching today's milk records:", err.message);
       } finally {
         setLoading(false);
@@ -242,6 +248,7 @@ const Page = () => {
         
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
+        toast.error("सर्वर डाउन आहे ");
       }
     }
     getOwnerUsers();
@@ -339,6 +346,7 @@ const Page = () => {
       } catch (error) {
         console.error("Error fetching rates:", error.message);
         setError("Error fetching rates");
+        toast.error("सर्वर डाउन आहे ");
         setLoading(false);
       }
     };
@@ -490,6 +498,7 @@ const Page = () => {
       }, 1000);
     } catch (error) {
       console.error("Error storing milk information:", error.message);
+      toast.error("सर्वर डाउन आहे ");
     }
   };
 

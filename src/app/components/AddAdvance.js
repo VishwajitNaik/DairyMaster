@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddAdvance = () => {
   const { id } = useParams();
@@ -23,6 +25,7 @@ const AddAdvance = () => {
         setUsers(res.data.data); 
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
+        toast.error("सर्वर डाउन आहे ");
       }
     }
     getOwnerUsers();
@@ -88,6 +91,7 @@ const AddAdvance = () => {
       alert('Advance Saved Successfully');
     } catch (error) {
       console.error("Error storing order information:", error.message);
+      toast.error("सर्वर डाउन आहे ");
     }
   };
 
@@ -214,6 +218,7 @@ const AddAdvance = () => {
       </div>
     </form>
   </div>
+  <ToastContainer />
 </div>
 
   )

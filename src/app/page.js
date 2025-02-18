@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import Modal from "./components/Models/Modal";
 import SignupForm from "./components/SignupForm";
 import SigninForm from "./components/SigninForm";
@@ -19,7 +19,9 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger"; // Import ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
 import SmoothScrollWrapper from "./components/Animation/SmoothScrollWrapper";
-
+import { connectToDB } from "./lib/dbconfig.js";
+import axios from "axios";
+connectToDB();
 
 const Home = () => {
   const testimonialsRef = useRef(null);
@@ -28,6 +30,26 @@ const Home = () => {
   const textRef = useRef(null);
   const containerRef = useRef(null);
   const videoRef = useRef(null);
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    const fetchOwnerName = async () => {
+      try {
+        const response = await fetch("/api/owner/OwnerName"); // Call your API route
+        const data = await response.json();
+
+        if (response.ok) {
+          setName(data.ownerName); // Set owner name in state
+        } else {
+          console.error(data.error); // Log error if any
+        }
+      } catch (error) {
+        console.error("Error fetching owner name:", error);
+      }
+    };
+
+    fetchOwnerName();
+  }, []);
 
 useGSAP(() => {
 
@@ -110,8 +132,15 @@ useGSAP(() => {
   className=" absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center whitespace-nowrap"
 >
   <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500"> W</span>elcome to Milk<span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500">HUB</span>
-</h1>
 
+</h1>
+<h1>
+{ name && (
+  <h2 className="absolute top-2/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl sm:text-4xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500">
+  {name || "Login to get started"}
+  </h2>
+) }
+</h1>
 
       </div>
 
@@ -172,5 +201,3 @@ useGSAP(() => {
 
 export default Home;
 
-// UserName : VishwaTech
-// password  : Vishwa123

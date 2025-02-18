@@ -38,6 +38,7 @@ const AddBillKapat = () => {
         setKapat(sthirKapat);
       } catch (error) {
         console.log("Failed to fetch kapat options:", error.message);
+        toast.error("Failed to fetch kapat options.");
       }
     }
     getKapatOptions();
@@ -51,6 +52,7 @@ const AddBillKapat = () => {
         setUsers(res.data.data);
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
+        toast.error("Failed to fetch users.");
       }
     }
     getOwnerUsers();
@@ -99,7 +101,7 @@ const AddBillKapat = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const payload = {
-      date: currentDate,
+      date: startDate,
       username: selectedUser?.name,
       registerNo: selectedOption,
       milktype: selectedUser?.milk,
@@ -129,6 +131,7 @@ const AddBillKapat = () => {
   
     } catch (error) {
       console.error('Failed to add bill kapat:', error.message);
+      toast.error("कपात विवरण सफल नाही..!", { position: "top-right" });
     }
   };
 
@@ -150,6 +153,7 @@ const AddBillKapat = () => {
       setMilkRecords(response.data.data);
     } catch (error) {
       console.error("Error fetching milk records:", error.message);
+      toast.error("Error fetching milk records.");
     }
   };
 
@@ -172,6 +176,7 @@ const AddBillKapat = () => {
           setTotalAmount(total); // Update the totalAmount state
         } catch (error) {
           console.error(error.message);
+          toast.error("Failed to fetch user orders.");
         }
       };
 
@@ -184,23 +189,21 @@ const AddBillKapat = () => {
 
   // Fetch user details based on selected user
   const fetchUserDetails = async (userId) => {
-    if (!userId || !startDate || !endDate) {
-      alert("Please select a user and date range");
+    if (!userId) {
+      alert("Please select a user");
       return;
     }
-
+  
     try {
-      const response = await axios.post(`/api/orders/afterKapatOrders/${userId}`, {
-        startDate,
-        endDate,
-      });
+      const response = await axios.post(`/api/orders/afterKapatOrders/${userId}`);
       setUserDetails(response.data);
-      setNetPayment(response.data.netPayment); // Set net payment here
+      setNetPayment(response.data.netPayment);
     } catch (error) {
       console.error("Failed to fetch user details:", error.message);
+      toast.error("Failed to fetch user details.");
     }
   };
-
+  
   return (
     <div className='bg-gray-800 p-6 rounded-lg mt-20 shadow-md w-full max-w-2xl mx-auto shadow-black'
     style={{

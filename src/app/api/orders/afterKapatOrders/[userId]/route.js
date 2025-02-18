@@ -8,8 +8,7 @@ import { getDataFromToken } from "@/helpers/getDataFromToken";
 export async function POST(request, context) {
     try {
         const ownerId = await getDataFromToken(request);
-        const { userId } = await context.params; // await context.params instead of destructuring it directly
-        const { startDate, endDate } = await request.json();
+        const { userId } = await context.params;
 
         if (!userId) {
             return NextResponse.json({ error: "User ID is required" }, { status: 400 });
@@ -17,39 +16,27 @@ export async function POST(request, context) {
 
         const user = await User.findOne({ _id: userId, createdBy: ownerId });
 
+
         if (!user) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
-        const userOrders = await Order.find({
-            createdBy: user._id,
-            date: {
-                $gte: new Date(startDate),
-                $lte: new Date(endDate),
-            },
-        });
+        const userOrders = await Order.find({ createdBy: user._id });
 
         const totalRakkam = userOrders.reduce((total, order) => total + (parseFloat(order.rakkam) || 0), 0);
 
-        const billKapatRecords = await BillKapat.find({
-            createdBy: user._id,
-            date: { $gte: new Date(startDate), $lte: new Date(endDate) }
-        });
+        const billKapatRecords = await BillKapat.find({ createdBy: user._id });
 
         const totalBillKapat = billKapatRecords.reduce((total, record) => total + (parseFloat(record.rate) || 0), 0);
 
-        const advanceCuts = await Advance.find({
-            createdBy: user._id,
-            date: {
-                $gte: new Date(startDate),
-                $lte: new Date(endDate),
-            },
-        });
+        const advanceCuts = await Advance.find({ createdBy: user._id });
 
         const totalAdvance = advanceCuts.reduce((total, record) => total + (parseFloat(record.rakkam) || 0), 0);
 
         // Calculate net payment
         const netPayment = Math.floor(totalRakkam - totalBillKapat - totalAdvance);
+
+
 
         return NextResponse.json({
             userOrders,

@@ -40,6 +40,7 @@ const AddAddressForm = () => {
   };
 
   return (
+    <div className="gradient-bg flex flex-col min-h-screen">
     <div
       className="flex items-center justify-center h-screen bg-cover"
       style={{ backgroundImage: "url('/path/to/your/background.jpg')" }}
@@ -94,6 +95,7 @@ const AddAddressForm = () => {
 
         </form>
       </div>
+    </div>
     </div>
   );
 };

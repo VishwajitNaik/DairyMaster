@@ -47,7 +47,6 @@ export async function GET(request) {
       }).populate('createdBy', 'registerNo name').sort({ date: 1 });
     }
 
-    console.timeEnd('Milk records fetch time');
 
     return NextResponse.json({
       message: 'Milk records fetched successfully',
