@@ -514,7 +514,7 @@ const clearForm = (shouldClear = true, hasPreviousData = false) => {
     const redisRes = await axios.get(`/api/milk/GetMilkvalue?${queryParams}`);
     if (redisRes.data.data) {
       const milkRecord = redisRes.data.data;
-      Toast.success("Milk data found from Redis");
+      Toast.success("दूध डेटा प्राप्त किया गया है");
 
       inputRefs.current[1].value = milkRecord.liter;
       inputRefs.current[2].value = milkRecord.fat;
