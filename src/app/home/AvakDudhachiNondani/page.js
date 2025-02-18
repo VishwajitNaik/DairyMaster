@@ -497,7 +497,37 @@ const clearForm = (shouldClear = true, hasPreviousData = false) => {
   }
 };
 
-  
+  const handleGetMilkData = async () => {
+  try {
+    if (!selectedMilk || !selectedOption) {
+      alert("Please select a user and milk type before fetching data");
+      return;
+    }
+
+    const queryParams = new URLSearchParams({
+      registerNo: selectedOption,
+      session: currentTime,
+      milk: selectedMilk,
+      date: currentDate,
+    }).toString();
+
+    const redisRes = await axios.get(`/api/milk/GetMilkvalue?${queryParams}`);
+    if (redisRes.data.data) {
+      const milkRecord = redisRes.data.data;
+      Toast.success("Milk data found from Redis");
+
+      inputRefs.current[1].value = milkRecord.liter;
+      inputRefs.current[2].value = milkRecord.fat;
+      inputRefs.current[3].value = milkRecord.snf;
+      inputRefs.current[4].value = milkRecord.dar;
+      inputRefs.current[5].value = milkRecord.rakkam;
+    } else {
+      Toast.info("No milk data found, please submit");
+    }
+  } catch (error) {
+    Toast.error("Error fetching milk data:", error.message);
+  }
+};
 
 const handleSubmit = async () => {
   try {
@@ -884,26 +914,35 @@ const handleSubmit = async () => {
                 className="bg-opacity-50"
                 style={{ height: "450px", width: "300px" }}
               >
-                <div className="flex flex-col">
-                  <button
-                    onClick={calculateRates}
-                    className="w-full md:w-36 py-2 mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md hover:translate-x-3 shadow-black transition-all duration-300 ease-in-out"
-                  >
-                    दर व रक्कम काढा
-                  </button>
-                  <button
-                    onClick={handleSubmit}
-                    className="w-full md:w-36 py-2 mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md hover:translate-x-3 shadow-black transition-all duration-300 ease-in-out"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={handleUpdate}
-                    className="w-full md:w-36 py-2 mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md hover:translate-x-3 shadow-black transition-all duration-300 ease-in-out"
-                  >
-                    अपडेट 
-                  </button>
-                </div>
+                  <div className="flex flex-col">
+                    <button
+                      onClick={calculateRates}
+                      className="w-full md:w-36 py-2 mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md hover:translate-x-3 shadow-black transition-all duration-300 ease-in-out"
+                    >
+                      दर व रक्कम काढा
+                    </button>
+                    <div className="flex flex-row gap-4 mt-4 justify-center">
+                      <button
+                        onClick={handleGetMilkData}
+                        className="w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md hover:translate-x-3 shadow-black transition-all duration-300 ease-in-out"
+                      >
+                        Check
+                      </button>
+                      <button
+                        onClick={handleSubmit}
+                        className="w-36 py-2 mr-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md hover:translate-x-3 shadow-black transition-all duration-300 ease-in-out"
+                      >
+                        Save
+                      </button>
+                    </div>
+                    <button
+                      onClick={handleUpdate}
+                      className="w-full md:w-36 py-2 mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md hover:translate-x-3 shadow-black transition-all duration-300 ease-in-out"
+                    >
+                      अपडेट 
+                    </button>
+                  </div>
+
                 <div
                   className="relative mt-8 flex flex-row space-y-4"
                   style={{ marginLeft: "-650px" }}

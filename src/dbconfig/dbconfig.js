@@ -1,30 +1,30 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import mongoose from 'mongoose';
+import { connectRedis } from './redis';
 
-let isConnected = false; // Track the connection status
+// MongoDB connection
+let isMongoConnected = false;
 
 export async function connect() {
-  if (isConnected) {
-    console.log("Mongoose is already connected.");
+  if (isMongoConnected) {
+    console.log("✅ MongoDB is already connected.");
     return;
   }
 
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    isConnected = true; // Set connection status to true after a successful connection
-    console.log("Mongoose connected successfully.");
+    isMongoConnected = true;
+    console.log("✅ MongoDB connected successfully.");
+
+    // Initialize Redis connection here
+    connectRedis();
 
   } catch (error) {
-    console.error("MongoDB connection error. Ensure the database is running.", error);
+    console.error("❌ MongoDB connection failed:", error);
   }
 }
 
-// Set up connection listeners (only once)
 const connection = mongoose.connection;
-connection.on('connected', () => {
-  console.log("Mongoose connected success...");
-});
-connection.on('error', (err) => {
-  console.error("MongoDB connection error. Please ensure DB is running. ", err);
-});
+connection.on('connected', () => console.log("✅ MongoDB connected event triggered."));
+connection.on('error', (err) => console.error("❌ MongoDB connection error:", err));

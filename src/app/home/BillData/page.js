@@ -64,6 +64,9 @@ const BillSummary = () => {
   const totalCowBillKapat = billData.reduce((acc, item) => acc + parseFloat(item.totalCowBillKapat || 0), 0).toFixed(1);
   const totalBillKapat = billData.reduce((acc, item) => acc + parseFloat(item.totalBillKapat || 0), 0).toFixed(1);
   const totalNetPayment = billData.reduce((acc, item) => acc + parseFloat(item.netPayment || 0), 0).toFixed(1);
+  const totalKapat = billData.reduce((acc, item) => acc + parseFloat(item.totalKapat || 0), 0).toFixed(1);
+
+
 
   if (loading)
     return (
@@ -197,7 +200,7 @@ const BillSummary = () => {
                 <tr key={index} className='hover:bg-gray-100'>
                   <td className='p-3 text-center  border border-gray-500 text-black'>{item.registerNo}</td>
                   <td className='p-3 text-center  border-gray-500 text-black border '>{item.user}</td>
-                  <td className='p-3 text-center  border-gray-500 text-black border '>{Math.floor(item.totalLiters)}</td>
+                  <td className='p-3 text-center  border-gray-500 text-black border '>{item.totalLiters}</td>
                   <td className='p-3 text-center  border-gray-500 text-black border '>{item.totalRakkam}</td>
                   <td className='p-3 text-center  border-gray-500 text-black border '>{Math.floor(item.totalKapatRateMultiplybyTotalLiter)}</td>
                   <td className='p-3 text-center  border-gray-500 text-black border '>{item.totalBillKapat}</td>
@@ -295,11 +298,11 @@ const BillSummary = () => {
                   <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalLiters}</td>
                 </tr>
                 <tr>
-                  <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण रक्कम </strong></td>
-                  <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalRakkam}</td>
+                  <td className='text-green-800 px-4 py-2 border border-gray-500 text-center'><strong>एकूण रक्कम </strong></td>
+                  <td className='text-green-800 px-4 py-2 border border-gray-500 text-center'>{totalRakkam}</td>
                 </tr>
                 <tr>
-                  <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण कपात </strong></td>
+                  <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण स्थिर कपात </strong></td>
                   <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalKapatRate}</td>
                 </tr>
                 <tr>
@@ -307,8 +310,12 @@ const BillSummary = () => {
                   <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalBillKapat}</td>
                 </tr>
                 <tr>
-                  <td className='bg-gray-200 text-black px-4 py-2 border border-gray-500 text-center'><strong>निव्वळ रक्कम </strong></td>
-                  <td className='bg-gray-200 text-black px-4 py-2 border border-gray-500 text-center'>{totalNetPayment}</td>
+                  <td className='text-blue-700 px-4 py-2 border border-gray-500 text-center'><strong>एकूण कपात </strong></td>
+                  <td className='text-blue-900 px-4 py-2 border border-gray-500 text-center'>{totalKapat}</td>
+                </tr>
+                <tr>
+                  <td className='bg-gray-200 text-red-600 px-4 py-2 border border-gray-500 text-center'><strong>निव्वळ रक्कम </strong></td>
+                  <td className='bg-gray-200 text-red-600 px-4 py-2 border border-gray-500 text-center'>{totalNetPayment}</td>
                 </tr>
               </tbody>
             </table>

@@ -35,7 +35,7 @@ export async function POST(request) {
         // ✅ Insert new BillKapat record with insertOne
         const newBillKapat = {
             registerNo,
-            date,
+            date: new Date(date),
             username,
             milktype,
             orderData,

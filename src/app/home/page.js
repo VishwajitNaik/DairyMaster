@@ -49,9 +49,11 @@ export default function Navbar() {
       { href: "/home/Rates/GetRates", label: "दर पत्रक पाहणे  " },
       { href: "/home/AddOwnerOrders", label: "ऑर्डर करणे " },
       { href: "/home/orders/getOwnerOrders", label: "संघ ऑर्डर पाहणे " },
+      { href: "/home/DateWiseAllOrders", label: "सर्व उत्पादक ऑर्डर पाहणे" },
       { href: "/home/AdvanceSabhasad_List", label: "सभासद अडवांस पाहणे " },
       { href: "/home/BillKapatSabhasad_List", label: "बिल कपात पाहणे " },
       { href: "/home/AllUserBillKapat", label: "सर्व सभासद कपात पाहणे  " },
+
     ],
     इतर: [
       { href: "/home/AllUserOrders", label: "सर्व उत्पादक बाकी पाहणे" },
@@ -59,6 +61,8 @@ export default function Navbar() {
       { href: "/home/Docter/GetDocterVisit", label: "डॉक्टर सेवा मागणी " },
       { href: "/home/Analysis/Milk", label: "दूध विश्लेषण" },
       { href: "/home/Analysis/Orders", label: "ऑर्डर विश्लेषण" }
+      
+
     ],
   };
 

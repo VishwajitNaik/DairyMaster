@@ -27,6 +27,7 @@ const AddUserOrder = () => {
         setKapat(kapat);
       } catch (error) {
         console.log("Failed to fetch kapat options:", error.message);
+        toast.error("सर्वर डाउन आहे कपात विवरण लोड करण्यात त्रुटी आहे");
       }
     }
     getKapatOptions();
@@ -40,6 +41,7 @@ const AddUserOrder = () => {
         
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
+        toast.error("सर्वर डाउन आहे ");
       }
     }
     getOwnerUsers();
@@ -100,7 +102,6 @@ const AddUserOrder = () => {
       // Reset form fields
       setSelectedOption('');
       setSelectedUser(null);
-      setSelectedOptionOrder('');
       setRakkam('');
 
       inputRefs.current.forEach(ref => {
@@ -114,6 +115,7 @@ const AddUserOrder = () => {
 
     } catch (error) {
       console.error("Error storing order information:", error.message);
+      toast.error("सर्वर डाउन आहे ");
     }
   };
 

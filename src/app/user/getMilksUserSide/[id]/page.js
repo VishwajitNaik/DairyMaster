@@ -20,6 +20,12 @@ export default function UserMilkDetails() {
   const [totalMorningRakkam, setTotalMorningRakkam] = useState(0);
   const [totalEveningLiters, setTotalEveningLiters] = useState(0);
   const [totalEveningRakkam, setTotalEveningRakkam] = useState(0);
+  const [avgFatMorning, setAvgFatMorning] = useState(0);
+  const [avgFatEvening, setAvgFatEvening] = useState(0);
+  const [avgSNFMorning, setAvgSNFMorning] = useState(0);
+  const [avgSNFEvening, setAvgSNFEvening] = useState(0);
+  const [avgRateMorning, setAvgRateMorning] = useState(0);
+  const [avgRateEvening, setAvgRateEvening] = useState(0);
   const [totalLiters, setTotalLiters] = useState(0);
   const [totalRakkam, setTotalRakkam] = useState(0);
   const [startDate, setStartDate] = useState(new Date());
@@ -84,6 +90,56 @@ export default function UserMilkDetails() {
         },
         { liters: 0, rakkam: 0 }
       );
+
+      const avgFatMorning = morning.length > 0
+      ? morning.reduce((totals, record) => {
+          totals.fat += record.fat;
+          return totals;
+        }, { fat: 0 }).fat / morning.length
+      : 0;
+
+      const avgFatEvening = evening.length > 0
+      ? evening.reduce((totals, record) => {
+          totals.fat += record.fat;
+          return totals;
+        }, { fat: 0 }).fat / evening.length
+      : 0;
+
+      const avgSNFMorning = morning.length > 0
+      ? morning.reduce((totals, record) => {
+          totals.snf += record.snf;
+          return totals;
+        }, { snf: 0 }).snf / morning.length
+      : 0;
+
+      const avgSNFEvening = evening.length > 0
+      ? evening.reduce((totals, record) => {
+          totals.snf += record.snf;
+          return totals;  
+        }, { snf: 0 }).snf / evening.length
+      : 0;
+
+      const avgRateMorning = morning.length > 0
+      ? morning.reduce((totals, record) => {
+          totals.dar += record.dar;
+          return totals;
+        }, { dar: 0 }).dar / morning.length
+      : 0;
+
+      const avgRateEvening = evening.length > 0
+      ? evening.reduce((totals, record) => {
+          totals.dar += record.dar;
+          return totals;
+        }, { dar: 0 }).dar / evening.length
+      : 0;
+
+      setAvgRateMorning(avgRateMorning);
+      setAvgRateEvening(avgRateEvening);
+
+      setAvgFatMorning(avgFatMorning);
+      setAvgFatEvening(avgFatEvening);
+      setAvgSNFMorning(avgSNFMorning);
+      setAvgSNFEvening(avgSNFEvening);
 
       setTotalMorningLiters(totalMorning.liters);
       setTotalMorningRakkam(Math.floor(totalMorning.rakkam));
@@ -217,10 +273,13 @@ export default function UserMilkDetails() {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan="4" className="py-2 px-4 border-t font-semibold">
+            <td colSpan="1" className="py-2 px-4 border-t font-semibold">
               Total
             </td>
             <td className="py-2 px-4 border-t font-semibold">{totalMorningLiters.toFixed(2)}</td>
+            <td className='py-2 px-4 border-t font-semibold'>{avgFatMorning.toFixed(1)}</td>
+            <td className='py-2 px-4 border-t font-semibold'>{avgSNFMorning.toFixed(1)}</td>
+            <td className='py-2 px-4 border-t font-semibold'>{avgRateMorning.toFixed(1)}</td>
             <td className="py-2 px-4 border-t font-semibold">{totalMorningRakkam.toFixed(2)}</td>
           </tr>
         </tfoot>
@@ -250,39 +309,42 @@ export default function UserMilkDetails() {
       `}</style>
           {eveningRecords.length > 0 ? (
             <table className="min-w-full bg-white text-black shadow-md rounded-lg text-xs lg:text-base">
-        <thead className="bg-gray-300 shadow-md">
-          <tr>
-            <th className="py-2 px-4 border-b">दिनांक</th>
-            <th className="py-2 px-4 border-b">लिटर </th>
-            <th className="py-2 px-4 border-b">फॅट </th>
-            <th className="py-2 px-4 border-b">SNF</th>
-            <th className="py-2 px-4 border-b">दर </th>
-            <th className="py-2 px-4 border-b">रक्कम </th>
-          </tr>
-        </thead>
-        <tbody className="bg-gray-100">
-          {eveningRecords.map((record) => (
-            <tr key={record._id} className="hover:bg-gray-200">
-              <td className="py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
-              <td className="py-2 px-4 border-b">{record.liter}</td>
-              <td className="py-2 px-4 border-b">{record.fat}</td>
-              <td className="py-2 px-4 border-b">{record.snf}</td>
-              <td className="py-2 px-4 border-b">{record.dar}</td>
-              <td className="py-2 px-4 border-b">{record.rakkam}</td>
+            <thead className="bg-gray-300 shadow-md">
+              <tr>
+                <th className="py-2 px-4 border-b">दिनांक</th>
+                <th className="py-2 px-4 border-b">लिटर </th>
+                <th className="py-2 px-4 border-b">फॅट </th>
+                <th className="py-2 px-4 border-b">SNF</th>
+                <th className="py-2 px-4 border-b">दर </th>
+                <th className="py-2 px-4 border-b">रक्कम </th>
+              </tr>
+            </thead>
+            <tbody className="bg-gray-100">
+              {eveningRecords.map((record) => (
+                <tr key={record._id} className="hover:bg-gray-200">
+                  <td className="py-2 px-4 border-b">{new Date(record.date).toLocaleDateString()}</td>
+                  <td className="py-2 px-4 border-b">{record.liter}</td>
+                  <td className="py-2 px-4 border-b">{record.fat}</td>
+                  <td className="py-2 px-4 border-b">{record.snf}</td>
+                  <td className="py-2 px-4 border-b">{record.dar}</td>
+                  <td className="py-2 px-4 border-b">{record.rakkam}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan="1" className="py-2 px-4 border-t font-semibold">
+                  Total
+                </td>
+                <td className="py-2 px-4 border-t font-semibold">{totalEveningLiters.toFixed(2)}</td>
+                <td className="py-2 px-4 border-t font-semibold">{avgFatEvening.toFixed(1)}</td>
+                <td className="py-2 px-4 border-t font-semibold">{avgSNFEvening.toFixed(1)}</td>
+                <td className='py-2 px-4 border-t font-semibold'>{avgRateEvening.toFixed(1)}</td>
+                <td className="py-2 px-4 border-t font-semibold">{totalEveningRakkam.toFixed(2)}</td>
+              </tr>
+            </tfoot>
+          </table>
 
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan="4" className="py-2 px-4 border-t font-semibold">
-              Total
-            </td>
-            <td className="py-2 px-4 border-t font-semibold">{totalEveningLiters.toFixed(2)}</td>
-            <td className="py-2 px-4 border-t font-semibold">{totalEveningLiters.toFixed(2)}</td>
-          </tr>
-        </tfoot>
-      </table>
           ) : (
             <p>संध्याकाळचे दूध मिळाले नाही .</p>
           )}
