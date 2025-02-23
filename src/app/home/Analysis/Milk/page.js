@@ -19,7 +19,23 @@ export default function MilkGrowthChart() {
         }
         fetchData();
     }, [filter]);
-    
+
+    // 🔹 Custom Tooltip to Show Date First
+    const CustomTooltip = ({ active, payload }) => {
+        if (active && payload && payload.length) {
+            return (
+                <div className="bg-white p-3 shadow-md rounded-lg border border-gray-300">
+                    <p className="font-bold text-gray-700">📅 Date: {payload[0].payload.period}</p>
+                    {payload.map((entry, index) => (
+                        <p key={index} style={{ color: entry.color }}>
+                            {entry.name}: {entry.value}
+                        </p>
+                    ))}
+                </div>
+            );
+        }
+        return null;
+    };
 
     return (
         <div className="gradient-bg">
@@ -48,7 +64,7 @@ export default function MilkGrowthChart() {
                             <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
                             <XAxis dataKey="period" tick={{ fill: "#4A5568", fontSize: 14 }} />
                             <YAxis tick={{ fill: "#4A5568", fontSize: 14 }} />
-                            <Tooltip contentStyle={{ backgroundColor: "white", borderRadius: "8px" }} />
+                            <Tooltip content={<CustomTooltip />} />
                             <Legend verticalAlign="top" wrapperStyle={{ fontSize: "14px", color: "#4A5568" }} />
                             
                             <Line type="monotone" dataKey="totalLiters" stroke="#4F46E5" strokeWidth={2} name="एकूण लिटर" />
@@ -64,7 +80,7 @@ export default function MilkGrowthChart() {
                             <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
                             <XAxis dataKey="period" tick={{ fill: "#4A5568", fontSize: 14 }} />
                             <YAxis tick={{ fill: "#4A5568", fontSize: 14 }} />
-                            <Tooltip contentStyle={{ backgroundColor: "white", borderRadius: "8px" }} />
+                            <Tooltip content={<CustomTooltip />} />
                             <Legend verticalAlign="top" wrapperStyle={{ fontSize: "14px", color: "#4A5568" }} />
                             
                             <Line type="monotone" dataKey="totalAmount" stroke="#F97316" strokeWidth={2} name="एकूण रक्कम" />

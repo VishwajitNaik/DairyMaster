@@ -1,9 +1,10 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Loading from '@/app/components/Loading/Loading';
 import { ToastContainer, toast as Toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FaPrayingHands } from "react-icons/fa";
 
 const BillSummary = () => {
   const [startDate, setStartDate] = useState('');
@@ -12,6 +13,26 @@ const BillSummary = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [billsGenerated, setBillsGenerated] = useState(false); // New state to track bill generation
+  const [ownerName, setOwnerName] = useState('');
+
+    useEffect(() => {
+      const fetchOwnerName = async () => {
+        try {
+          const response = await fetch("/api/owner/OwnerName"); // Call your API route
+          const data = await response.json();
+  
+          if (response.ok) {
+            setOwnerName(data.ownerName); // Set owner name in state
+          } else {
+            console.error(data.error); // Log error if any
+          }
+        } catch (error) {
+          console.error("Error fetching owner name:", error);
+        }
+      };
+  
+      fetchOwnerName();
+    }, []);
 
   const handleFetchBills = async () => {
     setLoading(true);
@@ -175,6 +196,10 @@ const BillSummary = () => {
     </div>
   ) : (
     <div className='mt-6 bg-gray-300 p-6 rounded-lg w-full max-w-6xl mx-auto shadow-black shadow-md mb-4'>
+    <h1 className="text-4xl font-semibold text-blue-900 shadow-md text-shadow-lg mb-4 text-center flex items-center justify-center gap-2">
+  <FaPrayingHands className="text-yellow-500" /> {ownerName} <FaPrayingHands className="text-yellow-500" />
+</h1>
+
       <h2 className='text-xl font-semibold text-black mb-4 mt-6 shadow-md w-fit p-2 rounded-md'>बिल तपशील </h2>
       <div className='flex gap-12 flax-row'>
         <h2 className='text-xl font-semibold text-black mb-4 border border-gray-400 p-2'>पासून  {new Date(startDate).toLocaleDateString('en-GB')}</h2>
@@ -197,16 +222,18 @@ const BillSummary = () => {
           <tbody className='divide-y divide-gray-300'>
             {billData.filter((item) => parseFloat(item.totalLiters) > 0)
               .map((item, index) => (
-                <tr key={index} className='hover:bg-gray-100'>
-                  <td className='p-3 text-center  border border-gray-500 text-black'>{item.registerNo}</td>
-                  <td className='p-3 text-center  border-gray-500 text-black border '>{item.user}</td>
-                  <td className='p-3 text-center  border-gray-500 text-black border '>{item.totalLiters}</td>
-                  <td className='p-3 text-center  border-gray-500 text-black border '>{item.totalRakkam}</td>
-                  <td className='p-3 text-center  border-gray-500 text-black border '>{Math.floor(item.totalKapatRateMultiplybyTotalLiter)}</td>
-                  <td className='p-3 text-center  border-gray-500 text-black border '>{item.totalBillKapat}</td>
-                  <td className='p-3 text-center  border-gray-500 text-black border '>{item.netPayment}</td>
-                  <td className='p-3 text-center  border-gray-500 text-black border '>{item.sahi}</td>
-                </tr>
+                <tr key={index} className="hover:bg-gray-100">
+  <td className="p-3 text-center border border-gray-500 text-black">{Number(item.registerNo).toLocaleString("mr-IN")}</td>
+  <td className="p-3 text-center border border-gray-500 text-black">{item.user}</td>
+  <td className="p-3 text-center border border-gray-500 text-black">{Number(item.totalLiters).toLocaleString("mr-IN")}</td>
+  <td className="p-3 text-center border border-gray-500 text-black">{Number(item.totalRakkam).toLocaleString("mr-IN")}</td>
+  <td className="p-3 text-center border border-gray-500 text-black">{Math.floor(Number(item.totalKapatRateMultiplybyTotalLiter)).toLocaleString("mr-IN")}</td>
+  <td className="p-3 text-center border border-gray-500 text-black">{Number(item.totalBillKapat).toLocaleString("mr-IN")}</td>
+  <td className="p-3 text-center border border-gray-500 text-black">{Number(item.netPayment).toLocaleString("mr-IN")}</td>
+  <td className="p-3 text-center border border-gray-500 text-black">{item.sahi}</td>
+</tr>
+
+
               ))}
           </tbody>
         </table>
@@ -241,15 +268,15 @@ const BillSummary = () => {
                   <tbody className='border border-gray-500'>
                     <tr>
                       <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>लिटर </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{totalBuffLiter}</td>
+                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'> {Number(totalBuffLiter).toLocaleString("mr-IN")}</td>
                     </tr>
                     <tr>
                       <td className='text-black px-4 py-2 border border-gray-500'><strong>रक्कम </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500'>{totalBuffRakkam}</td>
+                      <td className='text-black px-4 py-2 border border-gray-500'>{Number(totalBuffRakkam).toLocaleString("mr-IN")}</td>
                     </tr>
                     <tr>
                       <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>बिल कपात </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{totalBuffBillKapat}</td>
+                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{Number(totalBuffBillKapat).toLocaleString("mr-IN")}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -268,15 +295,15 @@ const BillSummary = () => {
                   <tbody className='border border-gray-500'>
                     <tr>
                       <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>लिटर </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{totalCowLiter}</td>
+                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{Number(totalCowLiter).toLocaleString("mr-IN")}</td>
                     </tr>
                     <tr>
                       <td className='text-black px-4 py-2 border border-gray-500'><strong>रक्कम </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500'>{totalCowRakkam}</td>
+                      <td className='text-black px-4 py-2 border border-gray-500'>{Number(totalCowRakkam).toLocaleString("mr-IN")}</td>
                     </tr>
                     <tr>
                       <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>बिल कपात </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{totalCowBillKapat}</td>
+                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{Number(totalCowBillKapat).toLocaleString("mr-IN")}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -295,27 +322,27 @@ const BillSummary = () => {
               <tbody>
                 <tr>
                   <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण लिटर </strong></td>
-                  <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalLiters}</td>
+                  <td className='text-black px-4 py-2 border border-gray-500 text-center'>{Number(totalLiters).toLocaleString("mr-IN")}</td>
                 </tr>
                 <tr>
                   <td className='text-green-800 px-4 py-2 border border-gray-500 text-center'><strong>एकूण रक्कम </strong></td>
-                  <td className='text-green-800 px-4 py-2 border border-gray-500 text-center'>{totalRakkam}</td>
+                  <td className='text-green-800 px-4 py-2 border border-gray-500 text-center'>{Number(totalRakkam).toLocaleString("mr-IN")}</td>
                 </tr>
                 <tr>
                   <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण स्थिर कपात </strong></td>
-                  <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalKapatRate}</td>
+                  <td className='text-black px-4 py-2 border border-gray-500 text-center'>{Number(totalKapatRate).toLocaleString("mr-IN")}</td>
                 </tr>
                 <tr>
                   <td className='text-black px-4 py-2 border border-gray-500 text-center'><strong>एकूण बिल कपात </strong></td>
-                  <td className='text-black px-4 py-2 border border-gray-500 text-center'>{totalBillKapat}</td>
+                  <td className='text-black px-4 py-2 border border-gray-500 text-center'>{Number(totalBillKapat).toLocaleString("mr-IN")}</td>
                 </tr>
                 <tr>
                   <td className='text-blue-700 px-4 py-2 border border-gray-500 text-center'><strong>एकूण कपात </strong></td>
-                  <td className='text-blue-900 px-4 py-2 border border-gray-500 text-center'>{totalKapat}</td>
+                  <td className='text-blue-900 px-4 py-2 border border-gray-500 text-center'>{Number(totalKapat).toLocaleString("mr-IN")}</td>
                 </tr>
                 <tr>
                   <td className='bg-gray-200 text-red-600 px-4 py-2 border border-gray-500 text-center'><strong>निव्वळ रक्कम </strong></td>
-                  <td className='bg-gray-200 text-red-600 px-4 py-2 border border-gray-500 text-center'>{totalNetPayment}</td>
+                  <td className='bg-gray-200 text-red-600 px-4 py-2 border border-gray-500 text-center'>{Number(totalNetPayment).toLocaleString("mr-IN")}</td>
                 </tr>
               </tbody>
             </table>

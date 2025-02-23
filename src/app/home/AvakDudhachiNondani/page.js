@@ -16,6 +16,7 @@ import Image from "next/image.js";
 import { ToastContainer, toast as Toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link.js";
+import Calculator from '@/app/components/Calculator'
 
 export default function AvakDudhNond({ params }) {
   const [currentDate, setCurrentDate] = useState("");
@@ -1109,31 +1110,35 @@ const handleSubmit = async () => {
 
                       <h1 className="text-2xl text-black font-semibold">00</h1>
                     </div>
-                    <h1 className="text-2xl text-black font-semibold">
+                    <h1 className="text-2xl text-black font-semibold mb-4">
                       {" "}
                       काटा झेरो{" "}
                     </h1>
                   </div>
                 </div>
-                <div>
+                <div className="flex flex-row items-center gap-12">
+                  <Calculator />
+                  
                   {/* Button to open the modal */}
                   <button
-                    onClick={toggleModal}
-                    className="w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105"
+                      onClick={toggleModal}
+                      className="w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105"
                   >
-                    न आलेले उत्पादक
+                      न आलेले उत्पादक
                   </button>
+
+                  {/* Link Button */}
                   <Link href="/home/SessionMilk">
-                    <button
-                      className="w-full ml-2 md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105"
-                      value={currentTime}
-                    >
-                      {currentTime === "morning" ? (
-                        <span>सकाळचे दूध</span>
-                      ) : (
-                        <span>संध्याकाळचे दूध</span>
-                      )}
-                    </button>
+                      <button
+                          className="w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105"
+                          value={currentTime}
+                      >
+                          {currentTime === "morning" ? (
+                              <span>सकाळचे दूध</span>
+                          ) : (
+                              <span>संध्याकाळचे दूध</span>
+                          )}
+                      </button>
                   </Link>
 
                   {/* Modal for displaying user table */}

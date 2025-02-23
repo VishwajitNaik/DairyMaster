@@ -116,10 +116,10 @@ export default function Navbar() {
             </li>
             <li>
               <Link
-                href="/home/GetKapatUserSide"
+                onClick={handleBillsClick}
                 className="text-white hover:bg-blue-700 p-2 rounded block"
               >
-                बिल 
+                बिल
               </Link>
             </li>
             <li>

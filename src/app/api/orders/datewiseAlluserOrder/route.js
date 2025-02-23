@@ -10,6 +10,7 @@ export async function GET(request) {
     const OwnerId = await getDataFromToken(request);
     const startDate = request.nextUrl.searchParams.get("startDate");
     const endDate = request.nextUrl.searchParams.get("endDate");
+
     try {
         const users = await User.find({ createdBy: OwnerId }).sort({ registerNo: 1 });
 
@@ -25,7 +26,8 @@ export async function GET(request) {
             select: "registerNo name",
         });
 
-        const totalOrders = await Order.aggregate([
+        // Calculate totalOrders count and totalAmount sum
+        const totals = await Order.aggregate([
             {
                 $match: {
                     createdBy: { $in: users.map(user => user._id) },
@@ -39,11 +41,16 @@ export async function GET(request) {
                 $group: {
                     _id: null,
                     totalOrders: { $sum: 1 },
+                    totalAmount: { $sum: "$rakkam" },
                 },
             },
         ]);
 
-        return NextResponse.json({ data: orders, totalOrders: totalOrders[0]?.totalOrders || 0 });
+        return NextResponse.json({
+            data: orders,
+            totalOrders: totals[0]?.totalOrders || 0,
+            totalAmount: totals[0]?.totalAmount || 0,
+        });
 
     } catch (error) {
         console.error("Error fetching orders:", error);

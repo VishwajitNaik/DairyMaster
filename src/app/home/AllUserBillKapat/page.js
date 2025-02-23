@@ -9,6 +9,8 @@ const BillKapatTable = () => {
   const [endDate, setEndDate] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [editingRecord, setEditingRecord] = useState(null);
+  const [updatedRate, setUpdatedRate] = useState("");
 
   const fetchBillKapatData = async () => {
     if (!startDate || !endDate) {
@@ -24,10 +26,43 @@ const BillKapatTable = () => {
         `/api/billkapat/AllUserBillKapat?startDate=${startDate}&endDate=${endDate}`
       );
       setBillKapatData(response.data.data);
-      setLoading(false);
     } catch (err) {
       setError("Failed to fetch data");
+    } finally {
       setLoading(false);
+    }
+  };
+
+  const handleEdit = (record) => {
+    setEditingRecord(record._id);
+    setUpdatedRate(record.rate);
+  };
+
+  const handleUpdate = async (recordId) => {
+    if (!updatedRate || isNaN(updatedRate)) {
+      alert("Please enter a valid number for rate.");
+      return;
+    }
+
+    try {
+      await axios.put(`/api/billkapat/update`, {
+        recordId,
+        rate: parseFloat(updatedRate),
+      });
+
+      setBillKapatData((prevData) =>
+        prevData.map((user) => ({
+          ...user,
+          records: user.records.map((record) =>
+            record._id === recordId ? { ...record, rate: parseFloat(updatedRate) } : record
+          ),
+        }))
+      );
+
+      setEditingRecord(null);
+    } catch (error) {
+      console.error("Failed to update record", error);
+      alert("Failed to update record");
     }
   };
 
@@ -78,9 +113,11 @@ const BillKapatTable = () => {
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         {/* Loading State */}
-        {loading && <p>
-          <Loading />
-        </p>}
+        {loading && (
+          <p>
+            <Loading />
+          </p>
+        )}
 
         {/* Data Table */}
         {!loading && billKapatData.length > 0 && (
@@ -97,6 +134,9 @@ const BillKapatTable = () => {
                   <th className="text-black border border-gray-300 px-4 py-2 text-left">
                     रक्कम
                   </th>
+                  <th className="text-black border border-gray-300 px-4 py-2 text-left">
+                    अपडेट
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -110,7 +150,34 @@ const BillKapatTable = () => {
                         {new Date(record.date).toLocaleDateString()}
                       </td>
                       <td className="text-black border border-gray-300 px-4 py-2">
-                        {record.rate}
+                        {editingRecord === record._id ? (
+                          <input
+                            type="number"
+                            className="w-20 p-1 border border-gray-400 rounded"
+                            value={updatedRate}
+                            onChange={(e) => setUpdatedRate(e.target.value)}
+                          />
+                        ) : (
+                          record.rate
+                        )}
+                      </td>
+
+                      <td className="text-black border border-gray-300 px-4 py-2">
+                        {editingRecord === record._id ? (
+                          <button
+                            className="bg-green-500 text-white px-2 py-1 rounded"
+                            onClick={() => handleUpdate(record._id)}
+                          >
+                            Save
+                          </button>
+                        ) : (
+                          <button
+                            className="bg-blue-500 text-white px-2 py-1 rounded"
+                            onClick={() => handleEdit(record)}
+                          >
+                            Edit
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))

@@ -34,7 +34,7 @@ export async function POST(request) {
 
     // ✅ Insert new advance using `insertOne()`
     const newAdvance = {
-      date,
+      date : new Date(date),
       orderNo,
       username,
       milktype,

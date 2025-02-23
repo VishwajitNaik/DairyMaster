@@ -36,7 +36,7 @@ export async function POST(request) {
     // ✅ Insert new order using `insertOne()`
     const newOrder = {
       registerNo,
-      date,
+      date: new Date(date),
       username,
       milktype,
       kharediData,
