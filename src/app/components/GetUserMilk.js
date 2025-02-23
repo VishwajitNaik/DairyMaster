@@ -36,12 +36,23 @@ const OwnerMilkRecords = () => {
         }
     };
 
+    const handleDelete = async (recordId) => {
+        try {
+            await axios.delete(`/api/milk/deleteMilkRecord?id=${recordId}`);
+            setMilkRecords(milkRecords.filter((record) => record._id !== recordId));
+        } catch (error) {
+            console.error('Error deleting milk record: ', error.message);
+        }
+    };
+
     const morningRecords = milkRecords.filter((record) => record.session === "morning");
     const eveningRecords = milkRecords.filter((record) => record.session === "evening");
 
+    const indexOfLastRecord = currentPage * recordsPerPage;
+    const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+
     const paginate = (records) => {
-        const startIndex = (currentPage - 1) * recordsPerPage;
-        return records.slice(startIndex, startIndex + recordsPerPage);
+        return records.slice(indexOfFirstRecord, indexOfLastRecord);
     };
 
     const totalPages = (records) => Math.ceil(records.length / recordsPerPage);
@@ -50,22 +61,20 @@ const OwnerMilkRecords = () => {
         const totalLiters = records.reduce((sum, record) => sum + (record.liter || 0), 0);
         const totalbuffLiter = records.filter(record => record.milk === "म्हैस ").reduce((sum, record) => sum + (record.liter || 0), 0);
         const totalcowLiter = records.filter(record => record.milk === "गाय ").reduce((sum, record) => sum + (record.liter || 0), 0);
-    
+
         const buffRecords = records.filter(record => record.milk === "म्हैस ");
         const cowRecords = records.filter(record => record.milk === "गाय ");
-    
+
         const avgBuffFat = buffRecords.length ? (buffRecords.reduce((sum, record) => sum + (record.fat || 0), 0) / buffRecords.length).toFixed(2) : "N/A";
         const avgCowFat = cowRecords.length ? (cowRecords.reduce((sum, record) => sum + (record.fat || 0), 0) / cowRecords.length).toFixed(2) : "N/A";
         const avgBuffSNF = buffRecords.length ? (buffRecords.reduce((sum, record) => sum + (record.snf || 0), 0) / buffRecords.length).toFixed(2) : "N/A";
         const avgCowSNF = cowRecords.length ? (cowRecords.reduce((sum, record) => sum + (record.snf || 0), 0) / cowRecords.length).toFixed(2) : "N/A";
-    
+
         const avgRate = records.length ? (records.reduce((sum, record) => sum + (record.dar || 0), 0) / records.length).toFixed(2) : "N/A";
         const totalRakkam = records.reduce((sum, record) => sum + (record.rakkam || 0), 0).toFixed(2);
-    
+
         return { totalLiters, totalbuffLiter, totalcowLiter, avgBuffFat, avgCowFat, avgBuffSNF, avgCowSNF, avgRate, totalRakkam };
     };
-    
-    
 
     return (
         <>
@@ -101,6 +110,7 @@ const OwnerMilkRecords = () => {
                                         <th className="border p-3">SNF</th>
                                         <th className="border p-3">दर </th>
                                         <th className="border p-3">टोटल रक्कम</th>
+                                        <th className="border p-3">Delete</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -114,11 +124,19 @@ const OwnerMilkRecords = () => {
                                                 <td className="border p-3">{record.snf || 'N/A'}</td>
                                                 <td className="border p-3">{(record.dar || 0).toFixed(2)}</td>
                                                 <td className="border p-3">{(record.rakkam || 0).toFixed(2)}</td>
+                                                <td className="border p-3">
+                                                    <button
+                                                        onClick={() => handleDelete(record._id)}
+                                                        className="bg-red-500 text-white px-4 py-2 rounded"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="7" className="text-center p-4"> {session.toLowerCase()} रेकॉर्ड मिळाले नाही .</td>
+                                            <td colSpan="8" className="text-center p-4"> {session.toLowerCase()} रेकॉर्ड मिळाले नाही .</td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -143,37 +161,35 @@ const OwnerMilkRecords = () => {
                                 </div>
                             )}
                             <table className="mt-4 w-full border text-center border-collapse">
-  <tr>
-    <td className="border p-2 font-semibold">म्हैस लिटर</td>
-    <td className="border p-2">{(totals.totalbuffLiter).toFixed(2)}</td>
-    <td className="border p-2 font-semibold">गाय लिटर</td>
-    <td className="border p-2">{(totals.totalcowLiter).toFixed(2)}</td>
-  </tr>
-  <tr>
-    <td className="border p-2 font-semibold">एकूण लिटर</td>
-    <td className="border p-2">{(totals.totalLiters).toFixed(2)}</td>
-    <td className="border p-2 font-semibold">एकूण रक्कम</td>
-    <td className="border p-2">{totals.totalRakkam}</td>
-  </tr>
-  <tr>
-    <td className="border p-2 font-semibold">सरासरी म्हैस फॅट</td>
-    <td className="border p-2">{totals.avgBuffFat}</td>
-    <td className="border p-2 font-semibold">सरासरी गाय फॅट</td>
-    <td className="border p-2">{totals.avgCowFat}</td>
-  </tr>
-  <tr>
-    <td className="border p-2 font-semibold">सरासरी म्हैस SNF</td>
-    <td className="border p-2">{totals.avgBuffSNF}</td>
-    <td className="border p-2 font-semibold">सरासरी गाय SNF</td>
-    <td className="border p-2">{totals.avgCowSNF}</td>
-  </tr>
-  <tr>
-    <td className="border p-2 font-semibold">सरासरी दर</td>
-    <td className="border p-2" colSpan="3">{totals.avgRate}</td>
-  </tr>
-</table>
-
-
+                            <tr>
+                                <td className="border p-2 font-semibold">म्हैस लिटर</td>
+                                <td className="border p-2">{(totals.totalbuffLiter).toFixed(2)}</td>
+                                <td className="border p-2 font-semibold">गाय लिटर</td>
+                                <td className="border p-2">{(totals.totalcowLiter).toFixed(2)}</td>
+                            </tr>
+                            <tr>
+                                <td className="border p-2 font-semibold">एकूण लिटर</td>
+                                <td className="border p-2">{(totals.totalLiters).toFixed(2)}</td>
+                                <td className="border p-2 font-semibold">एकूण रक्कम</td>
+                                <td className="border p-2">{totals.totalRakkam}</td>
+                            </tr>
+                            <tr>
+                                <td className="border p-2 font-semibold">सरासरी म्हैस फॅट</td>
+                                <td className="border p-2">{totals.avgBuffFat}</td>
+                                <td className="border p-2 font-semibold">सरासरी गाय फॅट</td>
+                                <td className="border p-2">{totals.avgCowFat}</td>
+                            </tr>
+                            <tr>
+                                <td className="border p-2 font-semibold">सरासरी म्हैस SNF</td>
+                                <td className="border p-2">{totals.avgBuffSNF}</td>
+                                <td className="border p-2 font-semibold">सरासरी गाय SNF</td>
+                                <td className="border p-2">{totals.avgCowSNF}</td>
+                            </tr>
+                            <tr>
+                                <td className="border p-2 font-semibold">सरासरी दर</td>
+                                <td className="border p-2" colSpan="3">{totals.avgRate}</td>
+                            </tr>
+                            </table>
                         </div>
                     );
                 })}

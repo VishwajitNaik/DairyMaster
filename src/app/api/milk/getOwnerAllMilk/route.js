@@ -25,11 +25,10 @@ export async function GET(request) {
                     $gte: new Date(startDate),
                     $lte: new Date(endDate),
                 }
-            },
-            options: { sort: { registerNo: 1 } }
+            }
         });
 
-        const milkRecords = users.flatMap(user => user.milkRecords);
+        const milkRecords = users.flatMap(user => user.milkRecords).sort((a, b) => a.registerNo - b.registerNo);
 
         const totalLiters = milkRecords.reduce((sum, record) => sum + (record.liter || 0), 0);
         const totalbuffLiter = milkRecords.filter(record => record.milk === "म्हैस ").reduce((sum, record) => sum + (record.liter || 0), 0);

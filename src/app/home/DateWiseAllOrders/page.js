@@ -8,6 +8,7 @@ const OrdersByDateRange = () => {
   const [endDate, setEndDate] = useState("");
   const [orders, setOrders] = useState([]);
   const [totalOrders, setTotalOrders] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -24,6 +25,7 @@ const OrdersByDateRange = () => {
       const response = await axios.get(`/api/orders/datewiseAlluserOrder?startDate=${startDate}&endDate=${endDate}`);
       setOrders(response.data.data);
       setTotalOrders(response.data.totalOrders);
+      setTotalAmount(response.data.totalAmount);
     } catch (err) {
       setError("Failed to fetch orders. Please try again.");
       console.error(err);
@@ -64,21 +66,29 @@ const OrdersByDateRange = () => {
           <table className="w-full border border-collapse text-center">
             <thead>
               <tr className="bg-gray-300">
-              <th className="border px-4 py-2 text-black">Date</th>
-                <th className="border px-4 py-2 text-black ">रजिस्टर नं.</th>
-                <th className="border px-4 py-2 text-black">उत्पादकाचे नाव </th>
-                <th className="border px-4 py-2 text-black">Amount</th>
+                <th className="border px-4 py-2 text-black">Date</th>
+                <th className="border px-4 py-2 text-black">रजिस्टर नं.</th>
+                <th className="border px-4 py-2 text-black">उत्पादकाचे नाव</th>
+                <th className="border px-4 py-2 text-black">खरेदी प्रकार </th>
+                <th className="border px-4 py-2 text-black">rakkamrakkam</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => (
                 <tr key={order._id}>
-                <td className="border px-4 py-2">{new Date(order.date).toLocaleDateString()}</td>
+                  <td className="border px-4 py-2">{new Date(order.date).toLocaleDateString()}</td>
                   <td className="border px-4 py-2">{order.createdBy.registerNo}</td>
                   <td className="border px-4 py-2">{order.createdBy.name}</td>
+                  <td className="border px-4 py-2">{order.kharediData}</td>
                   <td className="border px-4 py-2">{order.rakkam}</td>
                 </tr>
               ))}
+              {/* Total Amount Row */}
+              <tr className="bg-gray-300 font-bold">
+                <td className="border px-4 py-2 text-black" colSpan="3">एकूण रक्कम </td>
+                <td className="border px-4 py-2 text-black"></td> {/* Empty column to shift totalAmount */}
+                <td className="border px-4 py-2 text-black">{totalAmount}</td>
+              </tr>
             </tbody>
           </table>
           <p className="mt-4 font-bold">Total Orders: {totalOrders}</p>
