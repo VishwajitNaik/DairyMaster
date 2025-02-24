@@ -32,7 +32,17 @@ const userSchema = new mongoose.Schema({
         type: String, // Changed from Number to String
         required: true,
     },
-aadharNo: {
+    
+    ifscCode: {
+        type: String,
+        required: true,
+    },
+    status:{
+        type: String,
+        default: "active",
+        enum: ["active", "inactive"],
+    },
+    aadharNo: {
     type: String, // Keep it as a String to handle spaces
     required: true,
     validate: {

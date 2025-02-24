@@ -149,11 +149,14 @@ export default function Sabhasad() {
                     <td className="py-2 px-4 border-b">{user.accountNo}</td>
                     <td className="py-2 px-4 border-b">{user.aadharNo}</td>
                     <td className="py-2 px-4 border-b flex items-center space-x-4">
-                      <Link href={`/home/Sabhasad_List/${user._id}`}>
-                        <button className="bg-blue-400 hover:bg-blue-700 text-white rounded-md p-2 flex items-center">
-                          <span>User Details</span>
-                        </button>
-                      </Link>
+                    <Link href={`/home/Sabhasad_List/${user._id}`}>
+                      <button className="bg-blue-400 hover:bg-blue-700 text-white rounded-md p-2 flex items-center">
+                        <span>User Details</span>
+                        {user.status === "active" && (
+                          <div className="bg-orange-900 hover:bg-orange-700 text-white rounded-full p-1 ml-4"></div>
+                        )}
+                      </button>
+                    </Link>
                       <button
                         onClick={() => {
                           setEditingUser(user);
@@ -175,6 +178,7 @@ export default function Sabhasad() {
                       >
                         <FontAwesomeIcon icon={faTrash} />
                       </button>
+                      
                     </td>
                   </tr>
                 ))
@@ -408,6 +412,33 @@ export default function Sabhasad() {
                   className="text-black p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
                 />
               </label>
+              <div className="flex flex-row space-x-2 mt-2">
+              <label className="text-black">
+                IFSC कोड 
+                <input
+                  type="text"
+                  name="ifscCode"
+                  value={updatedUserData.ifscCode || ""}
+                  onChange={handleInputChange}
+                  className="text-black p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
+                />
+              </label>
+
+              <div className="w-full md:w-1/2 px-2 mb-4">
+                <label htmlFor="Status" className="text-black">स्टेटस</label>
+                <select
+                  id="Status"
+                  name="status"
+                  className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
+                  value={updatedUserData.status || ""}
+                  onChange={handleInputChange}
+                >
+                  <option value="">Type...</option>
+                  <option value="active">चालू</option>
+                  <option value="inactive">बंद</option>
+                </select>
+              </div>
+              </div>
 
               {/* Other form fields for user data */}
               <div className="flex flex-row">

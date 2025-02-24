@@ -32,6 +32,8 @@ const PopUp = ({ isOpen, onClose }) => {
     bankName: '',
     accountNo: '',
     aadharNo: '',
+    ifscCode: '',
+    status: '',
     password: '',
   });
 
@@ -57,6 +59,8 @@ const PopUp = ({ isOpen, onClose }) => {
         bankName: '',
         accountNo: '',
         aadharNo: '',
+        ifscCode: '',
+        status: '',
         password: '',
       });
       setSelectedKapat([]); // Reset selected Kapat options
@@ -217,6 +221,18 @@ const handleAadharChange = (e) => {
             onChange={(e) => setUser({ ...user, accountNo: e.target.value })}
           />
         </div>
+        <div className="w-full md:w-1/2 px-2 mb-4">
+          <label htmlFor="ifscCode" className="text-black">IFSC कोड</label>
+          <input
+            id="ifscCode"
+            placeholder="IFSC Code"
+            type="text" // Ensure the input type is 'text' to avoid parsing issues
+            value={user.ifscCode}
+            onChange={(e) => setUser({ ...user, ifscCode: e.target.value })}
+            className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
+          />
+
+        </div>
   
         {/* Aadhar Number */}
         <div className="w-full md:w-1/2 px-2 mb-4">
@@ -230,6 +246,21 @@ const handleAadharChange = (e) => {
             className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
           />
 
+        </div>
+
+        <div className="w-full md:w-1/2 px-2 mb-4">
+          <label htmlFor="Status" className="text-black">स्टेटस</label>
+          <select
+            id="Status"
+            className="text-black p-2 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md"
+            value={user.status}
+            onChange={(e) => setUser({ ...user, status: e.target.value })}
+            required
+          >
+            <option value="">Type...</option>
+            <option value="active">चालू</option>
+            <option value="inactive">बंद</option>
+          </select>
         </div>
   
         {/* Password */}
@@ -245,6 +276,8 @@ const handleAadharChange = (e) => {
             required
           />
         </div>
+
+        
   
         {/* Kapat Options */}
         <div className="w-full px-2 mb-4">

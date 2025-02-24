@@ -21,36 +21,29 @@ export async function GET(request) {
             return NextResponse.json({ error: "Owner not found" }, { status: 404 });
         }
 
-        // Adjust to UTC to fix AWS timezone issues
+        // Adjust time for AWS timezone issues
         const isProduction = process.env.NODE_ENV === "production";
 
         const today = new Date();
-        const startOfDay = isProduction 
-            ? new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0)) 
-            : new Date(today.setHours(0, 0, 0, 0));
-        
-        const endOfDay = isProduction 
-            ? new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59)) 
-            : new Date(today.setHours(23, 59, 59, 999));
-        
+        const startOfDay = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0));
+        const endOfDay = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59));
 
-        // Determine session based on AWS UTC time
-        const currentHour = today.getUTCHours(); // Use UTC hours to avoid AWS issues
+        // Determine session based on UTC time
+        const currentHour = today.getUTCHours(); // Use UTC time to avoid AWS time differences
         const currentSession = currentHour < 12 ? "morning" : "evening";
 
-        // Sequential fetching to avoid overload
-        const filteredUsers = [];
-        for (const user of owner.users) {
-            const milkRecords = await Milk.find({
-                createdBy: user._id,
-                date: { $gte: startOfDay, $lte: endOfDay },
-                session: currentSession
-            }).read('primary'); // Ensures fresh data from primary DB node
+        // Get all milk records for today and current session
+        const allMilkRecords = await Milk.find({
+            createdBy: { $in: owner.users.map(user => user._id) },
+            date: { $gte: startOfDay, $lte: endOfDay },
+            session: currentSession
+        });
 
-            if (milkRecords.length === 0) {
-                filteredUsers.push(user);
-            }
-        }
+        // Create a Set of user IDs who have already taken milk
+        const takenMilkUserIds = new Set(allMilkRecords.map(record => record.createdBy.toString()));
+
+        // Filter users who have NOT taken milk
+        const filteredUsers = owner.users.filter(user => !takenMilkUserIds.has(user._id.toString()));
 
         return NextResponse.json({ data: filteredUsers }, { status: 200 });
 
