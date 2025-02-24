@@ -16,8 +16,6 @@ export async function connect() {
   if (!cached.promise) {
     console.log("⏳ Connecting to MongoDB...");
     cached.promise = mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000, // Fail quickly if no response
       socketTimeoutMS: 45000, // Keep connection open for 45s
     });

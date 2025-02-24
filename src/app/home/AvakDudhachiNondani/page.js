@@ -1091,7 +1091,7 @@ const handleSubmit = async () => {
                         className="rounded-lg"
                         width={100}
                         height={300}
-                        layout="intrinsic"
+                        sizes="(max-width: 768px) 100vw, 768px"
                       />
                     </div>
 
@@ -1169,16 +1169,18 @@ const handleSubmit = async () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {susers.map((user) => (
-                              <tr key={user._id}>
-                                <td className="border-b px-4 py-2 text-black">
-                                  {user.registerNo}
-                                </td>
-                                <td className="border-b px-4 py-2 text-black">
-                                  {user.name}
-                                </td>
-                              </tr>
-                            ))}
+                            {susers
+                              .filter(user => user.status === "active") // Only include active users
+                              .map(user => (
+                                <tr key={user._id}>
+                                  <td className="border-b px-4 py-2 text-black">
+                                    {user.registerNo}
+                                  </td>
+                                  <td className="border-b px-4 py-2 text-black">
+                                    {user.name}
+                                  </td>
+                                </tr>
+                              ))}
                           </tbody>
                         </table>
                       </div>

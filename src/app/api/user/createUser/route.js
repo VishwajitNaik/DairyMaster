@@ -25,6 +25,8 @@ export async function POST(request) {
             bankName, 
             accountNo, 
             aadharNo, 
+            ifscCode,
+            status,
             password, 
             selectedKapat // Capture selected Sthir Kapat options 
         } = reqBody;
@@ -55,6 +57,8 @@ export async function POST(request) {
             bankName,
             accountNo,
             aadharNo,
+            ifscCode,
+            status,
             password: hashedPassword,
             createdBy: ownerId,
             selectedKapat, // Store selected Sthir Kapat options in the user schema

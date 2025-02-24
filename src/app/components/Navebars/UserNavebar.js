@@ -115,12 +115,12 @@ export default function Navbar() {
               </button>
             </li>
             <li>
-              <Link
-                onClick={handleBillsClick}
-                className="text-white hover:bg-blue-700 p-2 rounded block"
-              >
-                बिल
-              </Link>
+            <button
+              onClick={handleBillsClick}
+              className="text-white hover:bg-blue-700 p-2 rounded block"
+            >
+              बिल
+            </button>
             </li>
             <li>
               <Link

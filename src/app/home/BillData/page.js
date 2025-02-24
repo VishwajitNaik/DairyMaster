@@ -213,8 +213,8 @@ const BillSummary = () => {
               <th className='p-3 text-black font-semibold border text-center border-gray-700'>उत्पादकाचे नाव </th>
               <th className='p-3 text-black font-semibold border text-center border-gray-700'>एकूण लिटर </th>
               <th className='p-3 text-black font-semibold border text-center border-gray-700'>एकूण रक्कम </th>
-              <th className='p-3 text-black font-semibold border text-center border-gray-700'>एकूण कपात </th>
-              <th className='p-3 text-black font-semibold border text-center border-gray-700'>बील कपात </th>
+              <th className='p-3 text-black font-semibold border text-center border-gray-700'>स्थिर कपात </th>
+              <th className='p-3 text-black font-semibold border text-center border-gray-700'>पशूखाद्य </th>
               <th className='p-3 text-black font-semibold border text-center border-gray-700'>निव्वळ अदा </th>
               <th className='p-3 text-black font-semibold border text-center border-gray-700'>सही</th>
             </tr>
@@ -275,7 +275,7 @@ const BillSummary = () => {
                       <td className='text-black px-4 py-2 border border-gray-500'>{Number(totalBuffRakkam).toLocaleString("mr-IN")}</td>
                     </tr>
                     <tr>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>बिल कपात </strong></td>
+                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>पशूखाद्य </strong></td>
                       <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{Number(totalBuffBillKapat).toLocaleString("mr-IN")}</td>
                     </tr>
                   </tbody>
@@ -302,7 +302,7 @@ const BillSummary = () => {
                       <td className='text-black px-4 py-2 border border-gray-500'>{Number(totalCowRakkam).toLocaleString("mr-IN")}</td>
                     </tr>
                     <tr>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>बिल कपात </strong></td>
+                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>पशूखाद्य </strong></td>
                       <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{Number(totalCowBillKapat).toLocaleString("mr-IN")}</td>
                     </tr>
                   </tbody>
