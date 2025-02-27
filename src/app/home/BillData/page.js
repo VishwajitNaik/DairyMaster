@@ -254,61 +254,62 @@ const BillSummary = () => {
           <h3 className='text-lg font-semibold text-black bg-green-300 p-2 shadow-md w-fit rounded-md'>समरी रीपोर्ट</h3>
           <div className='mt-2'>
             {/* Buffalo Table */}
-            <div className='flex flex-row justify-between space-x-4'>
-              {/* Buffalo Table */}
-              <div className='w-1/2 bg-blue-100'>
-                <h2 className='text-blue-600 text-lg font-bold m-4 shadow-lg sm:p-2 w-fit'>म्हैस तपशील</h2>
-                <table className='min-w-full table-auto border-collapse border border-gray-200'>
-                  <thead>
-                    <tr>
-                      <th className='text-black px-4 py-2 text-left font-semibold'>प्रकार </th>
-                      <th className='text-black px-4 py-2 text-left font-semibold'>रक्कम </th>
-                    </tr>
-                  </thead>
-                  <tbody className='border border-gray-500'>
-                    <tr>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>लिटर </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'> {Number(totalBuffLiter).toLocaleString("mr-IN")}</td>
-                    </tr>
-                    <tr>
-                      <td className='text-black px-4 py-2 border border-gray-500'><strong>रक्कम </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500'>{Number(totalBuffRakkam).toLocaleString("mr-IN")}</td>
-                    </tr>
-                    <tr>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>पशूखाद्य </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{Number(totalBuffBillKapat).toLocaleString("mr-IN")}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            <div className='flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4'>
+  {/* Buffalo Table */}
+  <div className='w-full md:w-1/2 bg-blue-100 p-4 rounded-lg shadow-md'>
+    <h2 className='text-blue-600 text-lg font-bold mb-2 sm:p-2 w-fit'>म्हैस तपशील</h2>
+    <table className='w-full table-auto border-collapse border border-gray-200'>
+      <thead>
+        <tr>
+          <th className='text-black px-4 py-2 text-left font-semibold'>प्रकार</th>
+          <th className='text-black px-4 py-2 text-left font-semibold'>रक्कम</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>लिटर</strong></td>
+          <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{Number(totalBuffLiter).toLocaleString("mr-IN")}</td>
+        </tr>
+        <tr>
+          <td className='text-black px-4 py-2 border border-gray-500'><strong>रक्कम</strong></td>
+          <td className='text-black px-4 py-2 border border-gray-500'>{Number(totalBuffRakkam).toLocaleString("mr-IN")}</td>
+        </tr>
+        <tr>
+          <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>पशूखाद्य</strong></td>
+          <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{Number(totalBuffBillKapat).toLocaleString("mr-IN")}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-              {/* Cow Table */}
-              <div className='w-1/2 bg-blue-100'>
-                <h2 className='text-blue-600 text-lg font-bold m-4 shadow-lg sm:p-2 w-fit'>गाय तपशील </h2>
-                <table className='min-w-full table-auto border-collapse border border-gray-200'>
-                  <thead>
-                    <tr>
-                      <th className='text-black px-4 py-2 text-left font-semibold'>प्रकार </th>
-                      <th className='text-black px-4 py-2 text-left font-semibold'>रक्कम </th>
-                    </tr>
-                  </thead>
-                  <tbody className='border border-gray-500'>
-                    <tr>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>लिटर </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{Number(totalCowLiter).toLocaleString("mr-IN")}</td>
-                    </tr>
-                    <tr>
-                      <td className='text-black px-4 py-2 border border-gray-500'><strong>रक्कम </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500'>{Number(totalCowRakkam).toLocaleString("mr-IN")}</td>
-                    </tr>
-                    <tr>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>पशूखाद्य </strong></td>
-                      <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{Number(totalCowBillKapat).toLocaleString("mr-IN")}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+  {/* Cow Table */}
+  <div className='w-full md:w-1/2 bg-blue-100 p-4 rounded-lg shadow-md'>
+    <h2 className='text-blue-600 text-lg font-bold mb-2 sm:p-2 w-fit'>गाय तपशील</h2>
+    <table className='w-full table-auto border-collapse border border-gray-200'>
+      <thead>
+        <tr>
+          <th className='text-black px-4 py-2 text-left font-semibold'>प्रकार</th>
+          <th className='text-black px-4 py-2 text-left font-semibold'>रक्कम</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>लिटर</strong></td>
+          <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{Number(totalCowLiter).toLocaleString("mr-IN")}</td>
+        </tr>
+        <tr>
+          <td className='text-black px-4 py-2 border border-gray-500'><strong>रक्कम</strong></td>
+          <td className='text-black px-4 py-2 border border-gray-500'>{Number(totalCowRakkam).toLocaleString("mr-IN")}</td>
+        </tr>
+        <tr>
+          <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'><strong>पशूखाद्य</strong></td>
+          <td className='text-black px-4 py-2 border border-gray-500 bg-gray-300'>{Number(totalCowBillKapat).toLocaleString("mr-IN")}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
 
             {/* Final Total Table */}
             <h2 className='text-lg font-bold mt-4 text-black bg-green-300 p-2 shadow-md w-fit rounded-md'>टोटल </h2>

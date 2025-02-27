@@ -205,145 +205,154 @@ const AddBillKapat = () => {
   };
   
   return (
-    <div className='bg-gray-800 p-6 rounded-lg mt-20 shadow-md w-full max-w-2xl mx-auto shadow-black'
-    style={{
-      backgroundImage: 'url(/assets/mony.jpg)', 
-      backgroundSize: 'cover', 
-      backgroundPosition: 'center',
-    }}
->
-<ToastContainer />
- <div className="relative">
- <Image
-  src="/assets/monycut.png" 
-  alt="खरेदी Icon"
-  width={144}
-  height={144}
-  className="absolute rounded-full hidden sm:block"
-  style={{ top: "-80px", left: "100%", transform: "translateX(-50%)" }}
-/>
-
-
-   <h1 className="text-2xl font-semibold text-black mb-4">
-     खरेदी कपात
-   </h1>
- </div>
-
- <form onSubmit={handleSubmit} className='bg-gray-700 p-4 rounded-lg shadow-md shadow-gray-900'>
-   <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
-     <div className='flex flex-col md:flex-row items-start'>
-       <input
-         type="date"
-         id="startDate" 
-         value={startDate}
-         onChange={(e) => setStartDate(e.target.value)}
-         className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
-       />
-       <input
-         type="date"
-         id="endDate"
-         value={endDate}
-         onChange={(e) => setEndDate(e.target.value)}
-         className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
-       />
-     </div>
-   </div>
-
-   {/* User selection and milk type display */}
-   <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
-   <input
-  type="text"
-  id="code"
-  ref={registerNoRef}  // Add this line
-  placeholder="रजि. नं."
-  className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-24 bg-gray-200 rounded-md"
-  value={selectedOption}
-  onChange={(e) => setSelectedOption(e.target.value)}
-  onBlur={handleRegisterNoBlur}
-  onFocus={handleRegisterNoFocus}
-  onInput={(e) => {
-    // Allow only numbers and a single decimal point
-    const value = e.target.value;
-    e.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
-  }}
-  required
-/>
-
-     <select
-       id="user-select"
-       value={selectedOption}
-       onChange={handleUserChange}
-       className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-64 bg-gray-200 rounded-md"
-       >
-       <option value="">उत्पादकाचे नाव </option>
-       {users.map(user => (
-         <option key={user._id} value={user.registerNo}>
-           {user.name}
-         </option>
-       ))}
-     </select>
-     <button
-       type="button"
-       onClick={fetchMilkRecords}
-       className='w-full sm:w-24 py-2 mb-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md '
-     >
-       एकूण बिल
-     </button>
-   </div>
-
-   <div className="text-black h-fit text-xl font-mono p-2 mr-4 mb-4 border-b-2 border-blue-500 outline-none bg-gray-200 rounded-md flex flex-row justify-between space-x-6">
-     <div className="flex items-center space-x-2">
-       <span className="font-bold">बील</span>
-       <span className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 w-36 bg-gray-500 rounded-md">
-         {totalMilkRakkam}
-       </span>
-     </div>
-     {userDetails && (
-       <div className="flex items-center space-x-2">
-         <span className="font-bold">बाकी</span>
-         <span className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 w-36 bg-gray-500 rounded-md">
-           {netPayment}
-         </span>
-       </div>
-     )}
-   </div>
-
-   <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
-     <select
-       id="order-select"
-       value={selectedOptionOrder}
-       onChange={handleChange}
-       className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-48 bg-gray-200 rounded-md"
-     >
-       <option value="">खरेदी डाटा </option>
-       {kapat.map((k) => (
-         <option key={k._id} value={k.kapatName}>
-           {k.kapatName}
-         </option>
-       ))}
-     </select>
-     <input
-       type="text"
-       placeholder="रक्कम "
-       value={rakkam}
-       onChange={(e) => setRakkam(e.target.value)}
-       onInput={(e) => {
-        // Allow only numbers and a single decimal point
-        const value = e.target.value;
-        e.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+    <div
+      className="bg-gray-800 p-6 rounded-lg mt-20 shadow-md w-full max-w-2xl mx-auto shadow-black"
+      style={{
+        backgroundImage: "url(/assets/mony.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
-       className='text-black h-fit text-xl mb-4 font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-36  bg-gray-200 rounded-md'
-     />
-   </div>
+    >
+      <ToastContainer />
+      <div className="relative">
+        <Image
+          src="/assets/monycut.png"
+          alt="खरेदी Icon"
+          width={144}
+          height={144}
+          className="absolute rounded-full hidden sm:block"
+          style={{ top: "-80px", left: "100%", transform: "translateX(-50%)" }}
+        />
 
-   <div className='flex justify-center items-center'>
-     <button type="submit" className='w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105'>
-       Submit
-     </button>
-   </div>
- </form>
-</div>
+        <h1 className="text-2xl font-semibold text-black mb-4">खरेदी कपात</h1>
+      </div>
 
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gray-700 p-4 rounded-lg shadow-md shadow-gray-900"
+      >
+        <div className="flex flex-col md:flex-row md:space-x-4 mb-4">
+          <div className="flex flex-col md:flex-row items-start">
+            <input
+              type="date"
+              id="startDate"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
+            />
+            <input
+              type="date"
+              id="endDate"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-full bg-gray-200 rounded-md shadow-sm"
+            />
+          </div>
+        </div>
+
+        {/* User selection and milk type display */}
+        <div className="flex flex-col md:flex-row md:space-x-4 mb-4">
+          <input
+            type="number"
+            inputMode="numeric"
+            id="code"
+            ref={registerNoRef} // Add this line
+            placeholder="रजि. नं."
+            className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-24 bg-gray-200 rounded-md"
+            value={selectedOption}
+            onChange={(e) => setSelectedOption(e.target.value)}
+            onBlur={handleRegisterNoBlur}
+            onFocus={handleRegisterNoFocus}
+            onInput={(e) => {
+              // Allow only numbers and a single decimal point
+              const value = e.target.value;
+              e.target.value = value
+                .replace(/[^0-9.]/g, "")
+                .replace(/(\..*?)\..*/g, "$1");
+            }}
+            required
+          />
+
+          <select
+            id="user-select"
+            value={selectedOption}
+            onChange={handleUserChange}
+            className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-64 bg-gray-200 rounded-md"
+          >
+            <option value="">उत्पादकाचे नाव </option>
+            {users.map((user) => (
+              <option key={user._id} value={user.registerNo}>
+                {user.name}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={fetchMilkRecords}
+            className="w-full sm:w-24 py-2 mb-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md "
+          >
+            एकूण बिल
+          </button>
+        </div>
+
+        <div className="text-black h-fit text-xl font-mono p-2 mr-4 mb-4 border-b-2 border-blue-500 outline-none bg-gray-200 rounded-md flex flex-row justify-between space-x-6">
+          <div className="flex items-center space-x-2">
+            <span className="font-bold">बील</span>
+            <span className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 w-36 bg-gray-500 rounded-md">
+              {totalMilkRakkam}
+            </span>
+          </div>
+          {userDetails && (
+            <div className="flex items-center space-x-2">
+              <span className="font-bold">बाकी</span>
+              <span className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 w-36 bg-gray-500 rounded-md">
+                {netPayment}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col md:flex-row md:space-x-4 mb-4">
+          <select
+            id="order-select"
+            value={selectedOptionOrder}
+            onChange={handleChange}
+            className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-48 bg-gray-200 rounded-md"
+          >
+            <option value="">खरेदी डाटा </option>
+            {kapat.map((k) => (
+              <option key={k._id} value={k.kapatName}>
+                {k.kapatName}
+              </option>
+            ))}
+          </select>
+          <input
+            type="number"
+            inputMode="numeric"
+            placeholder="रक्कम "
+            value={rakkam}
+            onChange={(e) => setRakkam(e.target.value)}
+            onInput={(e) => {
+              // Allow only numbers and a single decimal point
+              const value = e.target.value;
+              e.target.value = value
+                .replace(/[^0-9.]/g, "")
+                .replace(/(\..*?)\..*/g, "$1");
+            }}
+            className="text-black h-fit text-xl mb-4 font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-36  bg-gray-200 rounded-md"
+          />
+        </div>
+
+        <div className="flex justify-center items-center">
+          <button
+            type="submit"
+            className="w-full md:w-36 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

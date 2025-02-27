@@ -148,7 +148,8 @@ const AddAdvance = () => {
       <div className='flex flex-col md:flex-row md:space-x-4 mb-4'>
         <div className='flex flex-col mb-4 md:mb-0'>
           <input
-            type="text"
+            type="number"
+            inputMode="numeric"
             id="code"
             placeholder="रजि. नं."
             className='text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-16 bg-gray-200 rounded-md'
@@ -197,7 +198,8 @@ const AddAdvance = () => {
       </div>
       <div className="mb-4">
         <input
-          type="text"
+            type="number"
+            inputMode="numeric"
           id="amount"
           placeholder="रक्कम"
           className="text-black h-fit text-xl mb-4 font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-36  bg-gray-200 rounded-md"

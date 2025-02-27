@@ -178,7 +178,8 @@ const AddUserOrder = () => {
         <div className="flex flex-wrap md:space-x-4 mb-4">
           <div className="flex flex-col mb-4 w-full md:w-1/6">
             <input
-              type="text"
+            type="number"
+            inputMode="numeric"
               id="code"
               ref={registerNoRef}  // Add this line
               placeholder="रजि. नं."
@@ -243,7 +244,8 @@ const AddUserOrder = () => {
           </select>
 
           <input
-            type="text"
+            type="number"
+            inputMode="numeric"
             id="amount"
             placeholder="रक्कम"
             className="text-black h-fit text-xl mb-4 font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-36  bg-gray-200 rounded-md"
