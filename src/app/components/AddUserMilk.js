@@ -7,29 +7,31 @@ import AddBillKapat from "../components/AddBillKapat.js";
 import SessionMilk from "../components/SessionMilk.js";
 import KapatNetpay from "../components/KapatNetpay.js";
 import Image from "next/image.js";
-import '@fortawesome/fontawesome-free/css/all.min.css';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Calculator from '../components/MobileCalc.js';
+import Link from "next/link";
 
 
 const renderDetailsTable = (details) => (
-    <table className="min-w-full">
-      <thead>
-        <tr>
-          <th className="text-left">Statistic</th>
-          <th className="text-right">Value</th>
+  <table className="min-w-full">
+    <thead>
+      <tr>
+        <th className="text-left">Statistic</th>
+        <th className="text-right">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      {details.map(({ label, value }) => (
+        <tr key={label}>
+          <td className="text-black font-bold">{label}</td>
+          <td className="text-blue-600 font-bold">{value}</td>
         </tr>
-      </thead>
-      <tbody>
-        {details.map(({ label, value }) => (
-          <tr key={label}>
-            <td className="text-black font-bold">{label}</td>
-            <td className="text-blue-600 font-bold">{value}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+      ))}
+    </tbody>
+  </table>
+);
 
 const Page = () => {
   const [selectedSession, setSelectedSession] = useState("morning");
@@ -57,26 +59,47 @@ const Page = () => {
   const [error, setError] = useState("");
   const [users, setUsers] = useState([]);
   const [owners, getOwners] = useState([]);
-  const [ownerName, setOwnerName] = useState('');
+  const [ownerName, setOwnerName] = useState("");
   const [rates, setRates] = useState({});
   const [buffaloConstants, setBuffaloConstants] = useState({});
   const [cowConstants, setCowConstants] = useState({});
   //
-  const [selectedUserId, setSelectedUserId] = useState(''); // Selected user ID
+  const [selectedUserId, setSelectedUserId] = useState(""); // Selected user ID
   const [lastRecord, setLastRecord] = useState(null); // Latest milk record
-  const [fat, setFat] = useState(''); // State for fat input
-  const [snf, setSnf] = useState(''); // State for SNF input
+  const [fat, setFat] = useState(""); // State for fat input
+  const [snf, setSnf] = useState(""); // State for SNF input
   const [autoFill, setAutoFill] = useState(false); // State for radio button
+  const [activeComponent, setActiveComponent] = useState(null);
+  const [defaultSNF, setDefaultSNF] = useState(null);
+  const [useDefault, setUseDefault] = useState(false); // State for checkbox
 
-
-//
+  //
   const [susers, setSUsers] = useState([]); // Initialize users as an empty array
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
 
-
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [popupContent, setPopupContent] = useState(null);
+
+  const fetchDefaultSNF = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await axios.get("/api/milk/GetDefaultSNF");
+      setDefaultSNF(response.data.data);
+    } catch (error) {
+      setError("Failed to fetch default SNF");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch default SNF on component mount
+  useEffect(() => {
+    fetchDefaultSNF();
+  }, []);
+
+
 
   const openPopup = (content) => {
     setPopupContent(content);
@@ -121,7 +144,7 @@ const Page = () => {
         }
       } catch (error) {
         console.error("Error fetching users:", error);
-                toast.error("सर्वर डाउन आहे ");
+        toast.error("सर्वर डाउन आहे ");
         setSUsers([]); // Fallback to an empty array in case of error
       } finally {
         setIsLoading(false); // Loading complete
@@ -136,11 +159,13 @@ const Page = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-//
+
+
+  //
   useEffect(() => {
     const fetchOwnerName = async () => {
       try {
-        const response = await fetch('/api/owner/OwnerName'); // Call your API route
+        const response = await fetch("/api/owner/OwnerName"); // Call your API route
         const data = await response.json();
 
         if (response.ok) {
@@ -245,7 +270,6 @@ const Page = () => {
         const res = await axios.get("/api/user/getUserList");
         setUsers(res.data.data);
         console.log(res.data.data);
-        
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
         toast.error("सर्वर डाउन आहे ");
@@ -263,21 +287,22 @@ const Page = () => {
     setCurrentTime(formattedTime);
   }, []);
 
+  // Handle user selection by register number
+  const handleUserChange = (event) => {
+    const selectedRegisterNo = event.target.value;
+    setSelectedOption(selectedRegisterNo);
 
-    // Handle user selection by register number
-    const handleUserChange = (event) => {
-      const selectedRegisterNo = event.target.value;
-      setSelectedOption(selectedRegisterNo);
-  
-      const user = users.find((user) => user.registerNo === parseInt(selectedRegisterNo, 10));
-      setSelectedUser(user); // Update selected user based on register number
-      setLastRecord(null); // Reset last record to trigger fetch
-      setError(null); // Reset error state
-      if (!autoFill) {
-        setFat(''); // Reset fat only if auto-fill is not selected
-        setSnf(''); // Reset SNF only if auto-fill is not selected
-      }
-    };
+    const user = users.find(
+      (user) => user.registerNo === parseInt(selectedRegisterNo, 10)
+    );
+    setSelectedUser(user); // Update selected user based on register number
+    setLastRecord(null); // Reset last record to trigger fetch
+    setError(null); // Reset error state
+    if (!autoFill) {
+      setFat(""); // Reset fat only if auto-fill is not selected
+      setSnf(""); // Reset SNF only if auto-fill is not selected
+    }
+  };
 
   const handleMilkChange = (event) => {
     const selectedMilkType = event.target.value;
@@ -333,15 +358,18 @@ const Page = () => {
   useEffect(() => {
     const fetchRates = async () => {
       try {
-        const response = await axios.get('/api/milkrate/getRates');
+        const response = await axios.get("/api/milkrate/getRates");
         // Assuming the response.data.data is an array
-        if (Array.isArray(response.data.data) && response.data.data.length > 0) {
+        if (
+          Array.isArray(response.data.data) &&
+          response.data.data.length > 0
+        ) {
           // Set the first element of the array as rates
           setRates(response.data.data[0]); // Take the first rate object
         } else {
           console.log("No rates found.");
         }
-        
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching rates:", error.message);
@@ -350,10 +378,10 @@ const Page = () => {
         setLoading(false);
       }
     };
-  
+
     fetchRates();
   }, []);
-  
+
   useEffect(() => {
     if (rates && Object.keys(rates).length > 0) {
       // Set buffalo and cow constants whenever rates are updated
@@ -385,33 +413,98 @@ const Page = () => {
     }
   }, [rates]);
 
-  const calculateValues = (X, constants) => {
-    const { HF, R1, LF, R2 } = constants;
+  const calculateValuesCow = (X, cowConstants) => {
+    const { HF, R1, LF, R2 } = cowConstants;
     const R = (R1 - R2) / (HF - LF); // Calculate R
-    const FR = R1 - (HF - X) * R; // Calculate FR
+    console.log("R", R);
+    let FR = 0;
+    if(X < HF){
+       FR = (R1 - (HF - X) * R); // 30.90
+    } else {
+       FR = (R1 - (HF - HF) * R); // 30.90
+    }
+     // Calculate FR
     return FR; // Return the calculated fat rate
   };
 
-  const calculateTotalRate = (X, Y) => {
-    // Determine whether it's buffalo or cow milk
-    const constants = X >= 5.5 ? buffaloConstants : cowConstants;
+  const calculateValuesBuff = (X, BuffaloConstants) => {
+    const { HF, R1, LF, R2 } = BuffaloConstants;
+    const R = (R1 - R2) / (HF - LF); // Calculate R
+    console.log("R", R);
+    let FR = 0;
+    if(X < HF){
+       FR = (R1 - (HF - X) * R); // 30.90
+    } else {
+       FR = (R1 - (HF - HF) * R); // 30.90
+    }
+     // Calculate FR
+    return FR; // Return the calculated fat rate
+  };
 
-    const FR = calculateValues(X, constants); // Calculate the fat rate based on selected constants
+  const calculateTotalRateCow = (X, Y) => {
+ 
+    const FR = calculateValuesCow(X, cowConstants); // Calculate the fat rate based on selected constants
     let TFR = FR; // Initialize total rate to Fat Rate (FR)
 
     // Loop through the SNF ranges to calculate the total rate
-    constants.SNF_RANGES.forEach((range) => {
+    cowConstants.SNF_RANGES.forEach((range) => {
       if (Y >= range.start && Y <= range.end) {
         const SNFRate = 10 * (Y - range.start) * range.rate; // Calculate SNF rate for the range
         TFR += SNFRate; // Add SNF rate to total rate
+        
       } else if (Y > range.end) {
-        const SNFRate = 10 * (range.end - range.start) * range.rate; // Calculate full SNF rate for the range
+        const SNFRate = 10 * (range.end - range.start) * range.rate; // Calculate full SNF rate for the range        
         TFR += SNFRate; // Add SNF rate to total rate
+        console.log("TFR",TFR);
+        
       }
     });
 
     return TFR; // Return the calculated total rate
   };
+
+  const calculateTotalRateBuff = (X, Y) => {
+ 
+    const FR = calculateValuesBuff(X, buffaloConstants); // Calculate the fat rate based on selected constants
+    let TFR = FR; // Initialize total rate to Fat Rate (FR)
+
+    // Loop through the SNF ranges to calculate the total rate
+    buffaloConstants.SNF_RANGES.forEach((range) => {
+      if (Y >= range.start && Y <= range.end) {
+        const SNFRate = 10 * (Y - range.start) * range.rate; // Calculate SNF rate for the range
+        TFR += SNFRate; // Add SNF rate to total rate
+        
+      } else if (Y > range.end) {
+        const SNFRate = 10 * (range.end - range.start) * range.rate; // Calculate full SNF rate for the range        
+        TFR += SNFRate; // Add SNF rate to total rate
+        console.log("TFR",TFR);
+        
+      }
+    });
+
+    return TFR; // Return the calculated total rate
+  };
+
+  // const calculateTotalRate = (X, Y) => {
+  //   // Determine whether it's buffalo or cow milk
+  //   const constants = X >= 5.5 ? buffaloConstants : cowConstants;
+
+  //   const FR = calculateValues(X, constants); // Calculate the fat rate based on selected constants
+  //   let TFR = FR; // Initialize total rate to Fat Rate (FR)
+
+  //   // Loop through the SNF ranges to calculate the total rate
+  //   constants.SNF_RANGES.forEach((range) => {
+  //     if (Y >= range.start && Y <= range.end) {
+  //       const SNFRate = 10 * (Y - range.start) * range.rate; // Calculate SNF rate for the range
+  //       TFR += SNFRate; // Add SNF rate to total rate
+  //     } else if (Y > range.end) {
+  //       const SNFRate = 10 * (range.end - range.start) * range.rate; // Calculate full SNF rate for the range
+  //       TFR += SNFRate; // Add SNF rate to total rate
+  //     }
+  //   });
+
+  //   return TFR; // Return the calculated total rate
+  // };
 
   const calculateRates = () => {
     const fatInput = parseFloat(inputRefs.current[2]?.value || "0");
@@ -423,84 +516,136 @@ const Page = () => {
       return;
     }
 
-    const rate = calculateTotalRate(fatInput, snfInput);
+    console.log("fat",fatInput);
+    
+
+    let rate = 0; // Default to 0 to avoid undefined errors
+
+    // let HFHSRate = HF
+
+    if (selectedMilk === "गाय ") {
+      rate = parseFloat(calculateTotalRateCow(fatInput, snfInput)) || 0;
+    } else {
+      rate = parseFloat(calculateTotalRateBuff(fatInput, snfInput)) || 0;
+    }
+
+   
+
     const amount = liter * rate;
 
     inputRefs.current[4].value = rate.toFixed(2); // Set calculated rate
     inputRefs.current[5].value = amount.toFixed(2); // Set calculated amount
-  };
+};
 
-  const clearForm = () => {
-    setselectedMilk("");
-    setSelectedUser("");
-    setSelectedOption(""); // Reset the user selection
-    setFat(""); // Reset the fat input
-    setSnf(""); // Reset the SNF input
-    setCurrentDate(new Date().toISOString().split("T")[0]); // Reset the date to today
-    inputRefs.current.forEach((input) => {
-      if (input) {
-        input.value = ""; // Clear all input fields
+
+const clearForm = (shouldClear = true, hasPreviousData = false) => {
+  if (!shouldClear) return; // Prevent clearing if shouldClear is false
+
+  // ✅ Don't clear fields if previous data exists
+  if (!hasPreviousData) {
+    inputRefs.current.forEach((input, index) => {
+      if (input && index >= 1) {
+        input.value = ""; // Clear only the relevant fields
       }
     });
-  };
 
+    setFat(""); // Reset fat input
+    if (useDefault === true) {
+      setSnf(defaultSNF.snf); // Set SNF to default if useDefault is true
+    } else {
+      setSnf(""); // Otherwise, clear SNF input
+    }
+  }
+};
 
-  const handleSubmit = async () => {
-    try {
+const handleGetMilkData = async () => {
+  try {
+    if (!selectedMilk || !selectedOption) {
+      alert("Please select a user and milk type before fetching data");
+      return;
+    }
 
-      if (!selectedMilk) {
-        alert("Please select a milk type before submitting");
-        return;
+    const queryParams = new URLSearchParams({
+      registerNo: selectedOption,
+      session: currentTime,
+      milk: selectedMilk,
+      date: currentDate,
+    }).toString();
+
+    const redisRes = await axios.get(`/api/milk/GetMilkvalue?${queryParams}`);
+    if (redisRes.data.data) {
+      const milkRecord = redisRes.data.data;
+      toast.success("दूध डेटा प्राप्त किया गया है");
+
+      inputRefs.current[1].value = milkRecord.liter;
+      inputRefs.current[2].value = milkRecord.fat;
+      inputRefs.current[3].value = milkRecord.snf;
+      inputRefs.current[4].value = milkRecord.dar;
+      inputRefs.current[5].value = milkRecord.rakkam;
+    } else {
+      toast.info("No milk data found, please submit");
+    }
+  } catch (error) {
+    toast.error("Error fetching milk data:", error.message);
+  }
+};
+
+const handleSubmit = async () => {
+  try {
+    if (!selectedMilk) {
+      alert("Please select a milk type before submitting");
+      return;
+    }
+
+    const liter = parseFloat(inputRefs.current[1]?.value || "0");
+    const fat = parseFloat(inputRefs.current[2]?.value || "0");
+    const snf = parseFloat(inputRefs.current[3]?.value || "0");
+    const dar = parseFloat(inputRefs.current[4]?.value || "0");
+    const rakkam = parseFloat(inputRefs.current[5]?.value || "0");
+
+    if (isNaN(liter) || isNaN(fat) || isNaN(snf) || isNaN(dar) || isNaN(rakkam)) {
+      alert("Please enter valid numbers before submitting");
+      return;
+    }
+
+    const payload = {
+      registerNo: selectedOption,
+      session: currentTime,
+      milk: selectedMilk,
+      liter,
+      fat,
+      snf,
+      dar,
+      rakkam,
+      date: currentDate,
+    };
+
+    const res = await axios.post("/api/milk/createMilk", payload);
+    toast.success(res.data.message);
+
+    if (res.data.alert) {
+      // ✅ If milk record exists, update input fields and prevent clearing
+      toast.success(res.data.alert);
+      if (res.data.data) {
+        const milkRecord = res.data.data;
+        inputRefs.current[1].value = milkRecord.liter;
+        inputRefs.current[2].value = milkRecord.fat;
+        inputRefs.current[3].value = milkRecord.snf;
+        inputRefs.current[4].value = milkRecord.dar;
+        inputRefs.current[5].value = milkRecord.rakkam;
       }
-
-      const liter = parseFloat(inputRefs.current[1]?.value || "0");
-      const fat = parseFloat(inputRefs.current[2]?.value || "0");
-      const snf = parseFloat(inputRefs.current[3]?.value || "0");
-      const dar = parseFloat(inputRefs.current[4]?.value || "0");
-      const rakkam = parseFloat(inputRefs.current[5]?.value || "0");
-
-      if (
-        isNaN(liter) ||
-        isNaN(fat) ||
-        isNaN(snf) ||
-        isNaN(dar) ||
-        isNaN(rakkam)
-      ) {
-        alert("Please enter valid numbers before submitting");
-        return;
-      }
-
-      const payload = {
-        registerNo: selectedOption, // User register number
-        session: currentTime, // Session (morning/evening)
-        milk: selectedMilk, // Use selectedMilk for the milk type
-        liter, // Amount in liters
-        fat, // Fat percentage
-        snf, // SNF percentage
-        dar, // Rate per liter
-        rakkam, // Total amount (rakkam)
-        date: currentDate, // Date of the milk entry
-      };
-      const res = await axios.post("/api/milk/createMilk", payload);
-
-      if (res.data.alert) {
-        alert(res.data.alert); // Display the alert message if record exists
-      } else {
-        console.log(res.data.message);
-      }
-
-      // clear form information after successful submission
-      
-
+    } else {
+      // ✅ Only clear form if no previous record exists
       setTimeout(() => {
-        clearForm();
+        clearForm(true, res.data.alert); // Pass hasPreviousData flag
         input1Ref.current.focus();
       }, 1000);
-    } catch (error) {
-      console.error("Error storing milk information:", error.message);
-      toast.error("सर्वर डाउन आहे ");
     }
-  };
+  } catch (error) {
+    toast.error("Error storing milk information:", error.message);
+  }
+};
+
 
   const handleUpdate = async () => {
     try {
@@ -552,7 +697,9 @@ const Page = () => {
       if (!selectedUser) return; // Don't fetch if no user is selected
 
       try {
-        const res = await axios.get(`/api/milk/latest?userId=${selectedUser._id}`);
+        const res = await axios.get(
+          `/api/milk/latest?userId=${selectedUser._id}`
+        );
         if (!res.data.error) {
           setLastRecord(res.data.data); // Set last record
           setError(null); // Reset error state
@@ -574,270 +721,352 @@ const Page = () => {
 
   // Handle radio button change
   const handleAutoFillChange = (event) => {
-    const isChecked = event.target.checked; // Get checked state
-    setAutoFill(isChecked); // Update auto-fill state
+    const isChecked = event.target.checked;
+    setAutoFill(isChecked);
+
+    // If "Previous" checkbox is checked, clear the "Fix SNF" checkbox
+    if (isChecked) {
+      setUseDefault(false);
+    }
+
     if (isChecked && lastRecord) {
-      setFat(lastRecord.fat); // Set fat from last record
-      setSnf(lastRecord.snf); // Set SNF from last record
+      setFat(lastRecord.fat); // Autofill fat from last record
+      setSnf(lastRecord.snf); // Autofill SNF from last record
+    } else {
+      setFat(""); // Clear fat field if checkbox is unchecked
+      setSnf(""); // Clear SNF field if checkbox is unchecked
     }
   };
+
+  // Handle "Fix SNF" checkbox change
+  const handleCheckboxChange = () => {
+    const isChecked = !useDefault;
+    setUseDefault(isChecked);
+
+    // If "Fix SNF" checkbox is checked, clear the "Previous" checkbox
+    if (isChecked) {
+      setAutoFill(false);
+    }
+
+    if (isChecked && defaultSNF) {
+      setSnf(defaultSNF.snf); // Autofill SNF input with default value
+    } else {
+      setSnf(""); // Clear SNF input if checkbox is unchecked
+    }
+  };
+
 
   // Handle manual input changes
   const handleFatChange = (event) => setFat(event.target.value);
   const handleSnfChange = (event) => setSnf(event.target.value);
 
-
-
   return (
     <>
-    <div className="bg-blue-300 sm:bg-gray-500 w-4/4 sm:w-7/12 mx-auto h-auto py-4 px-3 rounded-lg">
-    <div className="flex flex-row bg-slate-300 mb-4 rounded-lg">
-    <h1 className="text-xl mr-12 -mt-2">
-                <Image
-                  src="/milkhub-192.png"
-                  alt="Background Image"
-                  width={50}
-                  height={10}
-                />
-                </h1>
-    <h1 className="text-xl text-white font-semibold relative z-10">
-          <span className="z-1 text-blue-500">
-            {ownerName || 'Guest'}
-          </span>
-          <span className="absolute inset-0 text-white opacity-20 blur-sm">
-            {ownerName || 'Guest'}
-          </span>
-        </h1>
+      <div className="bg-blue-300 sm:bg-gray-500 w-4/4 sm:w-7/12 mx-auto h-auto py-4 px-3 rounded-lg">
+        <div className="flex flex-row bg-slate-300 mb-4 rounded-lg">
+          <h1 className="text-xl mr-12 -mt-2">
+            <Image
+              src="/milkhub-192.png"
+              alt="Background Image"
+              width={50}
+              height={10}
+            />
+          </h1>
+          <h1 className="text-xl text-white font-semibold relative z-10">
+            <span className="z-1 text-blue-500">{ownerName || "Guest"}</span>
+            <span className="absolute inset-0 text-white opacity-20 blur-sm">
+              {ownerName || "Guest"}
+            </span>
+          </h1>
         </div>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        {/* Date Selection */}
-        <div className="flex items-center">
-          <input
-            type="date"
-            value={currentDate}
-            onChange={(e) => setCurrentDate(e.target.value)}
-            max={new Date().toISOString().split("T")[0]} // Restrict future dates
-            className="border rounded-md p-1 text-gray-700 text-sm w-1/3 sm:w-auto"
-          />
-          <select
-            className="border rounded-md p-1 ml-2 text-gray-700 text-sm w-1/4 sm:w-auto"
-            value={currentTime}
-            onChange={(e) => setCurrentTime(e.target.value)}
-          >
-            <option value="morning">Morning</option>
-            <option value="evening">Evening</option>
-          </select>
-          <input
-            type="radio"
-            id="previousTitle"
-            name="session"
-            checked={autoFill}
-            onChange={handleAutoFillChange}
-            className="ml-2 h-3 w-3"
-          />
-          <label>मागील</label>
-        </div>
-      </div>
-      <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto">
-        <input
-          type="text"
-          id="code"
-          className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
-          placeholder="Input 1"
-          value={selectedOption}
-          onChange={(e) => setSelectedOption(e.target.value)}
-          onBlur={handleRegisterNoBlur}
-          onFocus={handleRegisterNoFocus}
-          ref={input1Ref}
-          onKeyPress={(e) => handleKeyPress(e, 0)}
-        />
-        <select
-          type="text"
-          className="border rounded-md p-1 text-gray-700 text-sm w-1/2"
-          placeholder="Input 2"
-          id="dropdown"
-          value={selectedOption}
-          onChange={handleUserChange}
-          onKeyPress={(e) => handleKeyPress(e, 1)}
-        >
-          <option value="">Choose...</option>
-          {users.map((user) => (
-            <option key={user.registerNo} value={user.registerNo}>
-              {user.name}
-            </option>
-          ))}
-        </select>
-        <select
-          type="text"
-          className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
-          placeholder="Input 3"
-          id="dropdown"
-          value={selectedMilk}
-          onChange={(e) => {
-            console.log("Milk type selected:", e.target.value); // Log to confirm selection
-            setselectedMilk(e.target.value); // Ensure this updates correctly
-          }}
-          onKeyPress={(e) => handleKeyPress(e, 2)}
-        >
-          <option value="">Milk Type</option>
-          {users.map((user) => (
-            <option key={user.registerNo} value={user.milk}>
-              {user.milk}
-            </option>
-          ))}
-        </select>
-      </div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* Date Selection */}
+          <div className="ml-4 rounded-lg flex flex-row">
+                    <label className="flex items-center cursor-pointer space-x-2">
+                      <span className="relative">
+                        <input
+                          type="checkbox"
+                          className="sr-only peer"
+                          checked={autoFill}
+                          onChange={handleAutoFillChange}
+                        />
+                        <div className="w-10 h-6 bg-gray-300 rounded-full peer-focus:ring-2 peer-focus:ring-blue-500 peer-checked:bg-blue-800 transition-all"></div>
+                        <div className="w-4 h-4 bg-white rounded-full shadow-md transform peer-checked:translate-x-4 transition-all absolute top-1 left-1"></div>
+                      </span>
+                      <span className="text-white bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 bg-blue-400 border rounded-md p-1 text-sm">
+                        मागील
+                      </span>
+                    </label>
 
-      <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto">
-        <input
-        className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
-                      placeholder="लिटर"
-                      ref={(ref) => (inputRefs.current[1] = ref)}
-                      onKeyPress={(e) => handleKeyPress(e, 1)}
-        />
-        <input
-          type="text"
-          className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
-          placeholder="फॅट"
-                      onChange={handleFatChange}
-                      value={fat}
-                      ref={(ref) => (inputRefs.current[2] = ref)}
-                      onKeyPress={(e) => handleKeyPress(e, 2)}
-        />
-        <input
-          type="text"
-          className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
-          placeholder="SNF"
-                      onChange={handleSnfChange}
-                      value={snf}
-                      ref={(ref) => (inputRefs.current[3] = ref)}
-                      onKeyPress={(e) => handleKeyPress(e, 5)}
-        />
-        <input
-          type="text"
-          className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
-          placeholder="दर"
-                      ref={(ref) => (inputRefs.current[4] = ref)}
-                      readOnly
-        />
-        <input
-          type="text"
-          className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
-          placeholder="रक्कम"
-                      ref={(ref) => (inputRefs.current[5] = ref)}
-                      onKeyPress={(e) => handleKeyPress(e, 0)}
-                      readOnly
-        />
-      </div>
-      <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto">
-        <button
-          type="text"
-          className="bg-green-400 border rounded-md p-1 text-gray-700 text-sm w-1/2"
-          onClick={calculateRates}
+                    {/* "Fix SNF" checkbox */}
+                    <label className="flex ml-4 items-center cursor-pointer space-x-2">
+                      <span className="relative">
+                        <input
+                          type="checkbox"
+                          className="sr-only peer"
+                          checked={useDefault}
+                          onChange={handleCheckboxChange}
+                        />
+                        <div className="w-10 h-6 bg-gray-300 rounded-full peer-focus:ring-2 peer-focus:ring-blue-500 peer-checked:bg-blue-800 transition-all"></div>
+                        <div className="w-4 h-4 bg-white rounded-full shadow-md transform peer-checked:translate-x-4 transition-all absolute top-1 left-1"></div>
+                      </span>
+                      <span className="text-white bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 bg-blue-400 border rounded-md p-1 text-sm">
+                        फिक्स
+                      </span>
+                    </label>
+                    <button
+          className="text-white py-1 px-3 rounded text-sm hover:bg-gray-800 hover:text-white transition duration-300 border-b-2 hover:border-b-2 hover:border-blue-500 border-gray-300"
+          onClick={handlePageRefresh}
         >
-          {" "}
-          दर व रक्कम{" "}
+          <i className="fas fa-sync-alt"></i> {/* Font Awesome Refresh Icon */}
         </button>
-        <button
-          type="text"
-          className="bg-blue-400 border rounded-md p-1 text-gray-700 text-sm w-1/5"
-          onClick={handleSubmit}
-        >
-          {" "}
-          सबमिट
-        </button>
-        <button
-          type="text"
-          className="bg-red-400 border rounded-md p-1 text-gray-700 text-sm w-1/5"
-          onClick={handleUpdate}
-        >
-          {" "}
-          अपडेट{" "}
-        </button>
-      </div>
-      <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto">
-        <button
-          type="button"
-          className="bg-blue-400 border rounded-md p-1 text-gray-700 text-sm w-1/5"
-          onClick={() => openPopup(renderDetailsTable(cowDetails))}
-        >
-          गाय
-        </button>
-        <button
-          type="button"
-          className="bg-red-400 border rounded-md p-1 text-gray-700 text-sm w-1/5"
-          onClick={() => openPopup(renderDetailsTable(buffaloDetails))}
-        >
-          म्हैस
-        </button>
-      </div>
-
-      {isPopupOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-6 shadow-lg">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Milk Details</h2>
-            {popupContent}
-            <button
-              type="button"
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-4"
-              onClick={closePopup}
+                    </div>
+          <div className="flex flex-row">
+            <input
+              type="date"
+              value={currentDate}
+              onChange={(e) => setCurrentDate(e.target.value)}
+              max={new Date().toISOString().split("T")[0]} // Restrict future dates
+              className="border rounded-md p-1 text-gray-700 text-sm w-1/3 sm:w-auto"
+            />
+            <select
+              className="border rounded-md p-1 ml-2 text-gray-700 text-sm w-1/4 sm:w-auto"
+              value={currentTime}
+              onChange={(e) => setCurrentTime(e.target.value)}
             >
-              Close
-            </button>
+              <option value="morning">Morning</option>
+              <option value="evening">Evening</option>
+            </select>
+            <Calculator />
           </div>
         </div>
-      )}
+        <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto">
+          <input
+            type="number"
+            inputMode="numeric"
+            id="code"
+            className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
+            placeholder="Input 1"
+            value={selectedOption}
+            onChange={(e) => setSelectedOption(e.target.value)}
+            onBlur={handleRegisterNoBlur}
+            onFocus={handleRegisterNoFocus}
+            ref={input1Ref}
+            onKeyPress={(e) => handleKeyPress(e, 0)}
+          />
+          <select
+            type="text"
+            className="border rounded-md p-1 text-gray-700 text-sm w-1/2"
+            placeholder="Input 2"
+            id="dropdown"
+            value={selectedOption}
+            onChange={handleUserChange}
+            onKeyPress={(e) => handleKeyPress(e, 1)}
+          >
+            <option value="">Choose...</option>
+            {users.map((user) => (
+              <option key={user.registerNo} value={user.registerNo}>
+                {user.name}
+              </option>
+            ))}
+          </select>
+          <select
+            type="text"
+            className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
+            placeholder="Input 3"
+            id="dropdown"
+            value={selectedMilk}
+            onChange={(e) => {
+              console.log("Milk type selected:", e.target.value); // Log to confirm selection
+              setselectedMilk(e.target.value); // Ensure this updates correctly
+            }}
+            onKeyPress={(e) => handleKeyPress(e, 2)}
+          >
+            <option value="">Milk Type</option>
+            {users.map((user) => (
+              <option key={user.registerNo} value={user.milk}>
+                {user.milk}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <button
-  onClick={toggleModal}
-  type="button"
-  className="bg-green-400 border rounded-md p-1 text-gray-700 text-sm w-1/2 mt-4"
->
-  न आलेले उत्पादक
-</button>
-            <button
-              className="text-white py-1 px-3 rounded text-sm hover:bg-gray-800 hover:text-white transition duration-300 border-b-2 hover:border-b-2 hover:border-blue-500 border-gray-300"
-              onClick={handlePageRefresh}
-            >
-              <i className="fas fa-sync-alt"></i> {/* Font Awesome Refresh Icon */}
-            </button>
+        <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto">
+          <input
+            className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
+            placeholder="लिटर"
+            type="number"
+            inputMode="numeric"
+            ref={(ref) => (inputRefs.current[1] = ref)}
+            onKeyPress={(e) => handleKeyPress(e, 1)}
+          />
+          <input
+            type="number"
+            inputMode="numeric"
+            className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
+            placeholder="फॅट"
+            onChange={handleFatChange}
+            value={fat}
+            ref={(ref) => (inputRefs.current[2] = ref)}
+            onKeyPress={(e) => handleKeyPress(e, 2)}
+          />
+          <input
+            type="number"
+            inputMode="numeric"
+            className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
+            placeholder="SNF"
+            onChange={handleSnfChange}
+            value={snf}
+            ref={(ref) => (inputRefs.current[3] = ref)}
+            onKeyPress={(e) => handleKeyPress(e, 5)}
+          />
+          <input
+            type="text"
+            className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
+            placeholder="दर"
+            ref={(ref) => (inputRefs.current[4] = ref)}
+            readOnly
+          />
+          <input
+            type="text"
+            className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
+            placeholder="रक्कम"
+            ref={(ref) => (inputRefs.current[5] = ref)}
+            onKeyPress={(e) => handleKeyPress(e, 0)}
+            readOnly
+          />
+        </div>
+        <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto">
+          <button
+            type="text"
+            className="bg-green-400 border rounded-md p-1 text-gray-700 text-sm w-1/2"
+            onClick={calculateRates}
+          >
+            {" "}
+            दर व रक्कम{" "}
+          </button>
+          <button
+            type="text"
+            className="bg-blue-400 border rounded-md p-1 text-gray-700 text-sm w-1/5"
+            onClick={handleSubmit}
+          >
+            {" "}
+            सबमिट
+          </button>
+          <button
+            onClick={handleGetMilkData}
+            className="bg-blue-400 border rounded-md p-1 text-gray-700 text-sm w-1/5"
+          >
+            Check
+          </button>
+          <button
+            type="text"
+            className="bg-red-400 border rounded-md p-1 text-gray-700 text-sm w-1/5"
+            onClick={handleUpdate}
+          >
+            {" "}
+            अपडेट{" "}
+          </button>
+        </div>
+        <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto">
+          <button
+            type="button"
+            className="bg-blue-400 border rounded-md p-1 text-gray-700 text-sm w-1/5"
+            onClick={() => openPopup(renderDetailsTable(cowDetails))}
+          >
+            गाय
+          </button>
+          <button
+            type="button"
+            className="bg-red-400 border rounded-md p-1 text-gray-700 text-sm w-1/5"
+            onClick={() => openPopup(renderDetailsTable(buffaloDetails))}
+          >
+            म्हैस
+          </button>
+        </div>
 
-{isModalOpen && (
-  <div className="text-black fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-10 rounded-md px-4">
-    <div className="bg-white text-black p-6 rounded-lg shadow-lg w-full max-w-2xl relative max-h-[80vh] overflow-y-auto">
-      <h2 className="text-xl text-black font-semibold mb-4 text-center">
-        न आलेले उत्पादक
-      </h2>
-      {/* Cross button */}
-      <button
-        onClick={toggleModal}
-        className="text-black absolute top-2 right-2 hover:text-black text-2xl font-bold"
-      >
-        &times;
-      </button>
+        {isPopupOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+            <div className="bg-white rounded-lg p-6 shadow-lg">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                Milk Details
+              </h2>
+              {popupContent}
+              <button
+                type="button"
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-4"
+                onClick={closePopup}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
 
-      <table className="table-auto w-full border-collapse text-black">
-        <thead>
-          <tr className="bg-gray-400">
-            <th className="border-b px-2 py-2 text-left text-black">रजीस्टर नं</th>
-            <th className="border-b px-2 py-2 text-left text-black">उत्पादकाचे नाव</th>
-          </tr>
-        </thead>
-        <tbody>
-          {susers.map((user) => (
-            <tr key={user._id}>
-              <td className="border-b px-2 py-2 text-black">{user.registerNo}</td>
-              <td className="border-b px-2 py-2 text-black">{user.name}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </div>
-)}
+        <button
+          onClick={toggleModal}
+          type="button"
+          className="bg-green-400 border rounded-md p-1 text-gray-700 text-sm w-1/2 mt-4 mb-2"
+        >
+          न आलेले उत्पादक
+        </button>
+        <Link href="/home/SessionMilk">
+                      <button
+                          className="w-24 md:w-36 py-2 ml-4 bg-green-400 border rounded-md p-1 text-gray-700 text-sm mt-4 mb-2"
+                          value={currentTime}
+                      >
+                          {currentTime === "morning" ? (
+                              <span>सकाळचे दूध</span>
+                          ) : (
+                              <span>संध्याकाळचे दूध</span>
+                          )}
+                      </button>
+                  </Link>
 
 
-    </div>
+        {isModalOpen && (
+          <div className="text-black fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-10 rounded-md px-4">
+            <div className="bg-white text-black p-6 rounded-lg shadow-lg w-full max-w-2xl relative max-h-[80vh] overflow-y-auto">
+              <h2 className="text-xl text-black font-semibold mb-4 text-center">
+                न आलेले उत्पादक
+              </h2>
+              {/* Cross button */}
+              <button
+                onClick={toggleModal}
+                className="text-black absolute top-2 right-2 hover:text-black text-2xl font-bold"
+              >
+                &times;
+              </button>
+
+              <table className="table-auto w-full border-collapse text-black">
+                <thead>
+                  <tr className="bg-gray-400">
+                    <th className="border-b px-2 py-2 text-left text-black">
+                      रजीस्टर नं
+                    </th>
+                    <th className="border-b px-2 py-2 text-left text-black">
+                      उत्पादकाचे नाव
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {susers.map((user) => (
+                    <tr key={user._id}>
+                      <td className="border-b px-2 py-2 text-black">
+                        {user.registerNo}
+                      </td>
+                      <td className="border-b px-2 py-2 text-black">
+                        {user.name}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+        <ToastContainer />
+      </div>
     </>
   );
 };

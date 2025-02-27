@@ -21,9 +21,6 @@ export async function GET(request, {params}) {
         $lte: endDate
       }
     }).populate('createdBy', 'registerNo name');
-
-    console.log(milkRecords);
-
     return NextResponse.json({
       message: "Milk records fetched successfully",
       data: milkRecords,

@@ -78,89 +78,118 @@ const OwnerMilkRecords = () => {
 
     return (
         <>
-            <h2 className="text-xl font-semibold mb-4">सर्व उत्पादक दूध विवरण</h2>
+<h2 className="text-xl font-semibold mb-4 text-center">सर्व उत्पादक दूध विवरण</h2>
 
-            <div className="mb-4">
-                <label className="mr-2">सुरवातिची दिनांक</label>
-                <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="border p-2 rounded text-black" />
-                <label className="ml-4 mr-2">शेवटची दिनांक</label>
-                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="border p-2 rounded text-black" />
-                <button onClick={fetchMilkRecords} className="ml-4 bg-blue-500 text-white px-4 py-2 rounded">पहा</button>
-            </div>
+<div className="mb-4 flex flex-col md:flex-row md:items-center gap-4">
+    <div className="flex flex-col md:flex-row md:items-center w-full">
+        <label className="text-sm md:mr-2">सुरवातिची दिनांक</label>
+        <input 
+            type="date" 
+            value={startDate} 
+            onChange={(e) => setStartDate(e.target.value)} 
+            className="border p-2 rounded text-black w-full md:w-auto"
+        />
+    </div>
 
-            {loading && <p>मिल्क रिकॉर्ड लोड होत आहे ...</p>}
-            {error && <p className="text-red-500">{error}</p>}
+    <div className="flex flex-col md:flex-row md:items-center w-full">
+        <label className="text-sm md:ml-4 md:mr-2">शेवटची दिनांक</label>
+        <input 
+            type="date" 
+            value={endDate} 
+            onChange={(e) => setEndDate(e.target.value)} 
+            className="border p-2 rounded text-black w-full md:w-auto"
+        />
+    </div>
+
+    <button 
+        onClick={fetchMilkRecords} 
+        className="bg-blue-500 text-white px-4 py-2 rounded w-full md:w-auto">
+        पहा
+    </button>
+</div>
+
+{loading && <p className="text-center text-gray-600">मिल्क रिकॉर्ड लोड होत आहे ...</p>}
+{error && <p className="text-red-500 text-center">{error}</p>}
 
             <div className="w-full flex flex-col md:flex-row gap-6 p-4 bg-blue-400 text-black rounded-lg shadow-lg">
-                {["Morning", "Evening"].map((session, index) => {
-                    const records = session === "Morning" ? morningRecords : eveningRecords;
-                    const totals = calculateTotals(records);
-                    return (
-                        <div key={index} className="w-full md:w-1/2 p-4 bg-white rounded-lg shadow-md">
-                            <h3 className="text-lg font-semibold mb-3 text-center">
-                                {session === "Morning" ? "🌅 सकाळचे दूध" : "🌆 संध्याकाळचे दूध "}
-                            </h3>
-                            <table className="w-full border-collapse border border-gray-300 bg-white text-black rounded-md">
-                                <thead>
-                                    <tr className="bg-gray-200">
-                                        <th className="border p-3">तारीख </th>
-                                        <th className="border p-3">रज. न. </th>
-                                        <th className="border p-3">लिटर </th>
-                                        <th className="border p-3">फॅट </th>
-                                        <th className="border p-3">SNF</th>
-                                        <th className="border p-3">दर </th>
-                                        <th className="border p-3">टोटल रक्कम</th>
-                                        <th className="border p-3">Delete</th>
+    {["Morning", "Evening"].map((session, index) => {
+        const records = session === "Morning" ? morningRecords : eveningRecords;
+        const totals = calculateTotals(records);
+        return (
+            <div key={index} className="w-full md:w-1/2 p-4 bg-white rounded-lg shadow-md">
+                <h3 className="text-lg font-semibold mb-3 text-center">
+                    {session === "Morning" ? "🌅 सकाळचे दूध" : "🌆 संध्याकाळचे दूध "}
+                </h3>
+
+                {/* Wrap the table in an overflow container for mobile scrolling */}
+                <div className="overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-300 bg-white text-black rounded-md">
+                        <thead>
+                            <tr className="bg-gray-200">
+                                <th className="border p-2 text-xs md:p-3">तारीख</th>
+                                <th className="border p-2 text-xs md:p-3">रज. न.</th>
+                                <th className="border p-2 text-xs md:p-3">लिटर</th>
+                                <th className="border p-2 text-xs md:p-3">फॅट</th>
+                                <th className="border p-2 text-xs md:p-3">SNF</th>
+                                <th className="border p-2 text-xs md:p-3">दर</th>
+                                <th className="border p-2 text-xs md:p-3">टोटल रक्कम</th>
+                                <th className="border p-2 text-xs md:p-3">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {paginate(records).length > 0 ? (
+                                paginate(records).map((record) => (
+                                    <tr key={record._id} className="text-center border-b hover:bg-gray-100">
+                                        <td className="border p-2 text-xs md:p-3">{new Date(record.date).toLocaleDateString()}</td>
+                                        <td className="border p-2 text-xs md:p-3">{record.registerNo}</td>
+                                        <td className="border p-2 text-xs md:p-3">{record.liter}</td>
+                                        <td className="border p-2 text-xs md:p-3">{record.fat || 'N/A'}</td>
+                                        <td className="border p-2 text-xs md:p-3">{record.snf || 'N/A'}</td>
+                                        <td className="border p-2 text-xs md:p-3">{(record.dar || 0).toFixed(2)}</td>
+                                        <td className="border p-2 text-xs md:p-3">{(record.rakkam || 0).toFixed(2)}</td>
+                                        <td className="border p-2 text-xs md:p-3">
+                                            <button
+                                                onClick={() => handleDelete(record._id)}
+                                                className="bg-red-500 text-white px-3 py-1 rounded text-xs md:text-sm"
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {paginate(records).length > 0 ? (
-                                        paginate(records).map((record) => (
-                                            <tr key={record._id} className="text-center border-b hover:bg-gray-100">
-                                                <td className="border p-3">{new Date(record.date).toLocaleDateString()}</td>
-                                                <td className="border p-3">{record.registerNo}</td>
-                                                <td className="border p-3">{record.liter}</td>
-                                                <td className="border p-3">{record.fat || 'N/A'}</td>
-                                                <td className="border p-3">{record.snf || 'N/A'}</td>
-                                                <td className="border p-3">{(record.dar || 0).toFixed(2)}</td>
-                                                <td className="border p-3">{(record.rakkam || 0).toFixed(2)}</td>
-                                                <td className="border p-3">
-                                                    <button
-                                                        onClick={() => handleDelete(record._id)}
-                                                        className="bg-red-500 text-white px-4 py-2 rounded"
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="8" className="text-center p-4"> {session.toLowerCase()} रेकॉर्ड मिळाले नाही .</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                            {totalPages(records) > 1 && (
-                                <div className="flex justify-center mt-4">
-                                    <button
-                                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                                        disabled={currentPage === 1}
-                                        className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
-                                    >
-                                        मागील 
-                                    </button>
-                                    <span className="mx-4">पान {currentPage} of {totalPages(records)}</span>
-                                    <button
-                                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages(records)))}
-                                        disabled={currentPage === totalPages(records)}
-                                        className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
-                                    >
-                                        पुढील 
-                                    </button>
-                                </div>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="8" className="text-center p-4 text-xs"> {session.toLowerCase()} रेकॉर्ड मिळाले नाही .</td>
+                                </tr>
                             )}
-                            <table className="mt-4 w-full border text-center border-collapse">
+                        </tbody>
+                    </table>
+                </div>
+
+                {totalPages(records) > 1 && (
+                    <div className="flex flex-col md:flex-row justify-center items-center mt-4 space-y-2 md:space-y-0 md:space-x-4">
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                            className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50 text-xs md:text-sm"
+                        >
+                            मागील
+                        </button>
+                        <span className="text-xs md:text-sm">पान {currentPage} of {totalPages(records)}</span>
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages(records)))}
+                            disabled={currentPage === totalPages(records)}
+                            className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50 text-xs md:text-sm"
+                        >
+                            पुढील
+                        </button>
+                    </div>
+                )}
+
+                {/* Summary Table with Responsive Layout */}
+                <div className="overflow-x-auto">
+                    <table className="mt-4 w-full border text-center border-collapse text-xs md:text-sm">
+                        <tbody>
                             <tr>
                                 <td className="border p-2 font-semibold">म्हैस लिटर</td>
                                 <td className="border p-2">{(totals.totalbuffLiter).toFixed(2)}</td>
@@ -189,11 +218,14 @@ const OwnerMilkRecords = () => {
                                 <td className="border p-2 font-semibold">सरासरी दर</td>
                                 <td className="border p-2" colSpan="3">{totals.avgRate}</td>
                             </tr>
-                            </table>
-                        </div>
-                    );
-                })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
+        );
+    })}
+</div>
+
         </>
     );
 };

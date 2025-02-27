@@ -18,6 +18,7 @@ export async function connect() {
     cached.promise = mongoose.connect(process.env.MONGO_URI, {
       serverSelectionTimeoutMS: 5000, // Fail quickly if no response
       socketTimeoutMS: 45000, // Keep connection open for 45s
+      connectTimeoutMS: 30000, // Increase timeout
     });
   }
 

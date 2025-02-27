@@ -3,15 +3,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const SavedBill = () => {
+  const [bills, setBills] = useState([]); // State to hold fetched bills
+  const [loading, setLoading] = useState(false); // State to manage loading state
+  const [error, setError] = useState(''); // State to manage error messages
+  const [startDate, setStartDate] = useState(''); // State for start date
+  const [endDate, setEndDate] = useState(''); // State for end date
+  const [filteredBills, setFilteredBills] = useState({}); // State to store filtered bills by date range
+  const [showDropdown, setShowDropdown] = useState(null); // State to manage which dropdown to show
 
-      const [bills, setBills] = useState([]); // State to hold fetched bills
-      const [loading, setLoading] = useState(false); // State to manage loading state
-      const [error, setError] = useState(''); // State to manage error messages
-      const [startDate, setStartDate] = useState(''); // State for start date
-      const [endDate, setEndDate] = useState(''); // State for end date
-      const [filteredBills, setFilteredBills] = useState({}); // State to store filtered bills by date range
-      const [showDropdown, setShowDropdown] = useState(null); // State to manage which dropdown to show
-    
       const fetchBillsByDateRange = async (start, end) => {
         setLoading(true);
         setError('');
@@ -63,6 +62,7 @@ const SavedBill = () => {
         <div className="flex justify-center items-center mt-4">
           <button
             type="submit"
+            onClick={handleButtonClick}
             className="bg-red-400 border rounded-md p-1 text-gray-700 text-sm w-1/3"
           >
             इथे क्लिक करा 
@@ -73,28 +73,31 @@ const SavedBill = () => {
       {loading && <div className="text-center text-black">Loading...</div>}
       {error && <div className="text-center text-red-500">{error}</div>}
 
-        <table className="min-w-full">
-          <thead>
-            <tr>
-              <th className="px-4 py-2 text-sm">Date</th>
-              <th className="px-4 py-2 text-sm">Time</th>
-              <th className="px-4 py-2 text-sm">Bill</th>
-              <th className="px-4 py-2 text-sm">Action</th>
-              <th className="px-4 py-2 text-sm">Action</th>
-              <th className="px-4 py-2 text-sm">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-              <tr>
-                <td className="border px-4 py-2 text-sm">bill date</td>
-                <td className="border px-4 py-2 text-sm">bill time</td>
-                <td className="border px-4 py-2 text-sm">bill bill</td>
-                <td className="border px-4 py-2 text-sm">action</td>
-                <td className="border px-4 py-2 text-sm">action</td>
-                <td className="border px-4 py-2 text-sm">action</td>
-              </tr>
-            </tbody>
-        </table>
+      <div className="overflow-auto w-full">
+  <table className="min-w-full border-collapse border border-gray-300">
+    <thead>
+      <tr className="bg-gray-100">
+        <th className="px-4 py-2 text-sm border">Date</th>
+        <th className="px-4 py-2 text-sm border">Time</th>
+        <th className="px-4 py-2 text-sm border">Bill</th>
+        <th className="px-4 py-2 text-sm border">Action</th>
+        <th className="px-4 py-2 text-sm border">Action</th>
+        <th className="px-4 py-2 text-sm border">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border px-4 py-2 text-sm">bill date</td>
+        <td className="border px-4 py-2 text-sm">bill time</td>
+        <td className="border px-4 py-2 text-sm">bill bill</td>
+        <td className="border px-4 py-2 text-sm">action</td>
+        <td className="border px-4 py-2 text-sm">action</td>
+        <td className="border px-4 py-2 text-sm">action</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
       </div>
     </div>
   )
