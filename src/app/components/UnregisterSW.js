@@ -1,12 +1,14 @@
-"use client";
+"use client"; // Must be a Client Component
+
 import { useEffect } from "react";
 
-export default function UnregisterSW() {
+export default function ServiceWorkerRegister() {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        registrations.forEach((registration) => registration.unregister());
-      });
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then((reg) => console.log("Service Worker Registered:", reg))
+        .catch((err) => console.error("Service Worker Registration Failed:", err));
     }
   }, []);
 

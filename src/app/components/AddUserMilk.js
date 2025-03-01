@@ -762,7 +762,7 @@ const handleSubmit = async () => {
 
   return (
     <>
-      <div className="bg-blue-300 sm:bg-gray-500 w-4/4 sm:w-7/12 mx-auto h-auto py-4 px-3 rounded-lg">
+      <div className=" sm:bg-gray-500 border border-gray-300 w-4/4 sm:w-7/12 mx-auto h-auto py-4 px-3 rounded-lg">
         <div className="flex flex-row bg-slate-300 mb-4 rounded-lg">
           <h1 className="text-xl mr-12 -mt-2">
             <Image
@@ -815,7 +815,7 @@ const handleSubmit = async () => {
                       </span>
                     </label>
                     <button
-          className="text-white py-1 px-3 rounded text-sm hover:bg-gray-800 hover:text-white transition duration-300 border-b-2 hover:border-b-2 hover:border-blue-500 border-gray-300"
+          className="text-white ml-4 py-1 px-3 rounded text-sm hover:bg-gray-800 hover:text-white transition duration-300 border-b-2 hover:border-b-2 hover:border-blue-500 border-gray-300"
           onClick={handlePageRefresh}
         >
           <i className="fas fa-sync-alt"></i> {/* Font Awesome Refresh Icon */}
@@ -840,7 +840,7 @@ const handleSubmit = async () => {
             <Calculator />
           </div>
         </div>
-        <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto">
+        <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto bg-blue-400 rounded-md pl-2">
           <input
             type="number"
             inputMode="numeric"
@@ -891,7 +891,7 @@ const handleSubmit = async () => {
           </select>
         </div>
 
-        <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto">
+        <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto bg-blue-400 rounded-md">
           <input
             className="border rounded-md p-1 text-gray-700 text-sm w-1/5"
             placeholder="लिटर"
@@ -1024,47 +1024,50 @@ const handleSubmit = async () => {
                   </Link>
 
 
-        {isModalOpen && (
-          <div className="text-black fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-10 rounded-md px-4">
-            <div className="bg-white text-black p-6 rounded-lg shadow-lg w-full max-w-2xl relative max-h-[80vh] overflow-y-auto">
-              <h2 className="text-xl text-black font-semibold mb-4 text-center">
-                न आलेले उत्पादक
-              </h2>
-              {/* Cross button */}
-              <button
-                onClick={toggleModal}
-                className="text-black absolute top-2 right-2 hover:text-black text-2xl font-bold"
-              >
-                &times;
-              </button>
+                  {isModalOpen && (
+                    <div className="text-black fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-10 mt-12 rounded-md">
+                      <div className="bg-white text-black p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 relative max-h-[600px] overflow-y-auto">
+                        <h2 className="text-xl text-black font-semibold mb-4">
+                          न आलेले उत्पादक{" "}
+                        </h2>
 
-              <table className="table-auto w-full border-collapse text-black">
-                <thead>
-                  <tr className="bg-gray-400">
-                    <th className="border-b px-2 py-2 text-left text-black">
-                      रजीस्टर नं
-                    </th>
-                    <th className="border-b px-2 py-2 text-left text-black">
-                      उत्पादकाचे नाव
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {susers.map((user) => (
-                    <tr key={user._id}>
-                      <td className="border-b px-2 py-2 text-black">
-                        {user.registerNo}
-                      </td>
-                      <td className="border-b px-2 py-2 text-black">
-                        {user.name}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+                        {/* Cross button */}
+                        <button
+                          onClick={toggleModal}
+                          className="text-black absolute top-2 right-2 hover:text-black text-2xl font-bold"
+                        >
+                          &times;
+                        </button>
+
+                        <table className="table-auto w-full border-collapse text-black">
+                          <thead>
+                            <tr className="bg-gray-400">
+                              <th className="border-b px-4 py-2 text-left text-black">
+                                रजीस्टर नं{" "}
+                              </th>
+                              <th className="border-b px-4 py-2 text-left text-black">
+                                उत्पादकाचे नाव{" "}
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {susers
+                              .filter(user => user.status === "active") // Only include active users
+                              .map(user => (
+                                <tr key={user._id}>
+                                  <td className="border-b px-4 py-2 text-black">
+                                    {user.registerNo}
+                                  </td>
+                                  <td className="border-b px-4 py-2 text-black">
+                                    {user.name}
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
         <ToastContainer />
       </div>
     </>

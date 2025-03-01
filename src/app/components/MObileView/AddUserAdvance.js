@@ -140,7 +140,8 @@ const AddUserAdvance = () => {
       {/* User and Milk Type Selection */}
       <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto">
         <input
-          type="text"
+          type="number"
+          inputMode="numeric"
           id="code"
           className="border rounded-md p-1 text-gray-700 text-sm w-1/6"
           placeholder="Register No"
@@ -181,7 +182,8 @@ const AddUserAdvance = () => {
       {/* Kapat and Rakkam Selection */}
       <div className="flex items-center gap-2 mt-3 flex-nowrap overflow-x-auto">
         <input
-          type="text"
+          type="number"
+          inputMode="numeric"
           id="amount"
           className="border rounded-md p-1 text-gray-700 text-sm w-1/3"
           placeholder="Rakkam"

@@ -153,7 +153,15 @@ export default function Navbar() {
 
       {/* Mobile and Desktop Components */}
       <div>
-        <div className="md:hidden gradient-bg flex flex-col min-h-screen">
+        <div className="md:hidden flex flex-col min-h-screen">
+        <video
+          autoPlay
+          loop
+          muted
+          className="w-full h-full object-cover absolute top-0 left-0 opacity-20 -z-10"
+        >
+          <source src="/assets/milk.mp4" type="video/mp4" />
+        </video>
           <AddUserMilk />
           <AddUserOrder />
           <AddUserAdvance />
