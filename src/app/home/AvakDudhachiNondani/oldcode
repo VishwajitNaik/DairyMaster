@@ -843,3 +843,18 @@
 // };
 
 // export default Page;
+
+
+// git add .
+// git commit -m "Updated feature XYZ"
+// git push origin dev
+
+// 3️⃣ Merge dev → main (Only When Ready to Deploy)
+// Once your changes are tested and ready:
+
+// sh
+// Copy
+// Edit
+// git checkout main      # Switch to the main branch
+// git merge dev         # Merge dev into main
+// git push origin main  # Push changes (Amplify will deploy now)

@@ -81,7 +81,7 @@ const Drawer = ({ isOpen, onClose }) => {
               उत्पादक भरणे
             </li>
             <li 
-            className="mb-2 flex items-center text-black hover:bg-gray-200 p-2 shadow-md rounded"
+            className="mb-2 flex items-center text-black hover:bg-gray-200 shadow-md p-2 rounded cursor-pointer"
             onClick={handleVikriOpen}
             >
               स्थानिक विक्री
