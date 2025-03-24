@@ -6,10 +6,7 @@ import User from "@/models/userModel";
 import Owner from "@/models/ownerModel";
 import { getDataFromToken } from "@/helpers/getDataFromToken";
 
-
 connect();
-
-
 // ✅ Milk Entry API
 export async function POST(request) {
   try {

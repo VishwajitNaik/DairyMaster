@@ -252,6 +252,7 @@ const SingleDairy = () => {
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fat</th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SNF</th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rate</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
@@ -265,6 +266,7 @@ const SingleDairy = () => {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{record.liter}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{record.fat}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{record.snf}</td>
+                            <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>{record.dar}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{record.rakkam}</td>
                           </tr>
                         ))}

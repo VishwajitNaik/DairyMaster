@@ -17,8 +17,15 @@ import { ToastContainer, toast as Toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link.js";
 import Calculator from '@/app/components/Calculator'
+import AddUcchal from "@/app/components/AddUcchal.js";
+import VikriMilk from "../../components/VikriMilk"
+
 
 export default function AvakDudhNond({ params }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openPopup = () => setIsOpen(true);
+  const closePopup = () => setIsOpen(false);
   const [currentDate, setCurrentDate] = useState("");
   const [currentTime, setCurrentTime] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
@@ -90,6 +97,8 @@ export default function AvakDudhNond({ params }) {
               return <Addadvance />;
           case "AddBillKapat":
               return <AddBillKapat />;
+          case "AddUcchal":
+              return <AddUcchal />;
           default:
               return <p className="text-gray-500 text-center mt-4">वरीलपैकी एका बटनवर क्लिक करा.</p>;
       }
@@ -739,6 +748,33 @@ const handleSubmit = async () => {
             >
               <i className="fas fa-sync-alt"></i> {/* Font Awesome Refresh Icon */}
             </button>
+            <div>
+      {/* Button to open popup */}
+      <button
+        onClick={openPopup}
+        className="w-full md:w-36 ml-12 py-2 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md shadow-black transition-transform duration-300 hover:scale-105"
+      >
+        दूध विक्री
+      </button>
+
+      {/* Popup Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-md shadow-lg w-full max-w-3xl relative">
+            {/* Close Button */}
+            <button
+              onClick={closePopup}
+              className="absolute top-2 right-2 rounded-md text-gray-500 hover:text-gray-800 bg-red-600 py-1 px-2 hover:bg-red-700"
+            >
+              ✕
+            </button>
+
+            {/* Render VikriMilk Component */}
+            <VikriMilk />
+          </div>
+        </div>
+      )}
+    </div>
             </div>
             <div className="flex flex-row">
               <div
@@ -1193,31 +1229,43 @@ const handleSubmit = async () => {
         </div>
         <ToastContainer />
       </div>
-      <div className="min-h-screen bg-gradient-to-r from-blue-200 to-purple-300 p-8 mt-12">
+      <div className="min-h-screen bg-gradient-to-r from-blue-200 to-purple-300 p-8 -ml-40 mt-12">
             <div className="flex justify-center space-x-4 mb-6">
                 <button
                     onClick={() => setActiveComponent("AddUserOrder")}
                     className={`py-2 px-4 rounded-lg ${
-                        activeComponent === "AddUserOrder" ? "bg-blue-600 text-white" : "bg-blue-300 text-gray-800"
-                    } hover:bg-blue-500 transition`}
+                        activeComponent === "AddUserOrder" ? " text-white" : " text-gray-800"
+                    } hover:bg-blue-200 transition`}
                 >
+                <Image  src="/assets/orders.png" alt="Image" width={200} height={400}/>
                     उत्पादक खरेदी
                 </button>
                 <button
                     onClick={() => setActiveComponent("Addadvance")}
                     className={`py-2 px-4 rounded-lg ${
-                        activeComponent === "Addadvance" ? "bg-green-600 text-white" : "bg-green-300 text-gray-800"
-                    } hover:bg-green-500 transition`}
+                        activeComponent === "Addadvance" ? " text-white" : " text-gray-800"
+                    } hover:bg-green-200 transition`}
                 >
+                <Image  src="/assets/advance.png" alt="Image" width={200} height={400}/>
                     अडवांस जमा
                 </button>
                 <button
                     onClick={() => setActiveComponent("AddBillKapat")}
                     className={`py-2 px-4 rounded-lg ${
-                        activeComponent === "AddBillKapat" ? "bg-yellow-600 text-white" : "bg-yellow-300 text-gray-800"
-                    } hover:bg-yellow-500 transition`}
+                        activeComponent === "AddBillKapat" ? " text-white" : " text-gray-800"
+                    } hover:bg-yellow-200 transition`}
                 >
+                <Image  src="/assets/kharedi_kapat.png" alt="Image" width={200} height={400}/>
                     खरेदी कपात
+                </button>
+                <button
+                    onClick={() => setActiveComponent("AddUcchal")}
+                    className={`py-2 px-4 rounded-lg ${
+                        activeComponent === "AddUcchal" ? " text-white" : " text-gray-800"
+                    } hover:bg-red-200 transition`}
+                >
+                <Image  src="/assets/ucchal.png" alt="Image" width={200} height={400}/>
+                    उच्चल
                 </button>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
