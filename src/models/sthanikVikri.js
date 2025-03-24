@@ -39,6 +39,11 @@ const sthanikVikriSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  vikriMilk:[{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'VikriMilk',
+    default: []
+  }],
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Owner",
@@ -48,6 +53,6 @@ const sthanikVikriSchema = new mongoose.Schema({
 
 sthanikVikriSchema.index({ registerNo: 1 }, { unique: true });
 
-const SthanikVikri = mongoose.models.SthanikVikri || mongoose.model("SthanikVikri", sthanikVikriSchema);
+const SthanikVikri = mongoose.models.SthanikVikri || mongoose.model("SthanikVikri", sthanikVikriSchema, 'sthanikvikri');
 
 export default SthanikVikri;

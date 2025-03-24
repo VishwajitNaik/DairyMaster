@@ -8,9 +8,6 @@ export function middleware(request) {
 
   console.log("Middleware Running...");
   console.log("Requested URL:", url);
-  console.log("User Token:", userToken);
-  console.log("Owner Token:", ownerToken);
-  console.log("Sangh Token:", sanghToken);
 
   // Public routes (accessible without authentication)
   const publicRoutes = [
@@ -49,8 +46,6 @@ export function middleware(request) {
     console.log("Redirecting to / (Sangh not authenticated)");
     return NextResponse.redirect(new URL('/', request.url));
   }
-
-  console.log("Access granted to:", url);
   return NextResponse.next(); // Allow request to continue if valid
 }
 

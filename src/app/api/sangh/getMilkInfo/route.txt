@@ -1,0 +1,418 @@
+// import { NextResponse } from "next/server";
+// import { connect } from "@/dbconfig/dbconfig"; // Ensure your DB connection is working
+// import Owner from "@/models/ownerModel"; // Import Owner model
+// import { getDataFromToken } from "@/helpers/getSanghFormToken"; // Import function to extract data from token
+
+
+// // Ensure DB connection
+// connect();
+
+// export async function GET(request) {
+//     try {
+//         const sanghId = await getDataFromToken(request); // Extract Sangh ID from the token
+//         if (!sanghId) {
+//             return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+//         }
+
+//         console.log("Sangh ID:", sanghId);
+        
+
+//         const startDate = new Date();
+//         const endDate = new Date();
+
+//         startDate.setHours(0, 0, 0, 0); // Start of the day
+//         endDate.setHours(23, 59, 59, 999); // End of the day
+
+//         // fetch the owner and populate vikriMilk
+//         const ownerVikriMilk = await Owner.findOne({ sangh: sanghId }).populate("VikrUseriMilk");
+        
+
+//         if (!ownerVikriMilk) {
+//             return NextResponse.json({ error: "Owner not found for the provided Sangh ID" }, { status: 404 });
+//         }
+
+//         const { VikrUseriMilk } = ownerVikriMilk; // Access the milk records directly from the owner's populated field
+
+//         // Variables for total milk, average fat, and average SNF
+//         let totalVikriLiters = 0;
+//         let totalVikriRecords = 0;
+
+//         // Calculate total milk (liters) for records within the date range
+//         const filteredVikriMilkRecords = VikrUseriMilk.filter(record => {
+//             const recordDate = new Date(record.date);
+//             recordDate.setHours(0, 0, 0, 0); // Normalize record date to remove time
+//             return recordDate >= startDate && recordDate <= endDate;
+//         });
+
+//         filteredVikriMilkRecords.forEach(record => {
+//             totalVikriLiters += record.liter || 0; // Add liters of milk
+//             totalVikriRecords += 1; // Count the number of records
+//         });
+
+//         // Fetch the owner and populate userMilk
+//         const owner = await Owner.findOne({ sangh: sanghId }).populate("userMilk");
+
+//         if (!owner) {
+//             return NextResponse.json({ error: "Owner not found for the provided Sangh ID" }, { status: 404 });
+//         }
+
+//         const { userMilk } = owner; // Access the milk records directly from the owner's populated field
+
+//         // Variables for total milk, average fat, and average SNF
+//         let totalLiters = 0;
+//         let totalFat = 0;
+//         let totalSNF = 0;
+//         let totalRecords = 0;
+
+//         // Calculate total milk (liters), total fat, and total SNF for records within the date range
+//         const filteredMilkRecords = userMilk.filter(record => {
+//             const recordDate = new Date(record.date);
+//             recordDate.setHours(0, 0, 0, 0); // Normalize record date to remove time
+//             return recordDate >= startDate && recordDate <= endDate;
+//         });
+        
+//         console.log("Filtered Milk Records:", filteredMilkRecords);
+
+//         filteredMilkRecords.forEach(record => {
+//             totalLiters += record.liter || 0; // Add liters of milk
+//             totalFat += record.fat || 0; // Add fat
+//             totalSNF += record.snf || 0; // Add SNF
+//             totalRecords += 1; // Count the number of records
+//         });
+
+//         // Calculate averages for fat and SNF
+//         const avgFat = totalRecords > 0 ? totalFat / totalRecords : 0;
+//         const avgSNF = totalRecords > 0 ? totalSNF / totalRecords : 0;
+
+//         const netLiters = totalLiters - totalVikriLiters;
+
+//         // Return the milk information for the owner
+//         return NextResponse.json({
+//             message: "Milk information fetched successfully",
+//             data: {
+//                 owner: {
+//                     _id: owner._id,
+//                     name: owner.name, // Assuming 'name' field exists in Owner model
+//                 },
+//                 totalLiters,
+//                 totalVikriLiters,
+//                 netLiters,
+//                 avgFat,
+//                 avgSNF,
+//                 milkRecords: filteredMilkRecords.map(record => ({
+//                     _id: record._id,
+//                     date: record.date,
+//                     liter: record.liter,
+//                     fat: record.fat,
+//                     snf: record.snf,
+//                 })),
+//             },
+//         });
+
+//     } catch (error) {
+//         console.error("Error fetching milk information:", error);
+//         return NextResponse.json({ error: error.message }, { status: 500 });
+//     }
+// }
+
+
+// /////////////////////////////////
+
+
+// import { NextResponse } from "next/server";
+// import { connect } from "@/dbconfig/dbconfig"; // Ensure your DB connection is working
+// import Owner from "@/models/ownerModel"; // Import Owner model
+// import User from "@/models/userModel"; // Import User model
+// import VikriUser from "@/models/sthanikVikri";
+
+// // Ensure DB connection
+// connect();
+
+// export async function GET(request, context) { 
+//     try {
+//         const { params } = context; // Await the context for params
+//         const ownerId = params?.ownerId; // Safely extract ownerId
+        
+//         if (!ownerId) {
+//             return NextResponse.json({ error: "Owner ID is required" }, { status: 400 });
+//         }
+
+//         const url = new URL(request.url);
+//         const startDate = url.searchParams.get("startDate");
+//         const endDate = url.searchParams.get("endDate");
+
+//         // Convert startDate and endDate to Date objects
+//         const start = startDate ? new Date(startDate) : new Date(0);
+//         const end = endDate ? new Date(endDate) : new Date();
+
+//         if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+//             return NextResponse.json({ error: "Invalid date format" }, { status: 400 });
+//         }
+
+//         // Fetch owner details
+//         const owner = await Owner.findOne({ _id: ownerId });
+//         if (!owner) {
+//             return NextResponse.json({ error: "Owner not found" }, { status: 404 });
+//         }
+
+//         // Fetch VikriUser and populate vikriMilk
+//         const ownerVikriMilk = await VikriUser.findOne({ createdBy: ownerId }).populate("vikriMilk");
+
+//         if (!ownerVikriMilk) {
+//             return NextResponse.json({ error: "No Vikri milk records found" }, { status: 404 });
+//         }
+
+//         const { vikriMilk } = ownerVikriMilk;
+
+//         let totalVikriLiters = 0;
+//         let totalVikriRakkam = 0;
+
+//         // Filter Vikri Milk records based on date range
+//         const filteredVikriMilkRecords = vikriMilk.filter(record => {
+//             const recordDate = new Date(record.date);
+//             return recordDate >= start && recordDate <= end;
+//         });
+
+//         filteredVikriMilkRecords.forEach(record => {
+//             totalVikriLiters += record.liter || 0;
+//             totalVikriRakkam += record.rakkam || 0;
+//         });
+
+//         // Fetch users created by owner and populate milkRecords
+//         const ownerCreatedUsers = await User.find({ createdBy: ownerId }).populate("milkRecords");
+
+//         if (ownerCreatedUsers.length === 0) {
+//             return NextResponse.json({ message: "No users found for this owner", data: [] }, { status: 200 });
+//         }
+
+//         let totalLiters = 0;
+//         let totalFat = 0;
+//         let totalSNF = 0;
+//         let totalRakkam = 0;
+//         let recordCount = 0;
+
+//         // Filter and aggregate user milk records
+//         const userData = ownerCreatedUsers.map(user => {
+//             const filteredRecords = user.milkRecords.filter(record => {
+//                 const recordDate = new Date(record.date);
+//                 return recordDate >= start && recordDate <= end;
+//             });
+
+//             filteredRecords.forEach(record => {
+//                 totalLiters += record.liter || 0;
+//                 totalFat += record.fat || 0;
+//                 totalSNF += record.snf || 0;
+//                 totalRakkam += record.rakkam || 0;
+//                 recordCount++;
+//             });
+
+//             return {
+//                 _id: user._id,
+//                 username: user.username,
+//                 milkRecords: filteredRecords,
+//             };
+//         });
+
+//         const avgFat = recordCount > 0 ? (totalFat / recordCount).toFixed(2) : "0.00";
+//         const avgSNF = recordCount > 0 ? (totalSNF / recordCount).toFixed(2) : "0.00";
+//         const netLiter = (totalLiters - totalVikriLiters).toFixed(2);
+//         const netRakkam = (totalRakkam - totalVikriRakkam).toFixed(2);
+
+//         console.log("Net Rakkam:", netRakkam);
+//         console.log("Net Liter:", netLiter);
+
+//         return NextResponse.json({
+//             message: "Milk information fetched successfully",
+//             data: {
+//                 owner,
+//                 totalLiters: totalLiters.toFixed(2),
+//                 netLiter,
+//                 netRakkam,
+//                 avgFat,
+//                 avgSNF,
+//                 totalRakkam: totalRakkam.toFixed(2),
+//                 userData,
+//             },
+//         });
+//     } catch (error) {
+//         console.error("Error fetching milk information:", error);
+//         return NextResponse.json({ error: "Server Error", details: error.message }, { status: 500 });
+//     }
+// }
+
+
+
+// ////////////////////////////////////////////
+
+
+// 'use client';
+// import axios from 'axios';
+// import Link from 'next/link';
+// import React, { useState, useEffect } from 'react';
+
+// const Page = () => {
+//   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
+//   const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
+//   const [billData, setBillData] = useState([]);
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState('');
+//   const [owner, setOwner] = useState([]);
+//   const [selectedOwnerId, setSelectedOwnerId] = useState(null); // Track selected owner for Milk Info
+//   const [milkInfo, setMilkInfo] = useState(null);
+
+//   // Fetch owner data
+//   useEffect(() => {
+//     async function getOwners() {
+//       try {
+//         const res = await axios.get('/api/sangh/getOwners');
+//         console.log('Sangh Data', res.data.data);
+//         setOwner(res.data.data);
+//       } catch (error) {
+//         console.log('Failed to fetch users:', error.message);
+//       }
+//     }
+//     getOwners();
+//   }, []);
+
+
+  
+//   const handleMilkInfo = async (ownerId) => {
+//     setLoading(true);
+//     setError('');
+//     try {
+//       const res = await axios.get(`/api/sangh/getMilkInfo/${ownerId}`, {
+//         params: { startDate, endDate },
+//       });
+
+//       const { totalLiters, avgFat, avgSNF, totalRakkam, netLiter, netRakkam } = res.data.data;
+//       setMilkInfo({
+//         totalMilk: netLiter,
+//         avgFat,
+//         avgSNF,
+//         totalRakkam:netRakkam,
+//       });
+//       setSelectedOwnerId(ownerId); // Set the selected owner for displaying milk info
+//       console.log(res.data);
+//     } catch (error) {
+//       console.error('Failed to fetch milk info:', error.message);
+//       setError('Failed to fetch milk info');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <>
+//       <div className="gradient-bg flex flex-col min-h-screen p-4">
+//         <div className="container text-black mx-auto mt-6">
+//           <div className="flex justify-center mb-6">
+//             <h1 className="text-2xl md:text-4xl font-bold shadow-md shadow-gray-700 p-4">ओनर लिस्ट</h1>
+//           </div>
+
+//           {/* Date Range Filter */}
+//           <div className="mb-6 flex flex-col md:flex-row items-center">
+//           <p className='text-xl font-bold text-white mr-4'>Milk Info Date</p>
+//             <label className="mr-2 mb-2 md:mb-0 text-xl font-semibold">Start Date:</label>
+//             <input
+//               type="date"
+//               value={startDate}
+//               onChange={(e) => setStartDate(e.target.value)}
+//               className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-1/5 bg-gray-200 rounded-md shadow-sm"
+//             />
+//             <label className="mr-2 ml-0 md:ml-4 mb-2 md:mb-0 text-xl font-semibold">End Date:</label>
+//             <input
+//               type="date"
+//               value={endDate}
+//               onChange={(e) => setEndDate(e.target.value)}
+//               className="text-black p-2 text-xl font-mono mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-1/5 bg-gray-200 rounded-md shadow-sm"
+//             />
+//           </div>
+
+//           <div className="overflow-x-auto">
+//             <table className="min-w-full bg-white border border-gray-200">
+//               <thead className="bg-gray-200">
+//                 <tr>
+//                   <th className="py-2 px-2 md:px-4 border-b">Reg No.</th>
+//                   <th className="py-2 px-2 md:px-4 border-b">Owner Name</th>
+//                   <th className="py-2 px-2 md:px-4 border-b">Dairy Name</th>
+//                   <th className="py-2 px-2 md:px-4 border-b">Phone</th>
+//                   <th className="py-2 px-2 md:px-4 border-b">Email</th>
+//                   <th className="py-2 px-2 md:px-4 border-b">Owner Details</th>
+//                   <th className="py-2 px-2 md:px-4 border-b">Milk Info</th>
+//                 </tr>
+//               </thead>
+//               <tbody>
+//                 {owner.length === 0 ? (
+//                   <tr>
+//                     <td colSpan="7" className="py-2 px-4 border-b text-center">
+//                       No user created yet
+//                     </td>
+//                   </tr>
+//                 ) : (
+//                   owner.map((ownerList, index) => (
+//                     <React.Fragment key={index}>
+//                       <tr className="hover:bg-gray-100">
+//                         <td className="py-2 border-b px-2 md:px-4 text-left">{ownerList.registerNo}</td>
+//                         <td className="py-2 border-b px-2 md:px-4 text-left">{ownerList.ownerName}</td>
+//                         <td className="py-2 border-b px-2 md:px-4 text-left">{ownerList.dairyName}</td>
+//                         <td className="py-2 border-b px-2 md:px-4 text-left">{ownerList.phone}</td>
+//                         <td className="py-2 border-b px-2 md:px-4 text-left">{ownerList.email}</td>
+//                         <td className="py-2 border-b px-2 md:px-4 text-left">
+//                           <Link href={`/home/AllDairies/${ownerList._id}`}>
+//                             <button className="bg-blue-400 hover:bg-blue-700 text-white rounded-md p-2 flex items-center justify-center">
+//                               <span>User Details</span>
+//                             </button>
+//                           </Link>
+//                         </td>
+//                         <td className="py-2 border-b px-2 md:px-4 text-center">
+//                           <button
+//                             className="bg-green-400 hover:bg-green-700 text-white rounded-md p-2"
+//                             onClick={() => handleMilkInfo(ownerList._id)}
+//                           >
+//                             Milk Info
+//                           </button>
+//                         </td>
+//                       </tr>
+//                       {selectedOwnerId === ownerList._id && milkInfo && (
+//   <tr>
+//     <td colSpan="7" className="bg-gray-100 p-4 border-b">
+//       <div className="text-left">
+//         <h2 className="text-lg font-bold mb-2">
+//           Milk Info for {ownerList.ownerName}
+//         </h2>
+//         <table className="w-full border-collapse border border-gray-300">
+//           <thead>
+//             <tr className="bg-gray-200">
+//               <th className="border border-gray-400 px-4 py-2 text-left">Total Milk (L)</th>
+//               <th className="border border-gray-400 px-4 py-2 text-left">Average Fat (%)</th>
+//               <th className="border border-gray-400 px-4 py-2 text-left">Average SNF (%)</th>
+//               <th className="border border-gray-400 px-4 py-2 text-left">Total Rakkam</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             <tr className="bg-white">
+//               <td className="border border-gray-400 px-4 py-2">{milkInfo.totalMilk}</td>
+//               <td className="border border-gray-400 px-4 py-2">{milkInfo.avgFat}</td>
+//               <td className="border border-gray-400 px-4 py-2">{milkInfo.avgSNF}</td>
+//               <td className="border border-gray-400 px-4 py-2">{milkInfo.totalRakkam}</td>
+//             </tr>
+//           </tbody>
+//         </table>
+//       </div>
+//     </td>
+//   </tr>
+// )}
+
+//                     </React.Fragment>
+//                   ))
+//                 )}
+//               </tbody>
+//             </table>
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// };
+
+// export default Page;
