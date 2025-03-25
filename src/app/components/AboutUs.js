@@ -35,7 +35,7 @@ const AboutPage = () => {
 
 
 
-        <session>
+        <section>
   <div className="flex flex-col justify-between">
     <h2 className="text-4xl font-bold mb-4 text-gray-800" style={{ fontFamily: 'CustomPara' }}>What We Do</h2>
 
@@ -124,7 +124,7 @@ const AboutPage = () => {
       cursor: pointer;
     }
   `}</style>
-</session>
+</section>
 
 
         {/* Mission and Vision Section */}

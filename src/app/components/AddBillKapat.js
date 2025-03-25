@@ -27,15 +27,39 @@ const AddBillKapat = () => {
   const [endDate, setEndDate] = useState('');
   const [milkRecords, setMilkRecords] = useState([]);
   const [kapat, setKapat] = useState([]);
-   const registerNoRef = useRef(null); // Create a ref for registerNo input field
+  const registerNoRef = useRef(null); // Create a ref for registerNo input field
+  const [data, setData] = useState([]);
+  const [total, setTotal] = useState(0);
 
-  // Fetch Kapat options
+  // Fetch उच्चल data
+  useEffect(() => {
+    async function fetchUcchalData() {
+      try {
+        const response = await axios.post(`/api/user/ucchal/getUchhal/${id}`);
+        setData(response.data.data);
+        console.log('Response:', response.data.data);
+        setTotal(response.data.total); // Set total for उच्चल
+        console.log('Response:', response.data.total);
+      } catch (err) {
+        console.error("Failed to fetch data:", err.message);
+        toast.error("Failed to fetch data.");
+      }
+    }
+
+    if (id) fetchUcchalData();
+  }, [id]);
+
+  // Fetch Kapat options and calculate totalRakkam
   useEffect(() => {
     async function getKapatOptions() {
       try {
         const res = await axios.get('/api/kapat/getKapat');
         const sthirKapat = res.data.data.filter(item => item.KapatType === 'Kapat');
         setKapat(sthirKapat);
+
+        // Calculate totalRakkam for other options
+        const totalRakkam = sthirKapat.reduce((sum, item) => sum + (item.rakkam || 0), 0);
+        setTotalRakkam(totalRakkam);
       } catch (error) {
         console.log("Failed to fetch kapat options:", error.message);
         toast.error("Failed to fetch kapat options.");
@@ -94,7 +118,26 @@ const AddBillKapat = () => {
   };
 
   const handleChange = (event) => {
-    setSelectedOptionOrder(event.target.value);
+    const selectedValue = event.target.value;
+    setSelectedOptionOrder(selectedValue);
+
+    // If "उच्चल" is selected, fetch the user-specific total
+    if (selectedValue === "उच्चल" && selectedUser) {
+      fetchUcchalDataForUser(selectedUser._id);
+    } else {
+      setTotal(totalRakkam); // Use the total from getKapatOptions
+    }
+  };
+
+  // Fetch उच्चल data for the selected user
+  const fetchUcchalDataForUser = async (userId) => {
+    try {
+      const response = await axios.post(`/api/user/ucchal/getUchhal/${userId}`);
+      setTotal(response.data.total); // Set total for the selected user
+    } catch (err) {
+      console.error("Failed to fetch उच्चल data for user:", err.message);
+      toast.error("Failed to fetch उच्चल data for user.");
+    }
   };
 
   // Handle form submission
@@ -111,7 +154,7 @@ const AddBillKapat = () => {
     try {
       const res = await axios.post('/api/billkapat/addBillkapat', payload);
       toast.success("कपात विवरण सफलतापूर्वक केले..!", { position: "top-right" });
-      
+
       console.log('Response:', res.data);
       setSelectedOption('');
       setSelectedUser(null);
@@ -123,12 +166,11 @@ const AddBillKapat = () => {
         if (ref) ref.value = '';
       });
 
-            // Set focus back to Register No input field
-            if (registerNoRef.current) {
-              registerNoRef.current.focus();
-            }
-      
-  
+      // Set focus back to Register No input field
+      if (registerNoRef.current) {
+        registerNoRef.current.focus();
+      }
+
     } catch (error) {
       console.error('Failed to add bill kapat:', error.message);
       toast.error("कपात विवरण सफल नाही..!", { position: "top-right" });
@@ -193,7 +235,7 @@ const AddBillKapat = () => {
       alert("Please select a user");
       return;
     }
-  
+
     try {
       const response = await axios.post(`/api/orders/afterKapatOrders/${userId}`);
       setUserDetails(response.data);
@@ -203,7 +245,7 @@ const AddBillKapat = () => {
       toast.error("Failed to fetch user details.");
     }
   };
-  
+
   return (
     <div
       className="bg-gray-800 p-6 rounded-lg mt-20 shadow-md w-full max-w-2xl mx-auto shadow-black"
@@ -295,24 +337,7 @@ const AddBillKapat = () => {
           </button>
         </div>
 
-        <div className="text-black h-fit text-xl font-mono p-2 mr-4 mb-4 border-b-2 border-blue-500 outline-none bg-gray-200 rounded-md flex flex-row justify-between space-x-6">
-          <div className="flex items-center space-x-2">
-            <span className="font-bold">बील</span>
-            <span className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 w-36 bg-gray-500 rounded-md">
-              {totalMilkRakkam}
-            </span>
-          </div>
-          {userDetails && (
-            <div className="flex items-center space-x-2">
-              <span className="font-bold">बाकी</span>
-              <span className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 w-36 bg-gray-500 rounded-md">
-                {netPayment}
-              </span>
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col md:flex-row md:space-x-4 mb-4">
+        <div className="text-black h-fit text-xl font-mono p-2 mr-4 mb-4 border-b-2 border-blue-500 outline-none bg-gray-400 rounded-md flex flex-row justify-between space-x-6">
           <select
             id="order-select"
             value={selectedOptionOrder}
@@ -320,12 +345,30 @@ const AddBillKapat = () => {
             className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-48 bg-gray-200 rounded-md"
           >
             <option value="">खरेदी डाटा </option>
+            <option value="उच्चल">उच्चल</option>
             {kapat.map((k) => (
               <option key={k._id} value={k.kapatName}>
                 {k.kapatName}
               </option>
             ))}
           </select>
+          <div className="flex items-center space-x-2">
+            <span className="font-bold">बील</span>
+            <span className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-blue-600 w-36 bg-gray-300 rounded-md">
+              {totalMilkRakkam}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row md:space-x-4 mb-4">
+          {userDetails && (
+            <div className="flex items-center space-x-2">
+              <span className="font-bold">बाकी</span>
+              <span className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 w-36 bg-gray-200 rounded-md">
+                {selectedOptionOrder === "उच्चल" ? total.toFixed(2) : netPayment.toFixed(2)}
+              </span>
+            </div>
+          )}
           <input
             type="number"
             inputMode="numeric"
@@ -333,13 +376,12 @@ const AddBillKapat = () => {
             value={rakkam}
             onChange={(e) => setRakkam(e.target.value)}
             onInput={(e) => {
-              // Allow only numbers and a single decimal point
               const value = e.target.value;
               e.target.value = value
-                .replace(/[^0-9.]/g, "")
+                .replace(/[^0-9.]/g, "") // Allow only numbers and a single decimal point
                 .replace(/(\..*?)\..*/g, "$1");
             }}
-            className="text-black h-fit text-xl mb-4 font-mono p-2 mr-4 border-b-2 border-gray-600 focus:border-blue-500 focus:outline-none w-36  bg-gray-200 rounded-md"
+            className="text-black h-fit text-xl font-mono p-2 mr-4 border-b-2 border-gray-600 w-36 bg-gray-200 rounded-md"
           />
         </div>
 

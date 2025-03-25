@@ -3,7 +3,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import Modal from '../components/Models/Modal'; 
 import Link from 'next/link';
 
 const SigninForm = () => {
@@ -15,34 +14,40 @@ const SigninForm = () => {
 
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [isRequestPasswordOpen, setIsRequestPasswordOpen] = useState(false);
-  const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
 
   const onLogin = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     try {
       setLoading(true);
-      const response = await axios.post("/api/owner/login", owner);
+      const response = await axios.post("/api/owner/login", owner, {
+        withCredentials: true,  // ⬅️ Ensures cookies are sent and received
+      });
+  
       if (response.data.success) {
-        // router.push("/home");
-        router.replace("/home");
+        window.location.href = "/home";  // ⬅️ Ensures a full page reload
       } else {
-        console.error("Login Error", response.data.error);
         Toast.error("Server is not responding. Please check your internet connection.");
       }
     } catch (error) {
-      Toast.error("Server is not responding. Please check your internet connection.");
+      if (error.response && error.response.data) {
+        if (error.response.data.error === "Invalid email") {
+          Toast.error("ईमेल चुकीचा आहे");
+        } else if (error.response.data.error === "Invalid password") {
+          Toast.error("पासवर्ड चुकीचा आहे");
+        } else {
+          Toast.error("Server error. Please try again later.");
+        }
+      } else {
+        Toast.error("Server is not responding. Please check your internet connection.");
+      }
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
-    if (owner.email.length > 0 && owner.password.length > 0) {
-      setButtonDisabled(false);
-    } else {
-      setButtonDisabled(true);
-    }
+    setButtonDisabled(!(owner.email.length > 0 && owner.password.length > 0));
   }, [owner]);
 
   return (
@@ -71,7 +76,7 @@ const SigninForm = () => {
           {loading ? "Signing In..." : "Sign In"}
         </button>
         <Link href="/home/reset" className='text-black'>
-        पासवर्ड विसरला असेल तर <span className='text-blue-500'> पासवर्ड बदला </span>
+          पासवर्ड विसरला असेल तर <span className='text-blue-500'> पासवर्ड बदला </span>
         </Link>
       </form>
 

@@ -10,7 +10,6 @@ export async function GET(request) {
     try {
         const ownerId = await getDataFromToken(request);
         const owner = await Owner.findById(ownerId);
-        console.log("owner", owner);
         
 
         if (!owner) {

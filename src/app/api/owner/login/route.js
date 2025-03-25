@@ -4,22 +4,22 @@ import { NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
 import Jwt from "jsonwebtoken";
 
-connect(); // Make sure to use proper connection string and connection handling
+connect(); // Ensure proper DB connection handling
 
 export async function POST(request) {
   try {
     const reqBody = await request.json();
     const { email, password } = reqBody;
 
-    // Check if owner exists
+    // Find owner by email first
     const owner = await Owner.findOne({ email });
+
     if (!owner) {
-      return NextResponse.json({ error: "Owner does not exist" }, { status: 400 });
+      return NextResponse.json({ error: "Invalid email" }, { status: 400 });
     }
 
     // Check if password is correct
     const validPassword = await bcryptjs.compare(password, owner.password);
-
     if (!validPassword) {
       return NextResponse.json({ error: "Invalid password" }, { status: 400 });
     }

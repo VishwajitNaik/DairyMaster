@@ -254,7 +254,7 @@ const Page = () => {
         }
       } catch (err) {
         setError("Failed to fetch today's milk records.");
-        toast.error("सर्वर डाउन आहे ");
+        toast.success("तुमचे मिल्कहब मध्ये स्वागत आहे ");
         console.error("Error fetching today's milk records:", err.message);
       } finally {
         setLoading(false);
@@ -272,7 +272,7 @@ const Page = () => {
         console.log(res.data.data);
       } catch (error) {
         console.log("Failed to fetch users:", error.message);
-        toast.error("सर्वर डाउन आहे ");
+        toast.success("यूजर लोड हॉत आहेत ");
       }
     }
     getOwnerUsers();
@@ -374,7 +374,7 @@ const Page = () => {
       } catch (error) {
         console.error("Error fetching rates:", error.message);
         setError("Error fetching rates");
-        toast.error("सर्वर डाउन आहे ");
+        toast.success("रेट लोड हॉत आहेत ");
         setLoading(false);
       }
     };

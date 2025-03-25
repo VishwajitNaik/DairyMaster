@@ -17,10 +17,21 @@ const GetDocterVisitSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    status:{
+        type: String,
+        enum: ["Pending", "Accepted", "Completed"],
+        default: "Pending",
+    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Owner',
         required: true,
+    },
+    visitDate: {
+        type: Date,
+    },
+    visitTime: {
+        type: String,
     },
 }, { timestamps: true });    
 

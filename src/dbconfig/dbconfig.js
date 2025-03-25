@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { connectRedis } from "./redis";
+// require("../app/api/Postgre/milk/addMilk/route")
 
 dotenv.config();
 
@@ -16,9 +17,12 @@ export async function connect() {
   if (!cached.promise) {
     console.log("⏳ Connecting to MongoDB...");
     cached.promise = mongoose.connect(process.env.MONGO_URI, {
-      serverSelectionTimeoutMS: 5000, // Fail quickly if no response
-      socketTimeoutMS: 45000, // Keep connection open for 45s
-      connectTimeoutMS: 30000, // Increase timeout
+      autoIndex: false,
+      serverSelectionTimeoutMS: 10000, // 10 seconds
+      socketTimeoutMS: 60000, // 60 seconds
+      connectTimeoutMS: 45000, // 45 seconds
+      maxPoolSize: 20, // Limit connection pool size to 20
+      minPoolSize: 5, // Keep at least 5 connections alive
     });
   }
 

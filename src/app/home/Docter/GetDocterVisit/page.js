@@ -84,7 +84,7 @@ const GetDocterVisit = () => {
 
             {/* Form Container */}
             <div className="relative z-10 bg-white p-6 md:p-8 rounded-lg shadow-lg max-w-lg w-full mx-auto mt-12">
-                <ToastContainer />
+                
                 <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center">Doctor Visit</h1>
                 {loading && <p>Loading...</p>}
                 {error && <p className="text-red-500">{error}</p>}
@@ -165,6 +165,7 @@ const GetDocterVisit = () => {
                     </button>
                 </form>
             </div>
+            <ToastContainer />
         </div>
     );
 };
