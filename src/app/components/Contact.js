@@ -1,82 +1,44 @@
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
 
 const ContactForm = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission (e.g., send data to an API or service like Formspree)
-    console.log(formData);
-  };
-
   return (
-    <form onSubmit={handleSubmit} className=" p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-black" style={{ fontFamily: 'CustomPara' }}>Contact Us</h2>
-      <div className="mb-4">
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          className="mt-1 text-black block w-full border border-gray-300 rounded-lg p-2"
-          required
-        />
+    <div className="bg-gray-100">
+      <div className="bg-white shadow-lg rounded-lg p-6 max-w-lg w-full">
+        <h2 className="text-3xl font-bold text-gray-800 mb-4 text-center">
+          Contact Us
+        </h2>
+        <p className="text-gray-600 text-center mb-6">
+          Feel free to reach out to us using the details below.
+        </p>
+
+        <div className="flex items-center mb-4">
+          <span className="text-violet-600 text-xl mr-3">📍</span>
+          <p className="text-gray-700">
+            A/P Bhedasgaon, Tal- Shahuwadi, Dist - Kolhapur, Pin - 416214,
+            Maharashtra, India
+          </p>
+        </div>
+
+        <div className="flex items-center mb-4">
+          <span className="text-violet-600 text-xl mr-3">📞</span>
+          <p className="text-gray-700">+91 74473 40940</p>
+        </div>
+
+        <div className="flex items-center mb-4">
+          <span className="text-violet-600 text-xl mr-3">✉️</span>
+          <p className="text-gray-700">vishwajitnaik1999@gmail.com</p>
+        </div>
+
+        <div className="flex items-center">
+          <span className="text-violet-600 text-xl mr-3">🌐</span>
+          <Link href="https://milkhub.site/" legacyBehavior>
+            <a className="text-blue-600 hover:underline">https://milkhub.site/</a>
+          </Link>
+        </div>
       </div>
-      <div className="mb-4">
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          className="mt-1 text-black block w-full border border-gray-300 rounded-lg p-2"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="subject" className="block text-sm font-medium text-gray-700">Subject</label>
-        <input
-          type="text"
-          id="subject"
-          name="subject"
-          value={formData.subject}
-          onChange={handleChange}
-          className="mt-1 text-black block w-full border border-gray-300 rounded-lg p-2"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message</label>
-        <textarea
-          id="message"
-          name="message"
-          value={formData.message}
-          onChange={handleChange}
-          rows="4"
-          className="mt-1 text-black block w-full border border-gray-300 rounded-lg p-2"
-          required
-        />
-      </div>
-      <button
-        type="submit"
-        className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
-      >
-        Send
-      </button>
-    </form>
+    </div>
   );
 };
 

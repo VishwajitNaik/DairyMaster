@@ -10,6 +10,8 @@ export async function POST(request, { params }) {
         const ownerId = await getDataFromToken(request);
         const { registerNo } = params;
         const { startDate, endDate } = await request.json();
+        console.log("ownerId", ownerId);
+        
 
         if (!registerNo) {
             return NextResponse.json({ error: "User ID is required" }, { status: 400 });
@@ -29,12 +31,17 @@ export async function POST(request, { params }) {
             },
         });
 
+        console.log("userOrders", userOrders);
+
         const totalRakkam = userOrders.reduce((total, order) => total + (parseFloat(order.rakkam) || 0), 0);
 
         const billKapatRecords = await BillKapat.find({
             createdBy: user._id,
-            date: { $gte: new Date(startDate), $lte: new Date(endDate) }
+            date: { $gte: new Date(startDate), $lte: new Date(endDate) },
+            orderData: { $ne: "उच्चल" } // Exclude "उच्चल"
         });
+
+        console.log("Bill Kapat Records", billKapatRecords);
 
         const totalBillKapat = billKapatRecords.reduce((total, record) => total + (parseFloat(record.rate) || 0), 0);
 

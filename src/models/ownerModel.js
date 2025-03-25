@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import userOrders from "./userOrders";
+import SthanikVikri from "./sthanikVikri";
+import VikriMilk from "./vikriMilk";
 
 const ownerSchema = new mongoose.Schema({
   registerNo: {
@@ -87,6 +89,21 @@ ownerBillKapat: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'OnwerKapat',
     default: []
+}],
+SthanikVikriuser: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SthanikVikri',
+    default: []
+}],
+ucchal:[{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Ucchal',
+    default: []
+}],
+VikrUseriMilk: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'VikriMilk',
+    default: [],
 }],
   verifyToken: String,
   verifyTokenExpiry: Date,

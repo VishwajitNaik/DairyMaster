@@ -285,6 +285,43 @@ export default function Sabhasad() {
               </div>
             ))
           )}
+          {/* Pagination Controls */}
+<div className="flex flex-wrap justify-center items-center mt-4 w-full px-2 sm:px-4 gap-2 sm:gap-4">
+  <button
+    onClick={() => handlePageChange(1)}
+    disabled={currentPage === 1}
+    className="px-3 py-1 sm:px-4 sm:py-2 bg-blue-500 text-white rounded-md flex items-center shadow-md box-content shadow-gray-700 text-sm sm:text-base disabled:opacity-50"
+  >
+    <FontAwesomeIcon icon={faAngleDoubleLeft} className="mr-1 sm:mr-2" />
+  </button>
+
+  <button
+    onClick={() => handlePageChange(currentPage - 1)}
+    disabled={currentPage === 1}
+    className="px-3 py-1 sm:px-4 sm:py-2 bg-blue-500 text-white flex items-center shadow-md box-content rounded-md shadow-gray-700 text-sm sm:text-base disabled:opacity-50"
+  >
+    <FontAwesomeIcon icon={faChevronLeft} className="mr-1 sm:mr-2" />
+  </button>
+
+  <span className="px-3 py-1 text-sm sm:text-lg">Page {currentPage}</span>
+
+  <button
+    onClick={() => handlePageChange(currentPage + 1)}
+    disabled={currentPage === totalPages}
+    className="px-3 py-1 sm:px-4 sm:py-2 bg-blue-500 text-white flex items-center shadow-md rounded-md box-content shadow-gray-700 text-sm sm:text-base disabled:opacity-50"
+  >
+    <FontAwesomeIcon icon={faChevronRight} className="mr-1 sm:mr-2" />
+  </button>
+
+  <button
+    onClick={() => handlePageChange(totalPages)}
+    disabled={currentPage === totalPages}
+    className="px-3 py-1 sm:px-4 sm:py-2 bg-blue-500 text-white rounded-md flex items-center shadow-md box-content shadow-gray-700 text-sm sm:text-base disabled:opacity-50"
+  >
+     <FontAwesomeIcon icon={faAngleDoubleRight} className="ml-1 sm:ml-2" />
+  </button>
+</div>
+
         </div>
       </div>
 

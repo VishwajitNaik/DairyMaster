@@ -88,6 +88,11 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Sthirkapat',
     }], // Reference to Kapat
+    ucchal:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Ucchal',
+        default: []
+    }],
 }, { timestamps: true });
 
 userSchema.index({ registerNo: 1, createdBy: 1 }, { unique: true });

@@ -40,6 +40,7 @@ export async function GET(request) {
         $gte: startDate,
         $lte: endDate,
       },
+      orderData: { $ne: "उच्चल" }, // Exclude records with orderData "उच्चल"
     }).populate("createdBy", "registerNo name"); // Populate createdBy with user fields
 
     // Group records by user

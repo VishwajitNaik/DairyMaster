@@ -43,6 +43,10 @@ const milkSchema = new mongoose.Schema({
   date: { 
     type: Date,
     required: true, 
+  },
+  synced: { 
+    type: Boolean, 
+    default: false 
   }
 });
 
